@@ -20,21 +20,21 @@ TIME() {
 UbuntuName=`cat /etc/issue`
 XTName="Ubuntu"
 XTbit=`getconf LONG_BIT`
-[[ ( $UbuntuName != *$XTName* ) || ( $XTbit != 64 ) ]] && {
+if [[ ( $UbuntuName != *$XTName* ) || ( $XTbit != 64 ) ]]; then
 	clear
 	echo
 	TIME y "请使用Ubuntu 64bit，推荐 Ubuntu 18 LTS 或 Ubuntu 20 LTS"
 	echo
 	exit 1
-}
-[[ "$USER" == "root" ]] && {
+fi
+if [[ "$USER" == "root" ]]; then
 	clear
 	echo
 	TIME g "警告：请勿使用root用户编译，换一个普通用户吧~~"
 	echo
 	exit 1
-}
-[[ ! -e .compile ]] && {
+fi
+if [[ ! -e .compile ]]; then
 	clear
 	echo
 	echo
@@ -60,7 +60,7 @@ XTbit=`getconf LONG_BIT`
 		sudo timedatectl set-timezone Asia/Shanghai
 		echo "compile" > .compile
 	}
-}
+fi
 rm -rf ${firmware}
 if [[ -n "$(ls -A "openwrt/config_bf" 2>/dev/null)" ]]; then
 	if [[ -n "$(ls -A "openwrt/.Lede_core" 2>/dev/null)" ]]; then
