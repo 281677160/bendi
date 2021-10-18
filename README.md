@@ -11,7 +11,7 @@
 ---
 - 首次编译:
 ```
-bash <(curl -fsSL git.io/JcGDV)
+bash <(curl -fsSL git.io/pile.sh)
 ```
 ---
 
