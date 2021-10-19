@@ -638,6 +638,7 @@ if [ "$?" == "0" ]; then
 	echo
 	cd ${Home}/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}
 	rename -v "s/^openwrt/${date1}-${CODE}/" * > /dev/null 2>&1
+	rename -v "s/^immortalwrt/${date1}-${CODE}/" * > /dev/null 2>&1
 	cd ${GITHUB_WORKSPACE}
 	if [[ "${UPCOWTRANSFER}" == "true" ]]; then
 		TIME g "正在上传固件至奶牛快传中，请稍后..."
