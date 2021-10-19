@@ -54,13 +54,13 @@ clear
 echo
 echo
 echo
-TIME l " 1. Lede_5.4内核,LUCI 18.06版本"
+TIME l " 1. Lede_5.4内核,LUCI 18.06版本(Lede_source)"
 echo
-TIME l " 2. Lienol_4.14内核,LUCI 19.07版本"
+TIME l " 2. Lienol_4.14内核,LUCI 19.07版本(Lienol_source)"
 echo
-TIME l " 3. Immortalwrt_5.4内核,LUCI 21.02版本"
+TIME l " 3. Immortalwrt_5.4内核,LUCI 21.02版本(Mortal_source)"
 echo
-TIME l " 4. N1和晶晨系列CPU盒子专用"
+TIME l " 4. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
 echo
 TIME l " 5. 退出编译程序"
 echo
