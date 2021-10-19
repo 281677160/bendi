@@ -319,7 +319,7 @@ if [[ $firmware == "Lede_source" ]]; then
 		echo
 	 	exit 1
 	}
-	ZZZ="package/lean/default-settings/files/zzz-default-settings"
+	export ZZZ="package/lean/default-settings/files/zzz-default-settings"
 	export OpenWrt_name="18.06"
 	echo -e "\nipdz=$ip" > openwrt/.Lede_core
 	echo -e "\nGit=$Github" >> openwrt/.Lede_core
@@ -330,7 +330,7 @@ elif [[ $firmware == "Lienol_source" ]]; then
 		echo
 	 	exit 1
 	}
-	ZZZ="package/default-settings/files/zzz-default-settings"
+	export ZZZ="package/default-settings/files/zzz-default-settings"
 	export OpenWrt_name="19.07"
 	echo -e "\nipdz=$ip" > openwrt/.Lienol_core
 	echo -e "\nGit=$Github" >> openwrt/.Lienol_core
@@ -341,7 +341,7 @@ elif [[ $firmware == "Mortal_source" ]]; then
 		echo
 	 	exit 1
 	}
-	ZZZ="package/emortal/default-settings/files/zzz-default-settings"
+	export ZZZ="package/emortal/default-settings/files/zzz-default-settings"
 	export OpenWrt_name="21.02"
 	echo -e "\nipdz=$ip" > openwrt/.Mortal_core
 	echo -e "\nGit=$Github" >> openwrt/.Mortal_core
@@ -367,7 +367,7 @@ elif [[ $firmware == "openwrt_amlogic" ]]; then
 	mkdir -p openwrt/openwrt-armvirt
 	chmod 777 openwrt/make
 	}
-	ZZZ="package/lean/default-settings/files/zzz-default-settings"
+	export ZZZ="package/lean/default-settings/files/zzz-default-settings"
 	export OpenWrt_name="18.06"
 	echo -e "\nipdz=$ip" > openwrt/.amlogic_core
 	echo -e "\nGit=$Github" >> openwrt/.amlogic_core
@@ -395,7 +395,7 @@ git clone https://github.com/281677160/common $Home/build/common
 chmod -R +x $Home/build/common
 chmod -R +x $Home/build/${firmware}
 source $Home/build/${firmware}/settings.ini
-REGULAR_UPDATE="${REG_UPDATE}"
+export REGULAR_UPDATE="${REG_UPDATE}"
 cp -Rf $Home/build/common/Custom/compile.sh openwrt/compile.sh
 cp -Rf $Home/build/common/*.sh openwrt/build/${firmware}
 echo
