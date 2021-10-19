@@ -9,15 +9,9 @@
 - 使用非root用户登录您的ubuntu系统,执行以下代码即可:
 
 ---
-- 首次编译:
+- 编译执行命令:
 ```
 bash <(curl -fsSL git.io/pile.sh)
-```
----
-
-- 再次编译:
-```
-bash openwrt/compile.sh
 ```
 ---
 
