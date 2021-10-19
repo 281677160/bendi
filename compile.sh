@@ -30,8 +30,9 @@ fi
 if [[ "$USER" == "root" ]]; then
 	clear
 	echo
-	TIME g "警告：请勿使用root用户编译，换一个普通用户吧~~"
+	TIME y "警告：请勿使用root用户编译，换一个普通用户吧~~"
 	echo
+	sleep 3
 	exit 0
 fi
 if [[ ! -e .compile ]]; then
