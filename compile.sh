@@ -143,7 +143,7 @@ if [[ -n "$(ls -A "openwrt/config_bf" 2>/dev/null)" ]]; then
 		;;
 	esac
 fi
-export Ubunkj="$(df -h | grep "/dev/*/" | awk '{print $4}' | awk 'NR==1')"
+export Ubunkj="$(df -h|grep -v tmpfs |grep "/dev/.*" |awk '{print $4}' |awk 'NR==1')"
 export FINAL=`echo ${Ubunkj: -1}`
 if [[ "${FINAL}" =~ (M|K) ]]; then
 	echo
