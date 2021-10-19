@@ -25,6 +25,7 @@ if [[ ( $UbuntuName != *$XTName* ) || ( $XTbit != 64 ) ]]; then
 	echo
 	TIME y "请使用Ubuntu 64bit，推荐 Ubuntu 18 LTS 或 Ubuntu 20 LTS"
 	echo
+	sleep 3
 	exit 0
 fi
 if [[ "$USER" == "root" ]]; then
