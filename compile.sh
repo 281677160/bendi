@@ -136,7 +136,7 @@ if [[ -n "$(ls -A "openwrt/config_bf" 2>/dev/null)" ]]; then
 			rm -rf ${firmware}
 		;;
 		*)
-			YUAN_MA="false"
+			export YUAN_MA="false"
 			TIME y "您已关闭更换源码，保存配置中，请稍后..."
 			mkdir -p ${firmware}
 			cp -Rf openwrt/{config_bf,${Core},compile.sh} ${firmware} > /dev/null 2>&1
