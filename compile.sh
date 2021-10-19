@@ -153,7 +153,7 @@ if [[ "${FINAL}" =~ (M|K) ]]; then
 	echo
 fi
 export Ubuntu_mz="$(cat /etc/group | grep adm | cut -f2 -d,)"
-export Ubuntu_kj="$(df -h | grep "/dev/*/" | awk '{print $4}' | awk 'NR==1' | sed 's/.$//g')"
+export Ubuntu_kj="$(df -h|grep -v tmpfs |grep "/dev/.*" |awk '{print $4}' |awk 'NR==1' |sed 's/.$//g')"
 if [[ "${Ubuntu_kj}" -lt "20" ]];then
 	echo
 	TIME z "您当前系统可用空间为${Ubuntu_kj}G"
