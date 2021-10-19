@@ -25,14 +25,14 @@ if [[ ( $UbuntuName != *$XTName* ) || ( $XTbit != 64 ) ]]; then
 	echo
 	TIME y "请使用Ubuntu 64bit，推荐 Ubuntu 18 LTS 或 Ubuntu 20 LTS"
 	echo
-	exit 1
+	exit 0
 fi
 if [[ "$USER" == "root" ]]; then
 	clear
 	echo
 	TIME g "警告：请勿使用root用户编译，换一个普通用户吧~~"
 	echo
-	exit 1
+	exit 0
 fi
 if [[ ! -e .compile ]]; then
 	clear
