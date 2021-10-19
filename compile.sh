@@ -68,28 +68,24 @@ if [[ -n "$(ls -A "openwrt/config_bf" 2>/dev/null)" ]]; then
 	if [[ -n "$(ls -A "openwrt/.Lede_core" 2>/dev/null)" ]]; then
 		export firmware="Lede_source"
 		export CODE="lede"
-		export CJB_DL="Lede_dl.zip"
 		export Modelfile="Lede_source"
 		export Core=".Lede_core"
 		source openwrt/.Lede_core
 	elif [[ -n "$(ls -A "openwrt/.Lienol_core" 2>/dev/null)" ]]; then
 		export firmware="Lienol_source"
 		export CODE="lienol"
-		export CJB_DL="Lienol_dl.zip"
 		export Modelfile="Lienol_source"
 		export Core=".Lienol_core"
 		source openwrt/.Lienol_core
 	elif [[ -n "$(ls -A "openwrt/.Mortal_core" 2>/dev/null)" ]]; then
 		export firmware="Mortal_source"
 		export CODE="mortal"
-		export CJB_DL="Mortal_dl.zip"
 		export Modelfile="Mortal_source"
 		export Core=".Mortal_core"
 		source openwrt/.Mortal_core
 	elif [[ -n "$(ls -A "openwrt/.amlogic_core" 2>/dev/null)" ]]; then
 		export firmware="openwrt_amlogic"
 		export CODE="lede"
-		export CJB_DL="Lede_dl.zip"
 		export Modelfile="openwrt_amlogic"
 		export Core=".amlogic_core"
 		source openwrt/.amlogic_core
@@ -202,7 +198,6 @@ fi
 			export firmware="Lede_source"
 			export CODE="lede"
 			export Core=".Lede_core"
-			export CJB_DL="Lede_dl.zip"
 			export Modelfile="Lede_source"
 			source Lede_source/.Lede_core > /dev/null 2>&1
 			TIME y "您选择了：Lede_5.4内核,LUCI 18.06版本"
@@ -212,7 +207,6 @@ fi
 			export firmware="Lienol_source"
 			export CODE="lienol"
 			export Core=".Lienol_core"
-			export CJB_DL="Lienol_dl.zip"
 			export Modelfile="Lienol_source"
 			source Lienol_source/.Lienol_core > /dev/null 2>&1
 			TIME y "您选择了：Lienol_4.14内核,LUCI 19.07版本"
@@ -222,7 +216,6 @@ fi
 			export firmware="Mortal_source"
 			export CODE="mortal"
 			export Core=".Mortal_core"
-			export CJB_DL="Mortal_dl.zip"
 			export Modelfile="Mortal_source"
 			source Mortal_source/.Mortal_core > /dev/null 2>&1
 			TIME y "您选择了：Immortalwrt_5.4内核,LUCI 21.02版本"
@@ -232,7 +225,6 @@ fi
 			export firmware="openwrt_amlogic"
 			export CODE="lede"
 			export Core=".amlogic_core"
-			export CJB_DL="Lede_dl.zip"
 			export Modelfile="openwrt_amlogic"
 			source openwrt_amlogic/.amlogic_core > /dev/null 2>&1
 			TIME y "您选择了：N1和晶晨系列CPU盒子专用"
