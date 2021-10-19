@@ -487,7 +487,6 @@ BY_INFORMATION="false"
 source build/${firmware}/common.sh && Diy_chuli
 COMFIRMWARE="openwrt/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
 TIME g "正在下载DL文件,请耐心等待..."
-make defconfig
 make -j8 download 2>&1 |tee build.log
 find dl -size -1024c -exec ls -l {} \;
 find dl -size -1024c -exec rm -f {} \;
