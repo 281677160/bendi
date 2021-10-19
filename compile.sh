@@ -308,7 +308,7 @@ ipdz=$ip
 Git=$Github
 EOF
 export Begin="$(date "+%Y/%m/%d-%H.%M")"
-export date1="$(date +'%m.%d')"
+export date1="$(date +'%m-%d')"
 echo
 TIME g "正在下载源码中,请耐心等候~~~"
 echo
