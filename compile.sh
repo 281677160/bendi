@@ -17,9 +17,9 @@ TIME() {
 	 }
       }
 }
-UbuntuName=`cat /etc/issue`
-XTName="Ubuntu"
-XTbit=`getconf LONG_BIT`
+export UbuntuName=`cat /etc/issue`
+export XTName="Ubuntu"
+export XTbit=`getconf LONG_BIT`
 if [[ ( $UbuntuName != *$XTName* ) || ( $XTbit != 64 ) ]]; then
 	clear
 	echo
@@ -66,32 +66,32 @@ fi
 rm -rf ${firmware}
 if [[ -n "$(ls -A "openwrt/config_bf" 2>/dev/null)" ]]; then
 	if [[ -n "$(ls -A "openwrt/.Lede_core" 2>/dev/null)" ]]; then
-		firmware="Lede_source"
-		CODE="lede"
-		CJB_DL="Lede_dl.zip"
-		Modelfile="Lede_source"
-		Core=".Lede_core"
+		export firmware="Lede_source"
+		export CODE="lede"
+		export CJB_DL="Lede_dl.zip"
+		export Modelfile="Lede_source"
+		export Core=".Lede_core"
 		source openwrt/.Lede_core
 	elif [[ -n "$(ls -A "openwrt/.Lienol_core" 2>/dev/null)" ]]; then
-		firmware="Lienol_source"
-		CODE="lienol"
-		CJB_DL="Lienol_dl.zip"
-		Modelfile="Lienol_source"
-		Core=".Lienol_core"
+		export firmware="Lienol_source"
+		export CODE="lienol"
+		export CJB_DL="Lienol_dl.zip"
+		export Modelfile="Lienol_source"
+		export Core=".Lienol_core"
 		source openwrt/.Lienol_core
 	elif [[ -n "$(ls -A "openwrt/.Mortal_core" 2>/dev/null)" ]]; then
-		firmware="Mortal_source"
-		CODE="mortal"
-		CJB_DL="Mortal_dl.zip"
-		Modelfile="Mortal_source"
-		Core=".Mortal_core"
+		export firmware="Mortal_source"
+		export CODE="mortal"
+		export CJB_DL="Mortal_dl.zip"
+		export Modelfile="Mortal_source"
+		export Core=".Mortal_core"
 		source openwrt/.Mortal_core
 	elif [[ -n "$(ls -A "openwrt/.amlogic_core" 2>/dev/null)" ]]; then
-		firmware="openwrt_amlogic"
-		CODE="lede"
-		CJB_DL="Lede_dl.zip"
-		Modelfile="openwrt_amlogic"
-		Core=".amlogic_core"
+		export firmware="openwrt_amlogic"
+		export CODE="lede"
+		export CJB_DL="Lede_dl.zip"
+		export Modelfile="openwrt_amlogic"
+		export Core=".amlogic_core"
 		source openwrt/.amlogic_core
 	else
 		clear
@@ -110,11 +110,11 @@ if [[ -n "$(ls -A "openwrt/config_bf" 2>/dev/null)" ]]; then
 	fi
 	echo
 	if [[ `grep -c "CONFIG_TARGET_x86_64=y" openwrt/config_bf` -eq '1' ]]; then
-          	TARGET_PROFILE="x86-64"
+          	export TARGET_PROFILE="x86-64"
 	elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" openwrt/config_bf` -eq '1' ]]; then
-          	TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" openwrt/config_bf | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+          	export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" openwrt/config_bf | sed -r 's/.*DEVICE_(.*)=y/\1/')"
 	else
-          	TARGET_PROFILE="armvirt"
+          	export TARGET_PROFILE="armvirt"
 	fi
 	[[ ${firmware} == "openwrt_amlogic" ]] && {
 		clear
@@ -147,8 +147,8 @@ if [[ -n "$(ls -A "openwrt/config_bf" 2>/dev/null)" ]]; then
 		;;
 	esac
 fi
-Ubunkj="$(df -h | grep "/dev/*/" | awk '{print $4}' | awk 'NR==1')"
-FINAL=`echo ${Ubunkj: -1}`
+export Ubunkj="$(df -h | grep "/dev/*/" | awk '{print $4}' | awk 'NR==1')"
+export FINAL=`echo ${Ubunkj: -1}`
 if [[ "${FINAL}" =~ (M|K) ]]; then
 	echo
 	TIME r "敬告：可用空间小于[ 1G ]退出编译,建议可用空间大于20G,是否继续?"
@@ -156,8 +156,8 @@ if [[ "${FINAL}" =~ (M|K) ]]; then
 	exit 1
 	echo
 fi
-Ubuntu_mz="$(cat /etc/group | grep adm | cut -f2 -d,)"
-Ubuntu_kj="$(df -h | grep "/dev/*/" | awk '{print $4}' | awk 'NR==1' | sed 's/.$//g')"
+export Ubuntu_mz="$(cat /etc/group | grep adm | cut -f2 -d,)"
+export Ubuntu_kj="$(df -h | grep "/dev/*/" | awk '{print $4}' | awk 'NR==1' | sed 's/.$//g')"
 if [[ "${Ubuntu_kj}" -lt "20" ]];then
 	echo
 	TIME z "您当前系统可用空间为${Ubuntu_kj}G"
@@ -199,41 +199,41 @@ fi
 	read -p " 输入您的选择： " CHOOSE
 	case $CHOOSE in
 		1)
-			firmware="Lede_source"
-			CODE="lede"
-			Core=".Lede_core"
-			CJB_DL="Lede_dl.zip"
-			Modelfile="Lede_source"
+			export firmware="Lede_source"
+			export CODE="lede"
+			export Core=".Lede_core"
+			export CJB_DL="Lede_dl.zip"
+			export Modelfile="Lede_source"
 			source Lede_source/.Lede_core > /dev/null 2>&1
 			TIME y "您选择了：Lede_5.4内核,LUCI 18.06版本"
 		break
 		;;
 		2)
-			firmware="Lienol_source"
-			CODE="lienol"
-			Core=".Lienol_core"
-			CJB_DL="Lienol_dl.zip"
-			Modelfile="Lienol_source"
+			export firmware="Lienol_source"
+			export CODE="lienol"
+			export Core=".Lienol_core"
+			export CJB_DL="Lienol_dl.zip"
+			export Modelfile="Lienol_source"
 			source Lienol_source/.Lienol_core > /dev/null 2>&1
 			TIME y "您选择了：Lienol_4.14内核,LUCI 19.07版本"
 		break
 		;;
 		3)
-			firmware="Mortal_source"
-			CODE="mortal"
-			Core=".Mortal_core"
-			CJB_DL="Mortal_dl.zip"
-			Modelfile="Mortal_source"
+			export firmware="Mortal_source"
+			export CODE="mortal"
+			export Core=".Mortal_core"
+			export CJB_DL="Mortal_dl.zip"
+			export Modelfile="Mortal_source"
 			source Mortal_source/.Mortal_core > /dev/null 2>&1
 			TIME y "您选择了：Immortalwrt_5.4内核,LUCI 21.02版本"
 		break
 		;;
 		4)
-			firmware="openwrt_amlogic"
-			CODE="lede"
-			Core=".amlogic_core"
-			CJB_DL="Lede_dl.zip"
-			Modelfile="openwrt_amlogic"
+			export firmware="openwrt_amlogic"
+			export CODE="lede"
+			export Core=".amlogic_core"
+			export CJB_DL="Lede_dl.zip"
+			export Modelfile="openwrt_amlogic"
 			source openwrt_amlogic/.amlogic_core > /dev/null 2>&1
 			TIME y "您选择了：N1和晶晨系列CPU盒子专用"
 		break
@@ -252,10 +252,10 @@ fi
 }
 echo
 echo
-[[ -z ${ipdz} ]] && ipdz="192.168.1.1"
+[[ -z ${ipdz} ]] && export ipdz="192.168.1.1"
 TIME g "设置openwrt的后台IP地址[ 回车默认 $ipdz ]"
 read -p " 请输入后台IP地址：" ip
-ip=${ip:-"$ipdz"}
+export ip=${ip:-"$ipdz"}
 TIME y "您的后台地址为：$ip"
 echo
 echo
@@ -263,7 +263,7 @@ TIME g "是否需要选择机型和增删插件?"
 read -p " [输入[ Y/y ]回车确认，直接回车跳过选择]： " MENU
 case $MENU in
 	[Yy])
-		Menuconfig="YES"
+		export Menuconfig="YES"
 		TIME y "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
 	;;
 	*)
@@ -276,7 +276,7 @@ TIME g "是否把固件上传到<奶牛快传>?"
 read -p " [输入[ Y/y ]回车确认，直接回车跳过选择]： " NNKC
 case $NNKC in
 	[Yy])
-		UPCOWTRANSFER="true"
+		export UPCOWTRANSFER="true"
 		TIME y "您执行了上传固件到<奶牛快传>!"
 	;;
 	*)
@@ -290,24 +290,24 @@ echo
 	read -p " [输入[ Y/y ]回车确认，直接回车跳过选择]： " RELE
 	case $RELE in
 		[Yy])
-			REG_UPDATE="true"
+			export REG_UPDATE="true"
 		;;
 		*)
 			TIME r "您已关闭把‘定时更新插件’编译进固件！"
-			Github="https://github.com/281677160/build-actions"
+			export Github="https://github.com/281677160/build-actions"
 		;;
 	esac
 }
 [[ "${REG_UPDATE}" == "true" ]] && {
-	[[ -z ${Git} ]] && Git="https://github.com/281677160/build-actions"
+	[[ -z ${Git} ]] && export Git="https://github.com/281677160/build-actions"
 	TIME g "设置Github地址,定时更新固件需要把固件传至对应地址的Releases"
 	TIME z "回车默认为：$Git"
 	read -p " 请输入Github地址：" Github
-	Github=${Github:-"$Git"}
+	export Github=${Github:-"$Git"}
 	TIME y "您的Github地址为：$Github"
-	Apidz="${Github##*com/}"
-	Author="${Apidz%/*}"
-	CangKu="${Apidz##*/}"
+	export Apidz="${Github##*com/}"
+	export Author="${Apidz%/*}"
+	export CangKu="${Apidz##*/}"
 }
 echo
 mkdir -p ${firmware}
@@ -315,8 +315,8 @@ cat >${firmware}/${Core} <<-EOF
 ipdz=$ip
 Git=$Github
 EOF
-Begin="$(date "+%Y/%m/%d-%H.%M")"
-date1="$(date +'%m.%d')"
+export Begin="$(date "+%Y/%m/%d-%H.%M")"
+export date1="$(date +'%m.%d')"
 echo
 TIME g "正在下载源码中,请耐心等候~~~"
 echo
@@ -328,7 +328,7 @@ if [[ $firmware == "Lede_source" ]]; then
 	 	exit 1
 	}
 	ZZZ="package/lean/default-settings/files/zzz-default-settings"
-	OpenWrt_name="18.06"
+	export OpenWrt_name="18.06"
 	echo -e "\nipdz=$ip" > openwrt/.Lede_core
 	echo -e "\nGit=$Github" >> openwrt/.Lede_core
 elif [[ $firmware == "Lienol_source" ]]; then
@@ -339,7 +339,7 @@ elif [[ $firmware == "Lienol_source" ]]; then
 	 	exit 1
 	}
 	ZZZ="package/default-settings/files/zzz-default-settings"
-	OpenWrt_name="19.07"
+	export OpenWrt_name="19.07"
 	echo -e "\nipdz=$ip" > openwrt/.Lienol_core
 	echo -e "\nGit=$Github" >> openwrt/.Lienol_core
 elif [[ $firmware == "Mortal_source" ]]; then
@@ -350,7 +350,7 @@ elif [[ $firmware == "Mortal_source" ]]; then
 	 	exit 1
 	}
 	ZZZ="package/emortal/default-settings/files/zzz-default-settings"
-	OpenWrt_name="21.02"
+	export OpenWrt_name="21.02"
 	echo -e "\nipdz=$ip" > openwrt/.Mortal_core
 	echo -e "\nGit=$Github" >> openwrt/.Mortal_core
 elif [[ $firmware == "openwrt_amlogic" ]]; then
@@ -376,17 +376,17 @@ elif [[ $firmware == "openwrt_amlogic" ]]; then
 	chmod 777 openwrt/make
 	}
 	ZZZ="package/lean/default-settings/files/zzz-default-settings"
-	OpenWrt_name="18.06"
+	export OpenWrt_name="18.06"
 	echo -e "\nipdz=$ip" > openwrt/.amlogic_core
 	echo -e "\nGit=$Github" >> openwrt/.amlogic_core
 fi
 if [[ "${UPCOWTRANSFER}" == "true" ]]; then
 	curl -fsSL git.io/file-transfer | sh
 fi
-GITHUB_WORKSPACE="$PWD"
-Home="$PWD/openwrt"
-PATH1="$PWD/openwrt/build/${firmware}"
-NETIP="package/base-files/files/etc/networkip"
+export GITHUB_WORKSPACE="$PWD"
+export Home="$PWD/openwrt"
+export PATH1="$PWD/openwrt/build/${firmware}"
+export NETIP="package/base-files/files/etc/networkip"
 [[ -e "${firmware}" ]] && cp -Rf "${firmware}"/${Core} "${Home}"/${Core}
 echo "Compile_Date=$(date +%Y%m%d%H%M)" > $Home/Openwrt.info
 [ -f $Home/Openwrt.info ] && . $Home/Openwrt.info
@@ -476,14 +476,14 @@ if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ]; then
 	make defconfig > /dev/null 2>&1
 	sleep 30s
 fi
-TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' .config)"
-TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' .config)"
+export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' .config)"
+export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' .config)"
 if [[ `grep -c "CONFIG_TARGET_x86_64=y" .config` -eq '1' ]]; then
-          TARGET_PROFILE="x86-64"
+          export TARGET_PROFILE="x86-64"
 elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" .config` -eq '1' ]]; then
-          TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" .config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+          export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" .config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
 else
-          TARGET_PROFILE="armvirt"
+          export TARGET_PROFILE="armvirt"
 fi
 if [ "${REGULAR_UPDATE}" == "true" ]; then
           source build/$firmware/upgrade.sh && Diy_Part2
@@ -573,21 +573,34 @@ elif [[ "$(nproc)" =~ (8|9) ]]; then
 else
 	TIME y "正在使用[$(nproc)线程]编译固件,预计要[1]小时左右,请耐心等待..."
 fi
-sleep 15s
+sleep 15
 make -j$(nproc) V=s 2>&1 |tee build.log
 
 if [ "$?" == "0" ]; then
-	if [[ `ls ${COMFIRMWARE} | grep -c "openwrt"` -ge '1' ]] || [[ `ls ${COMFIRMWARE} | grep -c "immortalwrt"` -ge '1' ]]; then
-		echo
-		echo
-		TIME r "编译失败，没发现固件存在~~!"
-		echo
-		TIME y "请不要使用桌面版ubuntu编译，或者您的翻墙网络有问题，油管或者是飞快，但是不能用于编译"
-		sleep 5
-		exit 1
+	if [[ ${firmware} == "Mortal_source" ]]; then
+		if [[ `ls ${COMFIRMWARE} | grep -c "immortalwrt"` = '0' ]]; then
+			echo
+			echo
+			echo "编译失败，没发现固件存在~~!"
+			echo
+			echo "请不要使用桌面版ubuntu或者子系统编译，或者您的翻墙网络有问题，油管或者是飞快，但是不能用于编译"
+			sleep 3
+			eixt 1
+		fi
+	else
+		if [[ `ls ${COMFIRMWARE} | grep -c "openwrt"` = '0' ]]; then
+			echo
+			echo
+			echo "编译失败，没发现固件存在~~!"
+			echo
+			echo "请不要使用桌面版ubuntu或者子系统编译，或者您的翻墙网络有问题，油管或者是飞快，但是不能用于编译"
+			sleep 3
+			eixt 1
+		fi
+	
 	fi
-	byend="1"
-	End="$(date "+%Y/%m/%d-%H.%M")"
+	export byend="1"
+	export End="$(date "+%Y/%m/%d-%H.%M")"
 	rm -rf $Home/build.log
 	clear
 	echo
