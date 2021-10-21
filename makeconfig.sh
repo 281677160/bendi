@@ -37,7 +37,6 @@ XTName="Ubuntu"
 	TIME r "|*******************************************|"
 	sleep 2s
 	sudo apt-get update -y
-	sudo apt-get full-upgrade -y
 	sudo apt-get install -y subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc zip git-core wget curl grep
 	[[ $? -ne 0 ]] && {
 		clear
