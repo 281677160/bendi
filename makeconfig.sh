@@ -38,7 +38,7 @@ XTName="Ubuntu"
 	sleep 2s
 	sudo apt-get update -y
 	sudo apt-get full-upgrade -y
-	sudo apt-get install -y build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 lib32stdc++6 subversion flex uglifyjs gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf wget curl swig rsync
+	sudo apt-get install -y subversion build-essential libncurses5-dev zlib1g-dev gawk git ccache gettext libssl-dev xsltproc zip git-core wget curl grep
 	[[ $? -ne 0 ]] && {
 		clear
 		echo
@@ -192,11 +192,7 @@ TIME g "请用WinSCP工具连接你的ubuntu，在ubuntu根目录有一份config
 echo
 TIME g "把config.txt文件内容全选复制，然后覆盖对应机型.config里面原来的内容就可以了！"
 echo
-TIME g "或者可以使用 cat config.txt 命令来查看！"
 echo
 echo
-echo
-rm -rf ../seedconfig.sh
-rm -rf ../seedconfig
 
 exit 0
