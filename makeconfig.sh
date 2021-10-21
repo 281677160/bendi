@@ -150,7 +150,7 @@ git clone -b "$REPO_BRANCH" --single-branch https://github.com/281677160/openwrt
 } || {
 cp -Rf openwrt-package/* "${Home}" && rm -rf ${Home}/openwrt-package
 }
-svn co https://github.com/fw876/helloworld/trunk/luci-app-ssr-plus package/luci-app-ssr-plus > /dev/null 2>&1
+git clone https://github.com/fw876/helloworld package/luci-app-ssr-plus
 [[ $? -ne 0 ]] && {
 	echo
 	rm -rf ../seedconfig
@@ -158,7 +158,7 @@ svn co https://github.com/fw876/helloworld/trunk/luci-app-ssr-plus package/luci-
 	echo
 	exit 1
 }
-svn co https://github.com/xiaorouji/openwrt-passwall/trunk/luci-app-passwall package/luci-app-passwall > /dev/null 2>&1
+git clone https://github.com/xiaorouji/openwrt-passwall package/luci-app-passwall
 [[ $? -ne 0 ]] && {
 	echo
 	rm -rf ../seedconfig
