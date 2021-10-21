@@ -143,7 +143,6 @@ cd $Home
 git clone -b "$REPO_BRANCH" --single-branch https://github.com/281677160/openwrt-package
 [[ $? -ne 0 ]] && {
 	echo
-	rm -rf ../seedconfig.sh
 	rm -rf ../seedconfig
 	TIME r "插件下载失败，请检测网络或更换节点再尝试!"
 	echo
@@ -154,7 +153,6 @@ cp -Rf openwrt-package/* "${Home}" && rm -rf ${Home}/openwrt-package
 svn co https://github.com/fw876/helloworld/trunk/luci-app-ssr-plus package/luci-app-ssr-plus > /dev/null 2>&1
 [[ $? -ne 0 ]] && {
 	echo
-	rm -rf ../seedconfig.sh
 	rm -rf ../seedconfig
 	TIME r "luci-app-ssr-plus下载失败，请检测网络或更换节点再尝试!"
 	echo
@@ -163,7 +161,6 @@ svn co https://github.com/fw876/helloworld/trunk/luci-app-ssr-plus package/luci-
 svn co https://github.com/xiaorouji/openwrt-passwall/trunk/luci-app-passwall package/luci-app-passwall > /dev/null 2>&1
 [[ $? -ne 0 ]] && {
 	echo
-	rm -rf ../seedconfig.sh
 	rm -rf ../seedconfig
 	TIME r "luci-app-passwall下载失败，请检测网络或更换节点再尝试!"
 	echo
