@@ -184,7 +184,7 @@ echo
 echo
 TIME y "[ ${CONFIG} ]的.config配置文件提取工作完成！"
 echo
-TIME g "请用WinSCP工具连接你的ubuntu，在ubuntu根目录有一份config.txt文件。"
+TIME g "请用WinSCP工具连接你的ubuntu，在ubuntu的"$PWD"有一份config.txt文件。"
 echo
 TIME g "把config.txt文件内容全选复制，然后覆盖对应机型.config里面原来的内容就可以了！"
 echo
