@@ -21,7 +21,7 @@ XTName="Ubuntu"
 [[ $UbuntuName != *$XTName* ]] && {
 	clear
 	echo
-	TIME y "请使用 Ubuntu 系统，推荐 Ubuntu 18 LTS 或 Ubuntu 20 LTS"
+	TIME y "请使用 Ubuntu 系统，推荐 Ubuntu 18.04 LTS 或 Ubuntu 20.04 LTS"
 	echo
 	exit 1
 }
