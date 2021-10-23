@@ -569,24 +569,24 @@ make -j$(nproc) V=s 2>&1 |tee build.log
 
 if [ "$?" == "0" ]; then
 	if [[ ${firmware} == "Mortal_source" ]]; then
-		if [[ `ls ${COMFIRMWARE} | grep -c "immortalwrt"` = '0' ]]; then
+		if [[ `ls ${COMFIRMWARE} | grep -c "immortalwrt"` == '0' ]]; then
 			echo
 			echo
 			echo "编译失败，没发现固件存在~~!"
 			echo
 			echo "请不要使用桌面版ubuntu或者子系统编译，或者您的翻墙网络有问题，油管或者是飞快，但是不能用于编译"
 			sleep 3
-			eixt 1
+			exit 1
 		fi
 	else
-		if [[ `ls ${COMFIRMWARE} | grep -c "openwrt"` = '0' ]]; then
+		if [[ `ls ${COMFIRMWARE} | grep -c "openwrt"` == '0' ]]; then
 			echo
 			echo
 			echo "编译失败，没发现固件存在~~!"
 			echo
 			echo "请不要使用桌面版ubuntu或者子系统编译，或者您的翻墙网络有问题，油管或者是飞快，但是不能用于编译"
 			sleep 3
-			eixt 1
+			exit 1
 		fi
 	
 	fi
