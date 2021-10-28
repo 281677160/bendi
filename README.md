@@ -88,3 +88,9 @@ cd openwrt && sudo ./make -d -b s905x3_s905x2_s905x_s905d_s922x_s912 -k 5.10.70_
 #
 - <img src="https://github.com/danshui-git/shuoming/blob/master/doc/bendi4.png" />
 ---
+#
+- # 捐赠
+- 如果你觉得此项目对你有帮助，请请我喝一杯82年的凉白开，感谢！
+
+-微信-
+# <img src="https://github.com/danshui-git/shuoming/blob/master/doc/weixin4.png" />
