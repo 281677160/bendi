@@ -11,8 +11,8 @@
 
 ---
 - 编译执行命令:
-```
-bash <(curl -fsSL git.io/pile.sh)
+```sh
+sudo apt-get update && sudo apt-get install -y curl && bash <(curl -fsSL git.io/pile.sh)
 ```
 ---
 
