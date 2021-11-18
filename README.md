@@ -14,7 +14,7 @@
 ```sh
 sudo apt-get update && sudo apt-get install -y curl
 ```
-- 编译执行命令:
+- 一键编译openwrt命令:
 ```sh
 bash <(curl -fsSL git.io/pile.sh)
 ```
