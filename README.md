@@ -10,10 +10,11 @@
 - 使用非root用户登录您的ubuntu系统,执行以下代码即可:
 
 ---
-- 编译执行命令:
+- 为防止个别系统没安装curl，使用一键编译命令之前选执行一次安装curl命令:
 ```sh
 sudo apt-get update && sudo apt-get install -y curl
 ```
+- 编译执行命令:
 ```sh
 bash <(curl -fsSL git.io/pile.sh)
 ```
