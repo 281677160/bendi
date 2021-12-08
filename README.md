@@ -16,7 +16,7 @@ sudo apt-get update && sudo apt-get install -y curl
 ```
 - 一键编译openwrt命令:
 ```sh
-bash <(curl -fsSL git.io/pile.sh)
+bash <(curl -fsSL git.io/local.sh)
 ```
 ---
 
