@@ -14,13 +14,15 @@
 ```sh
 sudo apt-get update && sudo apt-get install -y curl
 ```
+
+---
 - 一键编译openwrt命令:
 ```sh
 bash <(curl -fsSL git.io/local.sh)
 ```
 ---
 
-- windons子系统专用
+- windons子系统专用一键编译openwrt命令:
 ```
 bash <(curl -fsSL git.io/wsl.sh)
 ```
