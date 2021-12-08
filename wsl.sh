@@ -257,7 +257,7 @@ function op_jiaoben() {
   cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* build-actions/build
   chmod -R +x build-actions/build && cp -Rf build-actions/build ${Home}
   rm -rf build-actions
-  rm -rf common && clone https://github.com/281677160/common
+  rm -rf common && git clone https://github.com/281677160/common
   judge "额外扩展脚本下载"
   chmod -R +x common && cp -Rf common ${Builb}
   rm -rf common
