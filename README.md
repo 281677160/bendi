@@ -4,8 +4,8 @@
 - ### 说明：
 - 《[Telegram聊天吹水群](https://t.me/heiheiheio)》- 《[Telegram中文设置方法](https://github.com/danshui-git/shuoming/blob/master/tele.md)》
 - 此一键编译脚本基本同步我的《[云编译脚本](https://github.com/281677160/build-actions)》，包含常用插件
-- github已筑墙,所以国内用户编译全程都需要梯子,请准备好梯子,使用大陆白名单或全局模式
-- 请使用服务器版本的 Ubuntu 18.04 LTS 或 Ubuntu 20.04 LTS （不支持windons子系统，windons请用hyper-v安装ubuntu）
+- github已筑墙,所以国内用户编译全程都需要梯子,请自备好梯子,使用大陆白名单或全局模式
+- 请使用 Ubuntu 18.04 LTS 或 Ubuntu 20.04 LTS
 - 编译openwrt两个常用的工具下载地址《[PuTTY(SSH)工具](https://github.com/danshui-git/shuoming/blob/master/Putty%E5%B7%A5%E5%85%B7%E4%B8%8B%E8%BD%BD.md)》《[WinSCP文件管理](https://github.com/danshui-git/shuoming/blob/master/WinSCP.md)》
 - 使用非root用户登录您的ubuntu系统,执行以下代码即可:
 
@@ -20,9 +20,9 @@ bash <(curl -fsSL git.io/local.sh)
 ```
 ---
 
-- N1和晶晨系列编译成功后的一键打包命令，内核组合一定要在《[更多说明](https://github.com/danshui-git/shuoming/blob/master/Amlogic.md)》查看获取
+- windons子系统专用
 ```
-cd openwrt && sudo ./make -d -b s905x3_s905x2_s905x_s905d_s922x_s912 -k 5.10.70_5.4.150
+bash <(curl -fsSL git.io/wsl.sh)
 ```
 ---
 
