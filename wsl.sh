@@ -515,7 +515,7 @@ function op_cowtransfer() {
 
 function op_amlogic() {
   cd ${GITHUB_WORKSPACE}
-  if [[ `ls -a ${Home}/bin/targets/armvirt/64 | grep -c "tar.gz"` == '0' ]]; then
+  if [[ `ls -a ${Home}/bin/targets/*/* | grep -c "tar.gz"` == '0' ]]; then
     print_error "没发现tar.gz格式固件存在"
     exit 1
   fi
