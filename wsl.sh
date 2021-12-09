@@ -145,7 +145,7 @@ function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
-    ECHOY "请在${GITHUB_WORKSPACE}/OP_DIY/${firmware}里面设置好自定义文件"
+    ECHOY "请在 OP_DIY/${firmware} 里面设置好自定义文件"
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
     explorer.exe .
     while :; do
@@ -169,7 +169,7 @@ function bianyi_xuanxiang() {
   case $MENUu in
     [Yy])
       export Menuconfig="true"
-      print_ok "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
+      ECHOYY "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
     ;;
     *)
       export Menuconfig="false"
