@@ -176,7 +176,7 @@ function bianyi_xuanxiang() {
   case $MENUu in
     [Yy])
       export Menuconfig="true"
-      print_ok "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
+      ECHOYY "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
     ;;
     *)
       export Menuconfig="false"
