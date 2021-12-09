@@ -476,6 +476,7 @@ function op_make() {
   fi
   echo "chenggong" >${Builb}/chenggong
   rm -rf ${Home}/build.log
+  cp -Rf ${COMFIRMWARE}/config.buildinfo ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
 }
 
 function op_upgrade3() {
