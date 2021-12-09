@@ -153,7 +153,7 @@ function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
-    ECHOY "请用工具连接ubuntu，然后在 OP_DIY/${firmware} 里面设置好自定义文件"
+    ECHOY "请用WinSCP工具连接ubuntu，然后在 OP_DIY/${firmware} 里面设置好自定义文件"
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
     while :; do
     read -p " ${ZDYSZ}： " ZDYSZU
