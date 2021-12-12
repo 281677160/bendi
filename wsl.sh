@@ -133,11 +133,11 @@ function op_kongjian() {
 function op_diywenjian() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
-    rm -rf bendi && git clone https://github.com/281677160/bendi
+    rm -rf bendi && git clone https://github.com/281677160/bendi ${GITHUB_WORKSPACE}/bendi
     judge "OP_DIY文件下载"
     cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY ${GITHUB_WORKSPACE}/OP_DIY
-    [[ -f ${Builb} ]] && cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${Builb}
-    rm -rf bendi
+    [[ -f ${Builb} ]] && cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${Builb}/
+    rm -rf ${GITHUB_WORKSPACE}/bendi
   fi
 }
 
