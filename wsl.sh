@@ -143,6 +143,7 @@ function op_diywenjian() {
 
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
+  [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
   source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${firmware} 里面设置好自定义文件"
