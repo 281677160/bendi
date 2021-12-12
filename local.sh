@@ -461,6 +461,7 @@ function op_make() {
       fi
       print_error "编译失败~~!"
       print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
+      ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
       sleep 1
       exit 1
     fi
@@ -471,6 +472,7 @@ function op_make() {
       fi
       print_error "编译失败~~!"
       print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
+      ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
       sleep 1
       exit 1
     fi
@@ -576,7 +578,6 @@ function op_end() {
   ECHOY "后台地址: ${IP}"
   ECHOY "用户名: root"
   ECHOY "固件已经存入${OPENGUJIAN}文件夹中"
-  ECHOY "友情提示：如若配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
   if [[ "${firmware}" == "openwrt_amlogic" ]]; then
     ECHOR "提示：再次输入编译命令可选择二次编译或者打包N1和晶晨系列盒子专用固件"
   else
