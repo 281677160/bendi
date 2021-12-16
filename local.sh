@@ -99,8 +99,8 @@ cd ${GITHUB_WORKSPACE}
   sudo apt-get update -y
   sudo apt-get install -y systemd build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 lib32stdc++6 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf wget curl rename libpcap0.8-dev swig rsync
   judge "部署编译环境"
-  sudo -E apt-get -qq autoremove --purge
-  sudo -E apt-get -qq clean
+  sudo apt-get autoremove -y --purge
+  sudo apt-get clean -y
   sudo timedatectl set-timezone "Asia/Shanghai"
   if [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
     sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
