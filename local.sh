@@ -77,11 +77,11 @@ export Ubname="$(. /etc/os-release && echo "$ID")"
 export xtbit=`getconf LONG_BIT`
 if [[ ! "${Ubname}" == "ubuntu" ]] && [[ ! "${xtbit}" == "64" ]]; then
   print_error "请使用Ubuntu 64位系统，推荐 Ubuntu 18 LTS 或 Ubuntu 20 LTS"
-  exit 1
+  exit 0
 fi
 if [[ "$USER" == "root" ]]; then
   print_error "警告：请勿使用root用户编译，换一个普通用户吧~~"
-  exit 1
+  exit 0
 fi
 
 function op_busuhuanjing() {
