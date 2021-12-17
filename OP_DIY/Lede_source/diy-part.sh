@@ -55,7 +55,7 @@ sed -i 's/"带宽监控"/"监控"/g' `grep "带宽监控" -rl ./`
 sed -i 's/"Argon 主题设置"/"Argon设置"/g' `grep "Argon 主题设置" -rl ./`
 
 
-# 整理固件包时候,删除您不想要的固件或者文件,让它不需要上传到Actions空间
+# 整理固件包时候,删除您不想要的固件或者文件
 cat >${GITHUB_WORKSPACE}/Clear <<-EOF
 rm -rf config.buildinfo
 rm -rf feeds.buildinfo
