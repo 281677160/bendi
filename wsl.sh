@@ -783,7 +783,7 @@ menuop() {
   echo
   echo -e " 1${Green}.${Font}${Yellow}删除旧源码,使用[${firmware}]源码全新编译${Font}(推荐)"
   echo
-  echo -e " 2${Green}.${Font}${Yellow}保留缓存,使用[${firmware}]二次编译${Font}(编译[${TARGET_PROFILE}]缓存才有效)"
+  echo -e " 2${Green}.${Font}${Yellow}保留缓存,使用[${firmware}]二次编译${Font}(编译[${TARGET_PROFILE}]缓存才有效,但是比较容易出现编译错误)"
   echo
   echo -e " 3${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
