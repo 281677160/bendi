@@ -20,7 +20,7 @@ uci commit network                                                          # �
 #uci set dhcp.lan.ignore='1'                                                 # 关闭DHCP功能
 #uci commit dhcp                                                             # 跟‘关闭DHCP功能’联动,同时启用或者删除跟注释
 uci set system.@system[0].hostname='Phicomm-N1'                             # 修改主机名称为Phicomm-N1
-#sed -i 's/\/bin\/login/\/bin\/login -f root/' /etc/config/ttyd             # 设置ttyd免帐号登录，如若开启，进入OPENWRT后可能要重启一次才生效
+#sed -i 's/\/bin\/login/\/bin\/login -f root/' /etc/config/ttyd              # 设置ttyd免帐号登录，如若开启，进入OPENWRT后可能要重启一次才生效
 EOF
 
 
@@ -35,7 +35,7 @@ sed -i '/CYXluq4wUazHjmCDBCqXF/d' $ZZZ                                          
 cat >$GITHUB_WORKSPACE/amlogic_openwrt <<-EOF
 amlogic_model=s905x3_s905x2_s905x_s905d_s922x_s912
 amlogic_kernel=5.10.70_5.4.150
-rootfs_size=1024
+rootfs_size=960
 EOF
 
 
@@ -53,7 +53,7 @@ sed -i 's/"带宽监控"/"监控"/g' `grep "带宽监控" -rl ./`
 sed -i 's/"Argon 主题设置"/"Argon设置"/g' `grep "Argon 主题设置" -rl ./`
 
 
-# 整理固件包时候,删除您不想要的固件或者文件,让它不需要上传到Actions空间
+# 整理固件包时候,删除您不想要的固件或者文件
 cat >${GITHUB_WORKSPACE}/Clear <<-EOF
 rm -rf config.buildinfo
 rm -rf feeds.buildinfo
