@@ -262,6 +262,15 @@ function op_jiaoben() {
   rm -rf build-actions
   rm -rf common && git clone https://github.com/281677160/common
   judge "额外扩展脚本下载"
+  if [[ "${firmware}" == "Mortal_source" ]]; then
+    rm -rf ${Home}/package/emortal/default-settings
+    svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/default-settings ${Home}/package/emortal/default-settings
+    curl -fsSL https://cdn.jsdelivr.net/gh/281677160/common@main/Convert/zzz-default-settings > ${Home}/package/emortal/default-settings/zzz-default-settings
+  elif [[ "${firmware}" == "Tianling_source" ]]; then
+    rm -rf ${Home}/package/emortal/default-settings
+    svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/default-settings ${Home}/package/emortal/default-settings
+    curl -fsSL https://cdn.jsdelivr.net/gh/281677160/common@main/Convert/1806zzz-default-settings > ${Home}/package/emortal/default-settings/zzz-default-settings
+  fi
   chmod -R +x common && cp -Rf common ${Builb}
   rm -rf common
   cp -Rf ${Builb}/common/*.sh ${Builb}/${firmware}
