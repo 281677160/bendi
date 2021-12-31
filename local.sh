@@ -620,7 +620,7 @@ function op_firmware() {
     export Modelfile="Mortal_source"
     export Core=".Mortal_core"
     export PATH1="${Builb}/${firmware}"
-    export ZZZ="${Home}/package/emortal/default-settings/files/zzz-default-settings"
+    export ZZZ="${Home}/package/emortal/default-settings/files/99-default-settings"
     export Diy_zdy="Diy_mortal"
     export OpenWrt_name="21.02"
   fi
@@ -630,7 +630,7 @@ function op_firmware() {
     export Modelfile="Tianling_source"
     export Core=".Tianling_core"
     export PATH1="${Builb}/${firmware}"
-    export ZZZ="${Home}/package/emortal/default-settings/files/zzz-default-settings"
+    export ZZZ="${Home}/package/emortal/default-settings/files/99-default-settings"
     export Diy_zdy="Diy_Tianling"
     export OpenWrt_name="tl-18.06"
   fi
