@@ -240,14 +240,7 @@ function amlogic_s9xxx() {
       ECHOGG "发现老旧晶晨内核文件存在，请输入ubuntu密码删除老旧内核"
       sudo rm -rf amlogic
     fi
-    mkdir -p amlogic
-    mkdir -p amlogic/openwrt-armvirt
-    rm -rf amlogic-s9xxx && svn co https://github.com/ophub/amlogic-s9xxx-openwrt/trunk/amlogic-s9xxx amlogic-s9xxx
-    judge "amlogic内核下载"
-    rm -rf amlogic-s9xxx/{.svn,README.cn.md,README.md} > /dev/null 2>&1
-    mv amlogic-s9xxx amlogic
-    curl -fsSL https://raw.githubusercontent.com/ophub/amlogic-s9xxx-openwrt/main/make > amlogic/make
-    curl -fsSL https://raw.githubusercontent.com/ophub/amlogic-s9xxx-openwrt/main/.github/workflows/build-openwrt-lede.yml > amlogic/op_kernel
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
     judge "内核运行文件下载"
     chmod 777 amlogic/make
   fi
@@ -529,16 +522,15 @@ function op_amlogic() {
     amlogic_s9xxx
   fi
   
-  ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905d_s922x_s912"
+  ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认 Phicomm-N1（s905d）]"
   read -p " 请输入您要设置的机型：" model
   export model=${model:-"s905d"}
   ECHOYY "您设置的机型为：${model}"
   echo
-  Make_kernel="$(cat ${GITHUB_WORKSPACE}/amlogic/op_kernel |grep ./make |cut -d "k" -f3 |sed s/[[:space:]]//g)"
-  ECHOGG "设置打包的内核版本[ 直接回车则默认 ${Make_kernel} ]"
+  ECHOGG "设置打包的内核版本[ 直接回车则默认自动检测最新内核 ]"
   read -p " 请输入您要设置的内核：" kernel
-  export kernel=${kernel:-"${Make_kernel}"}
+  export kernel=${kernel:-"5.10.100_5.4.180 -a true"}
   ECHOYY "您设置的内核版本为：${kernel}"
   echo
   ECHOGG "设置ROOTFS分区大小[ 直接回车则默认 960 ]"
@@ -556,7 +548,6 @@ function op_amlogic() {
   cd amlogic && sudo ./make -d -b ${model} -k ${kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
-    explorer.exe .
   else
     print_error "打包失败，请再次尝试!"
   fi
