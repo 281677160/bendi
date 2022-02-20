@@ -551,13 +551,13 @@ function op_amlogic() {
   read -p " 请输入ROOTFS分区大小：" rootfs
   export rootfs=${rootfs:-"960"}
   ECHOYY "您设置的ROOTFS分区大小为：${rootfs}"
-  minsize="$(egrep -o "ROOT_MB=[0-9]+" ${GITHUB_WORKSPACE}/amlogic/make)"
-  rootfssize="ROOT_MB=${rootfs}"
+  minsize="$(egrep -o "ROOT_MB=\"[0-9]+\"" ${GITHUB_WORKSPACE}/amlogic/make)"
+  rootfssize="ROOT_MB=$\"{rootfs}\""
   sed -i "s/${minsize}/${rootfssize}/g" ${GITHUB_WORKSPACE}/amlogic/make
   echo
   rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
   rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
-  cp -Rf ${Home}/bin/targets/armvirt/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/ && sync
+  cp -Rf ${Home}/bin/targets/armvirt/*/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/ && sync
   ECHOGG "请输入ubuntu密码进行固件打包程序"
   cd amlogic
   sudo chmod +x make
