@@ -248,7 +248,8 @@ function amlogic_s9xxx() {
       ECHOGG "发现老旧晶晨内核文件存在，请输入ubuntu密码删除老旧内核"
       sudo rm -rf amlogic
     fi
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
+    rm -rf amlogic && git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
+    rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
     judge "内核运行文件下载"
     chmod 777 amlogic/make
   fi
@@ -522,10 +523,12 @@ function op_cowtransfer() {
 function op_amlogic() {
   cd ${GITHUB_WORKSPACE}
   if [[ `ls -a ${Home}/bin/targets/*/* | grep -c "tar.gz"` == '0' ]]; then
-    print_error "没发现tar.gz格式固件存在"
+    mkdir -p ${Home}/bin/targets/armvirt/64
+    ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
+    ECHOY "${Home}/bin/targets/armvirt/64文件夹内，再进行打包"
     exit 1
   fi
-  if [[ ! -d ${GITHUB_WORKSPACE}/amlogic ]]; then
+  if [[ ! -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
     amlogic_s9xxx
   fi
   
@@ -535,7 +538,7 @@ function op_amlogic() {
   export model=${model:-"s905d"}
   ECHOYY "您设置的机型为：${model}"
   echo
-  ECHOGG "设置打包的内核版本[ 直接回车则默认自动检测最新内核 ]"
+  ECHOGG "设置打包的内核版本[ 直接回车则默认自动检测最新内核(5.10.100_5.4.180 -a true) ]"
   read -p " 请输入您要设置的内核：" kernel
   export kernel=${kernel:-"5.10.100_5.4.180 -a true"}
   ECHOYY "您设置的内核版本为：${kernel}"
