@@ -256,7 +256,6 @@ function amlogic_s9xxx() {
     rm -rf amlogic && git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
     rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
     judge "内核运行文件下载"
-    chmod 777 amlogic/make
   fi
 }
 
@@ -560,7 +559,9 @@ function op_amlogic() {
   rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
   cp -Rf ${Home}/bin/targets/armvirt/armvirt/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/
   ECHOGG "请输入ubuntu密码进行固件打包程序"
-  cd amlogic && sudo ./make -d -b ${model} -k ${kernel}
+  cd amlogic
+  sudo chmod +x make
+  sudo ./make -d -b s905x3_s905x2_s905x_s905w_s905d_s922x_s912 -k 5.10.100_5.4.180 -a true
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
   else
