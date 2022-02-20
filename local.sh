@@ -557,6 +557,7 @@ function op_amlogic() {
   echo
   rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
   rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
+  rm -rf ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx/amlogic-kernel/*
   cp -Rf ${Home}/bin/targets/armvirt/*/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/ && sync
   if [[ `ls -a amlogic/openwrt-armvirt | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
     print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
