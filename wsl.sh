@@ -46,6 +46,11 @@ function ECHOG() {
   echo -e "${Green} $1 ${Font}"
   echo
 }
+function ECHOB() {
+  echo
+  echo -e "${Blue} $1 ${Font}"
+  echo
+}
   function ECHOR() {
   echo
   echo -e "${Red} $1 ${Font}"
@@ -240,9 +245,9 @@ function amlogic_s9xxx() {
       ECHOGG "发现老旧晶晨内核文件存在，请输入ubuntu密码删除老旧内核"
       sudo rm -rf amlogic
     fi
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
+    rm -rf amlogic && git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
+    rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
     judge "内核运行文件下载"
-    chmod 777 amlogic/make
   fi
 }
 
@@ -514,21 +519,23 @@ function op_cowtransfer() {
 
 function op_amlogic() {
   cd ${GITHUB_WORKSPACE}
-  if [[ `ls -a ${Home}/bin/targets/*/* | grep -c "tar.gz"` == '0' ]]; then
-    print_error "没发现tar.gz格式固件存在"
+  if [[ `ls -a ${Home}/bin/targets/armvirt/* | grep -c "tar.gz"` == '0' ]]; then
+    mkdir -p ${Home}/bin/targets/armvirt/64
+    ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
+    ECHOYY "openwrt/bin/targets/armvirt/64文件夹内，再进行打包"
     exit 1
   fi
-  if [[ ! -d ${GITHUB_WORKSPACE}/amlogic ]]; then
+  if [[ ! -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
     amlogic_s9xxx
   fi
-  
+  [ -d amlogic/openwrt-armvirt ] || mkdir -p amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认 Phicomm-N1（s905d）]"
   read -p " 请输入您要设置的机型：" model
   export model=${model:-"s905d"}
   ECHOYY "您设置的机型为：${model}"
   echo
-  ECHOGG "设置打包的内核版本[ 直接回车则默认自动检测最新内核 ]"
+  ECHOGG "设置打包的内核版本[ 直接回车则默认自动检测最新内核(5.10.100_5.4.180 -a true) ]"
   read -p " 请输入您要设置的内核：" kernel
   export kernel=${kernel:-"5.10.100_5.4.180 -a true"}
   ECHOYY "您设置的内核版本为：${kernel}"
@@ -537,15 +544,23 @@ function op_amlogic() {
   read -p " 请输入ROOTFS分区大小：" rootfs
   export rootfs=${rootfs:-"960"}
   ECHOYY "您设置的ROOTFS分区大小为：${rootfs}"
-  minsize="$(egrep -o "ROOT_MB=[0-9]+" ${GITHUB_WORKSPACE}/amlogic/make)"
-  rootfssize="ROOT_MB=${rootfs}"
+  minsize="$(egrep -o "ROOT_MB=\"[0-9]+\"" ${GITHUB_WORKSPACE}/amlogic/make)"
+  rootfssize="ROOT_MB=\"${rootfs}\""
   sed -i "s/${minsize}/${rootfssize}/g" ${GITHUB_WORKSPACE}/amlogic/make
   echo
   rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
   rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
-  cp -Rf ${Home}/bin/targets/armvirt/*/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/
+  cp -Rf ${Home}/bin/targets/armvirt/*/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/ && sync
+  if [[ `ls -a amlogic/openwrt-armvirt | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
+    print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
+    print_error "请检查${Home}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
+    print_error "或直接将openwrt-armvirt-64-default-rootfs.tar.gz存放在amlogic/openwrt-armvirt文件夹内"
+    exit 1
+  fi
   ECHOGG "请输入ubuntu密码进行固件打包程序"
-  cd amlogic && sudo ./make -d -b ${model} -k ${kernel}
+  cd amlogic
+  sudo chmod +x make
+  sudo ./make -d -b ${model} -k ${kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
   else
@@ -707,13 +722,15 @@ menu() {
   clear
   echo
   cd ${GITHUB_WORKSPACE}
+  ECHOB "  请选择编译源码"
   ECHOY " 1. Lede_5.4内核,LUCI 18.06版本(Lede_source)"
   ECHOYY " 2. Lienol_4.14内核,LUCI 17.01版本(Lienol_source)"
   echo
   ECHOYY " 3. Immortalwrt_5.4内核,LUCI 21.02版本(Mortal_source)"
   ECHOY " 4. Immortalwrt_4.14内核,LUCI 18.06版本(Tianling_source)"
   ECHOYY " 5. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
-  ECHOY " 6. 退出编译程序"
+  ECHOG " 6. 单独打包晶晨系列固件"
+  ECHOYY " 7. 退出编译程序"
   echo
   XUANZHEOP="请输入数字"
   while :; do
@@ -750,6 +767,13 @@ menu() {
     break
     ;;
     6)
+      ECHOG "您选择了单独打包晶晨系列固件"
+      export firmware="openwrt_amlogic"
+      op_busuhuanjing
+      op_amlogic
+    break
+    ;;
+    7)
       ECHOR "您选择了退出编译程序"
       exit 0
     break
