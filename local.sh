@@ -527,7 +527,7 @@ function op_cowtransfer() {
 
 function op_amlogic() {
   cd ${GITHUB_WORKSPACE}
-  if [[ `ls -a ${Home}/bin/targets/*/* | grep -c "tar.gz"` == '0' ]]; then
+  if [[ `ls -a ${Home}/bin/targets/armvirt/* | grep -c "tar.gz"` == '0' ]]; then
     mkdir -p ${Home}/bin/targets/armvirt/64
     ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
     ECHOY "${Home}/bin/targets/armvirt/64文件夹内，再进行打包"
@@ -558,7 +558,7 @@ function op_amlogic() {
   echo
   rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
   rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
-  cp -Rf ${Home}/bin/targets/armvirt/*/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/
+  cp -Rf ${Home}/bin/targets/armvirt/armvirt/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/
   ECHOGG "请输入ubuntu密码进行固件打包程序"
   cd amlogic && sudo ./make -d -b ${model} -k ${kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
