@@ -246,8 +246,8 @@ function amlogic_s9xxx() {
       sudo rm -rf amlogic
     fi
     rm -rf amlogic && git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
-    rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
     judge "内核运行文件下载"
+    rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   fi
 }
 
@@ -563,6 +563,7 @@ function op_amlogic() {
   sudo ./make -d -b ${model} -k ${kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
+    explorer.exe .
   else
     print_error "打包失败，请再次尝试!"
   fi
