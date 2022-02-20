@@ -530,7 +530,7 @@ function op_amlogic() {
   if [[ `ls -a ${Home}/bin/targets/armvirt/* | grep -c "tar.gz"` == '0' ]]; then
     mkdir -p ${Home}/bin/targets/armvirt/64
     ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
-    ECHOYY "${Home}/bin/targets/armvirt/64文件夹内，再进行打包"
+    ECHOYY "openwrt/bin/targets/armvirt/64文件夹内，再进行打包"
     exit 1
   fi
   if [[ ! -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
