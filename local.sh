@@ -530,7 +530,7 @@ function op_amlogic() {
   if [[ `ls -a ${Home}/bin/targets/armvirt/* | grep -c "tar.gz"` == '0' ]]; then
     mkdir -p ${Home}/bin/targets/armvirt/64
     ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
-    ECHOY "${Home}/bin/targets/armvirt/64文件夹内，再进行打包"
+    ECHOYY "${Home}/bin/targets/armvirt/64文件夹内，再进行打包"
     exit 1
   fi
   if [[ ! -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
@@ -728,7 +728,7 @@ menu() {
   ECHOYY " 3. Immortalwrt_5.4内核,LUCI 21.02版本(Mortal_source)"
   ECHOY " 4. Immortalwrt_4.14内核,LUCI 18.06版本(Tianling_source)"
   ECHOYY " 5. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
-  ECHOR " 6. 单独打包晶晨系列固件"
+  ECHOG " 6. 单独打包晶晨系列固件"
   ECHOYY " 7. 退出编译程序"
   echo
   XUANZHEOP="请输入数字"
