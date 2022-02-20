@@ -767,6 +767,7 @@ menu() {
     ;;
     6)
       ECHOG "您选择了单独打包晶晨系列固件"
+      export firmware="openwrt_amlogic"
       op_busuhuanjing
       op_amlogic
     break
