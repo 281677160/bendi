@@ -46,6 +46,11 @@ function ECHOG() {
   echo -e "${Green} $1 ${Font}"
   echo
 }
+function ECHOB() {
+  echo
+  echo -e "${Blue} $1 ${Font}"
+  echo
+}
   function ECHOR() {
   echo
   echo -e "${Red} $1 ${Font}"
@@ -716,13 +721,15 @@ menu() {
   clear
   echo
   cd ${GITHUB_WORKSPACE}
+  ECHOB "  请选择编译源码"
   ECHOY " 1. Lede_5.4内核,LUCI 18.06版本(Lede_source)"
   ECHOYY " 2. Lienol_4.14内核,LUCI 17.01版本(Lienol_source)"
   echo
   ECHOYY " 3. Immortalwrt_5.4内核,LUCI 21.02版本(Mortal_source)"
   ECHOY " 4. Immortalwrt_4.14内核,LUCI 18.06版本(Tianling_source)"
   ECHOYY " 5. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
-  ECHOY " 6. 退出编译程序"
+  ECHOR " 6. 单独打包晶晨系列固件"
+  ECHOYY " 7. 退出编译程序"
   echo
   XUANZHEOP="请输入数字"
   while :; do
@@ -759,6 +766,11 @@ menu() {
     break
     ;;
     6)
+      ECHOG "您选择了单独打包晶晨系列固件"
+      op_amlogic
+    break
+    ;;
+    7)
       ECHOR "您选择了退出编译程序"
       exit 0
     break
