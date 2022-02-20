@@ -548,8 +548,10 @@ function op_amlogic() {
   rootfssize="ROOT_MB=\"${rootfs}\""
   sed -i "s/${minsize}/${rootfssize}/g" ${GITHUB_WORKSPACE}/amlogic/make
   echo
-  rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
-  rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
+  ECHOGG "请输入ubuntu密码进行固件打包程序"
+  sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
+  sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
+  sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx/amlogic-kernel/*
   cp -Rf ${Home}/bin/targets/armvirt/*/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/ && sync
   if [[ `ls -a amlogic/openwrt-armvirt | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
     print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
@@ -557,7 +559,6 @@ function op_amlogic() {
     print_error "或直接将openwrt-armvirt-64-default-rootfs.tar.gz存放在amlogic/openwrt-armvirt文件夹内"
     exit 1
   fi
-  ECHOGG "请输入ubuntu密码进行固件打包程序"
   cd amlogic
   sudo chmod +x make
   sudo ./make -d -b ${model} -k ${kernel}
