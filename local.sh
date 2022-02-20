@@ -563,7 +563,6 @@ function op_amlogic() {
   if [[ `ls -a amlogic/openwrt-armvirt | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
     print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     print_error "请检查${Home}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
-    print_error "或直接将openwrt-armvirt-64-default-rootfs.tar.gz存放在amlogic/openwrt-armvirt文件夹内"
     exit 1
   fi
   cd amlogic
