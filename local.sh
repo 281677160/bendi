@@ -254,8 +254,8 @@ function amlogic_s9xxx() {
       sudo rm -rf amlogic
     fi
     rm -rf amlogic && git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
-    rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
     judge "内核运行文件下载"
+    rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   fi
 }
 
