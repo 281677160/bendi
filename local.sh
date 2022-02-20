@@ -535,7 +535,7 @@ function op_amlogic() {
   if [[ ! -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
     amlogic_s9xxx
   fi
-  
+  [ -d amlogic/openwrt-armvirt ] || mkdir -p amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认 Phicomm-N1（s905d）]"
   read -p " 请输入您要设置的机型：" model
@@ -557,7 +557,7 @@ function op_amlogic() {
   echo
   rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
   rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
-  cp -Rf ${Home}/bin/targets/armvirt/armvirt/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/
+  cp -Rf ${Home}/bin/targets/armvirt/armvirt/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/ && sync
   ECHOGG "请输入ubuntu密码进行固件打包程序"
   cd amlogic
   sudo chmod +x make
