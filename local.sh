@@ -620,7 +620,7 @@ function op_firmware() {
     export PATH1="${Builb}/${firmware}"
     export ZZZ="${Home}/package/default-settings/files/zzz-default-settings"
     export Diy_zdy="Diy_lienol"
-    export OpenWrt_name="19.07"
+    export OpenWrt_name="20.06"
   fi
   if [[ "${firmware}" == "Mortal_source" ]] || [[ -n "$(ls -A "${Home}/.Mortal_core" 2>/dev/null)" ]]; then
     export firmware="Mortal_source"
