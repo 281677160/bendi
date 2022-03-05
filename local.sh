@@ -640,7 +640,7 @@ function op_firmware() {
     export PATH1="${Builb}/${firmware}"
     export ZZZ="${Home}/package/emortal/default-settings/files/99-default-settings"
     export Diy_zdy="Diy_Tianling"
-    export OpenWrt_name="tl-18.06"
+    export OpenWrt_name="18.06_tl"
   fi
   if [[ "${firmware}" == "openwrt_amlogic" ]] || [[ -n "$(ls -A "${Home}/.amlogic_core" 2>/dev/null)" ]]; then
     export firmware="openwrt_amlogic"
