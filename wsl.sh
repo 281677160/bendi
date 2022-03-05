@@ -568,13 +568,13 @@ function op_end() {
   ECHOY "后台地址: ${IP}"
   ECHOY "用户名: root"
   ECHOY "固件已经存入${OPENGUJIAN}文件夹中"
+  if [[ "${upgra}" == "1" ]]; then
+    ECHOY "${dsgx}"
+  fi
   if [[ "${firmware}" == "openwrt_amlogic" ]]; then
     ECHOR "提示：再次输入编译命令可选择二次编译或者打包N1和晶晨系列盒子专用固件"
   else
     ECHOR "提示：再次输入编译命令可进行二次编译"
-  fi
-  if [[ "${upgra}" == "1" ]]; then
-    ECHOY "${dsgx}"
   fi
   ECHOG "开始时间：${Begin}"
   ECHOG "结束时间：${End}"
