@@ -725,11 +725,11 @@ menu() {
   echo
   cd ${GITHUB_WORKSPACE}
   ECHOB "  请选择编译源码"
-  ECHOY " 1. Lede_5.4内核,LUCI 18.06版本(Lede_source)"
-  ECHOYY " 2. Lienol_4.14内核,LUCI 17.01版本(Lienol_source)"
+  ECHOY " 1. Lede_5.10内核,LUCI 18.06版本(Lede_source)"
+  ECHOYY " 2. Lienol_5.10内核,LUCI Master版本(Lienol_source)"
   echo
   ECHOYY " 3. Immortalwrt_5.4内核,LUCI 21.02版本(Mortal_source)"
-  ECHOY " 4. Immortalwrt_4.14内核,LUCI 18.06版本(Tianling_source)"
+  ECHOY " 4. Immortalwrt_4.19内核,LUCI 18.06版本(Tianling_source)"
   ECHOYY " 5. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
   ECHOG " 6. 单独打包晶晨系列固件"
   ECHOYY " 7. 退出编译程序"
