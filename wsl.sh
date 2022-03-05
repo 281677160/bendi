@@ -446,30 +446,15 @@ function op_make() {
   rm -fr ${COMFIRMWARE}/* > /dev/null 2>&1
   rm -rf ${Home}/{README,README.md,README_EN.md} > /dev/null 2>&1
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j${npro} V=s 2>&1 |tee ${Home}/build.log
-  if [[ ${firmware} == "Mortal_source" ]] || [[ "${firmware}" == "Tianling_source" ]]; then
-    if [[ `ls -a ${COMFIRMWARE} | grep -c "immortalwrt"` == '0' ]]; then
-      if [[ ${byop} == "1" ]]; then
-        echo "shibai" >${Builb}/shibai
-      fi
-      print_error "编译失败~~!"
-      explorer.exe .
-      print_error "请查看openwrt文件夹里面的[build.log]日志文件查找失败原因"
-      ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
-      sleep 1
-      exit 1
+  if [[ `ls -a ${COMFIRMWARE} | grep -c "squashfs"` == '0' ]]; then
+    if [[ ${byop} == "1" ]]; then
+      echo "shibai" >${Builb}/shibai
     fi
-  else
-    if [[ `ls -a ${COMFIRMWARE} | grep -c "openwrt"` == '0' ]]; then
-      if [[ ${byop} == "1" ]]; then
-        echo "shibai" >${Builb}/shibai
-      fi
-      print_error "编译失败~~!"
-      explorer.exe .
-      print_error "请查看openwrt文件夹里面的[build.log]日志文件查找失败原因"
-      ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
-      sleep 1
-      exit 1
-    fi
+    print_error "编译失败~~!"
+    print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
+    ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
+    sleep 1
+    exit 1
   fi
   echo "chenggong" >${Builb}/chenggong
   rm -rf ${Home}/build.log
