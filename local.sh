@@ -743,6 +743,7 @@ menu() {
   export mortalnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" $GITHUB_WORKSPACE/Makefile)"
   curl -fsSL https://raw.githubusercontent.com/immortalwrt/immortalwrt/openwrt-18.06/target/linux/x86/Makefile > Makefile
   export tianlingnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" $GITHUB_WORKSPACE/Makefile)"
+  rm -rf Makefile
   ECHOB "  请选择编译源码"
   ECHOY " 1. Lede_${ledenh}内核,LUCI 18.06版本(Lede_source)"
   ECHOYY " 2. Lienol_${lienolnh}内核,LUCI Master版本(Lienol_source)"
