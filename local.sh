@@ -515,21 +515,6 @@ function op_upgrade3() {
   cd ${Home}
 }
 
-function op_cowtransfer() {
-  if [[ "${UPLOAD_COWTRANSFER}" == "true" ]]; then
-    ECHOY "正在上传固件至奶牛快传中，请稍后..."
-    cd ${GITHUB_WORKSPACE}
-    curl -fsSL git.io/file-transfer | sh
-    mv ${COMFIRMWARE}/packages ${Home}/bin/targets/${TARGET_BOARD}/packages
-    ./transfer cow --block 2621440 -s -p 64 --no-progress ${COMFIRMWARE} 2>&1 | tee cowtransfer.log > /dev/null 2>&1
-    export cow="$(cat cowtransfer.log | grep https | cut -f3 -d" ")"
-    echo "${cow}" > ${Home}/bin/奶牛快传链接
-    ECHOY "奶牛快传：${cow}"
-    rm -rf ${GITHUB_WORKSPACE}/cowtransfer.log
-    rm -rf ${GITHUB_WORKSPACE}/transfer
-  fi
-}
-
 function op_amlogic() {
   cd ${GITHUB_WORKSPACE}
   if [[ `ls -a ${Home}/bin/targets/armvirt/* | grep -c "tar.gz"` == '0' ]]; then
@@ -702,7 +687,6 @@ function openwrt_sb() {
     op_make
     op_upgrade3
     op_end
-    op_cowtransfer
 }
 
 function openwrt_by() {
@@ -729,7 +713,6 @@ function openwrt_by() {
     op_make
     op_upgrade3
     op_end
-    op_cowtransfer
 }
 menu() {
   ECHOB "正在加载当前内核版本信息，请稍后..."
