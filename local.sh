@@ -90,6 +90,12 @@ if [[ ! "${Ubname}" == "ubuntu" ]] && [[ ! "${xtbit}" == "64" ]]; then
   exit 0
 fi
 
+Google_Check=$(curl -I -s --connect-timeout 8 google.com -w %{http_code} | tail -n1)
+if [ ! "$Google_Check" == 301 ];then
+  print_error "提醒：编译之前请自备梯子~~"
+  exit 0
+fi
+
 function op_busuhuanjing() {
 cd ${GITHUB_WORKSPACE}
   clear
@@ -729,12 +735,20 @@ menu() {
   clear
   echo
   cd ${GITHUB_WORKSPACE}
+  curl -fsSL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/x86/Makefile > Makefile
+  export ledenh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" $GITHUB_WORKSPACE/Makefile)"
+  curl -fsSL https://raw.githubusercontent.com/Lienol/openwrt/main/target/linux/x86/Makefile > Makefile
+  export lienolnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" $GITHUB_WORKSPACE/Makefile)"
+  curl -fsSL https://raw.githubusercontent.com/immortalwrt/immortalwrt/openwrt-21.02/target/linux/x86/Makefile > Makefile
+  export mortalnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" $GITHUB_WORKSPACE/Makefile)"
+  curl -fsSL https://raw.githubusercontent.com/immortalwrt/immortalwrt/openwrt-18.06/target/linux/x86/Makefile > Makefile
+  export tianlingnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" $GITHUB_WORKSPACE/Makefile)"
   ECHOB "  请选择编译源码"
-  ECHOY " 1. Lede_5.10内核,LUCI 18.06版本(Lede_source)"
-  ECHOYY " 2. Lienol_5.10内核,LUCI Master版本(Lienol_source)"
+  ECHOY " 1. Lede_${ledenh}内核,LUCI 18.06版本(Lede_source)"
+  ECHOYY " 2. Lienol_${lienolnh}内核,LUCI Master版本(Lienol_source)"
   echo
-  ECHOYY " 3. Immortalwrt_5.4内核,LUCI 21.02版本(Mortal_source)"
-  ECHOY " 4. Immortalwrt_4.19内核,LUCI 18.06版本(Tianling_source)"
+  ECHOYY " 3. Immortalwrt_${mortalnh}内核,LUCI 21.02版本(Mortal_source)"
+  ECHOY " 4. Immortalwrt_${tianlingnh}内核,LUCI 18.06版本(Tianling_source)"
   ECHOYY " 5. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
   ECHOG " 6. 单独打包晶晨系列固件"
   ECHOYY " 7. 退出编译程序"
@@ -745,25 +759,25 @@ menu() {
   case $CHOOSE in
     1)
       export firmware="Lede_source"
-      ECHOG "您选择了：Lede_5.4内核,LUCI 18.06版本"
+      ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
       openwrt_qx
     break
     ;;
     2)
       export firmware="Lienol_source"
-      ECHOG "您选择了：Lienol_4.14内核,LUCI 17.01版本"
+      ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI 17.01版本"
       openwrt_qx
     break
     ;;
     3)
       export firmware="Mortal_source"
-      ECHOG "您选择了：Immortalwrt_5.4内核,LUCI 21.02版本"
+      ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
       openwrt_qx
     break
     ;;
     4)
       export firmware="Tianling_source"
-      ECHOG "您选择了：Immortalwrt_4.14内核,LUCI 18.06版本"
+      ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
       openwrt_qx
     break
     ;;
