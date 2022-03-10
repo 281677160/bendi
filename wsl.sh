@@ -90,6 +90,11 @@ if [[ "$USER" == "root" ]]; then
   print_error "警告：请勿使用root用户编译，换一个普通用户吧~~"
   exit 1
 fi
+Google_Check=$(curl -I -s --connect-timeout 8 google.com -w %{http_code} | tail -n1)
+if [ ! "$Google_Check" == 301 ];then
+  print_error "提醒：编译之前请自备梯子，编译全程都需要稳定梯子~~"
+  exit 0
+fi
 
 function op_busuhuanjing() {
 cd ${GITHUB_WORKSPACE}
@@ -719,17 +724,29 @@ function openwrt_by() {
     op_cowtransfer
 }
 menu() {
+  ECHOB "正在加载当前内核版本信息，请稍后..."
+  cd ${GITHUB_WORKSPACE}
+  curl -fsSL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/x86/Makefile > Makefile
+  export ledenh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+ Makefile |cut -d "=" -f2" $GITHUB_WORKSPACE/Makefile)"
+  curl -fsSL https://raw.githubusercontent.com/Lienol/openwrt/main/target/linux/x86/Makefile > Makefile
+  export lienolnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+ Makefile |cut -d "=" -f2" $GITHUB_WORKSPACE/Makefile)"
+  curl -fsSL https://raw.githubusercontent.com/immortalwrt/immortalwrt/openwrt-21.02/target/linux/x86/Makefile > Makefile
+  export mortalnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+ Makefile |cut -d "=" -f2" $GITHUB_WORKSPACE/Makefile)"
+  curl -fsSL https://raw.githubusercontent.com/immortalwrt/immortalwrt/openwrt-18.06/target/linux/x86/Makefile > Makefile
+  export tianlingnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+ Makefile |cut -d "=" -f2" $GITHUB_WORKSPACE/Makefile)"
+  rm -rf Makefile
+  clear
   clear
   echo
   cd ${GITHUB_WORKSPACE}
   ECHOB "  请选择编译源码"
-  ECHOY " 1. Lede_5.10内核,LUCI 18.06版本(Lede_source)"
-  ECHOYY " 2. Lienol_5.10内核,LUCI Master版本(Lienol_source)"
+  ECHOY " 1. Lede_${ledenh}内核,LUCI 18.06版本(Lede_source)"
+  ECHOYY " 2. Lienol_${lienolnh}内核,LUCI Master版本(Lienol_source)"
   echo
-  ECHOYY " 3. Immortalwrt_5.4内核,LUCI 21.02版本(Mortal_source)"
-  ECHOY " 4. Immortalwrt_4.19内核,LUCI 18.06版本(Tianling_source)"
+  ECHOYY " 3. Immortalwrt_${mortalnh}内核,LUCI 21.02版本(Mortal_source)"
+  ECHOY " 4. Immortalwrt_${tianlingnh}内核,LUCI 18.06版本(Tianling_source)"
   ECHOYY " 5. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
-  ECHOG " 6. 单独打包晶晨系列固件"
+  ECHOY " 6. 单独打包晶晨系列固件(前提是您要有armvirt的.tar.gz固件)"
   ECHOYY " 7. 退出编译程序"
   echo
   XUANZHEOP="请输入数字"
