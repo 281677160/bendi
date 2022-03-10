@@ -735,13 +735,13 @@ menu() {
   ECHOB "正在加载当前内核版本信息，请稍后..."
   cd ${GITHUB_WORKSPACE}
   curl -fsSL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/x86/Makefile > Makefile
-  export ledenh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+ Makefile |cut -d "=" -f2" $GITHUB_WORKSPACE/Makefile)"
+  export ledenh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
   curl -fsSL https://raw.githubusercontent.com/Lienol/openwrt/main/target/linux/x86/Makefile > Makefile
-  export lienolnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+ Makefile |cut -d "=" -f2" $GITHUB_WORKSPACE/Makefile)"
+  export lienolnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
   curl -fsSL https://raw.githubusercontent.com/immortalwrt/immortalwrt/openwrt-21.02/target/linux/x86/Makefile > Makefile
-  export mortalnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+ Makefile |cut -d "=" -f2" $GITHUB_WORKSPACE/Makefile)"
+  export mortalnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
   curl -fsSL https://raw.githubusercontent.com/immortalwrt/immortalwrt/openwrt-18.06/target/linux/x86/Makefile > Makefile
-  export tianlingnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+ Makefile |cut -d "=" -f2" $GITHUB_WORKSPACE/Makefile)"
+  export tianlingnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
   rm -rf Makefile
   clear
   clear
