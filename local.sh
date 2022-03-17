@@ -819,7 +819,7 @@ menuop() {
   read -p " ${XUANZHE}：" menu_num
   case $menu_num in
   1)
-    byop="1"
+    export byop="1"
     op_firmware
     op_kongjian
     op_diywenjian
@@ -844,7 +844,7 @@ menuop() {
   break
   ;;
   2)
-    byop="0"
+    export byop="0"
     op_firmware
     bianyi_xuanxiang
     feeds_clean
