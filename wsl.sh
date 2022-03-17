@@ -230,8 +230,7 @@ function feeds_clean() {
   cp -Rf "${Home}"/openwrt-package/* "${Home}" && rm -rf "${Home}"/openwrt-package
   source "${PATH1}/common.sh" && Diy_all
   cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* "${Builb}"
-  cp -Rf "${PATH1}"/diy/* "${Home}"
-  cp -Rf "${PATH1}/files" "${Home}" && chmod -R +x ${Home}/files
+  chmod -R 775 ${Home}/files
   rm -rf ${Home}/files/{README,README.md} > /dev/null 2>&1
   rm -rf ${Home}/dl
   if [[ "${firmware}" == "openwrt_amlogic" ]]; then
