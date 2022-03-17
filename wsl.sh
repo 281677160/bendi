@@ -835,7 +835,6 @@ menuop() {
     op_make
     op_upgrade3
     op_end
-    op_cowtransfer
   break
   ;;
   2)
@@ -855,7 +854,6 @@ menuop() {
     op_make
     op_upgrade3
     op_end
-    op_cowtransfer
   break
   ;;
   3)
