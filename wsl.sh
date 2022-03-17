@@ -228,11 +228,7 @@ function feeds_clean() {
   rm -rf "${Home}"/openwrt-package && git clone --depth 1 -b "${REPO_BRANCH}" https://github.com/281677160/openwrt-package "${Home}"/openwrt-package
   judge "插件包下载"
   cp -Rf "${Home}"/openwrt-package/* "${Home}" && rm -rf "${Home}"/openwrt-package
-  if [[ ${REGULAR_UPDATE} == "true" ]]; then
-    git clone https://github.com/281677160/luci-app-autoupdate feeds/luci/applications/luci-app-autoupdate
-    judge "luci-app-autoupdate插件下载"
-    cp -Rf "${PATH1}"/{AutoUpdate.sh,replace.sh} package/base-files/files/bin
-  fi
+  source "${PATH1}/common.sh" && Diy_all
   cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* "${Builb}"
   cp -Rf "${PATH1}"/diy/* "${Home}"
   cp -Rf "${PATH1}/files" "${Home}" && chmod -R +x ${Home}/files
