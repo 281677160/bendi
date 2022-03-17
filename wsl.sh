@@ -224,10 +224,11 @@ function feeds_clean() {
   rm -rf ${Home}/package/{luci-app-passwall,luci-app-ssr-plus}
   ./scripts/feeds update -a > /dev/null 2>&1
   cp -rf ${Home}/zdefault-settings ${ZZZ}
+  rm -rf ${Builb}/common && git clone https://github.com/281677160/common ${Builb}/common
+  judge "额外扩展脚本下载"
+  chmod -R +x ${Builb}/common
+  cp -Rf ${Builb}/common/*.sh ${Builb}/${firmware}
   source "${PATH1}/common.sh" && ${Diy_zdy}
-  rm -rf "${Home}"/openwrt-package && git clone --depth 1 -b "${REPO_BRANCH}" https://github.com/281677160/openwrt-package "${Home}"/openwrt-package
-  judge "插件包下载"
-  cp -Rf "${Home}"/openwrt-package/* "${Home}" && rm -rf "${Home}"/openwrt-package
   source "${PATH1}/common.sh" && Diy_all
   cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* "${Builb}"
   chmod -R 775 ${Home}/files
