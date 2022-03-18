@@ -800,7 +800,7 @@ menu() {
 
 menuop() {
   op_firmware
-  op_config
+  tixing_op_config
   cd ${GITHUB_WORKSPACE}
   clear
   echo
