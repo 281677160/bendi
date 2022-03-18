@@ -232,7 +232,6 @@ function feeds_clean() {
   source "${PATH1}/common.sh" && Diy_all
   cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* "${Builb}"
   source "${PATH1}/settings.ini"
-  source "${PATH1}/$DIY_PART_SH"
   chmod -R 775 ${Home}/files
   rm -rf ${Home}/files/{README,README.md} > /dev/null 2>&1
   rm -rf ${Home}/dl
