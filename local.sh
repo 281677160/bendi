@@ -187,6 +187,8 @@ function bianyi_xuanxiang() {
   echo
   echo
   source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini > /dev/null 2>&1
+  tixing_op_config > /dev/null 2>&1
+  ECHOY "您当前OP_DIY自定义文件夹的配置机型为：${TARGET_PROFILE}"
   ECHOGG "是否需要选择机型和增删插件?"
   read -p " [输入[ Y/y ]回车确认，直接回车则为否]： " MENUu
   case $MENUu in
@@ -370,6 +372,17 @@ function op_config() {
   fi
   export COMFIRMWARE="${Home}/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
   export OPENGUJIAN="openwrt/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
+}
+
+function tixing_op_config() {
+  cd $Home
+  if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config"` -eq '1' ]]; then
+    export TARGET_PROFILE="x86-64"
+  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config"` -eq '1' ]]; then
+    export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+  else
+    export TARGET_PROFILE="armvirt"
+  fi
 }
 
 function op_upgrade2() {
@@ -793,7 +806,7 @@ menu() {
 
 menuop() {
   op_firmware
-  op_config
+  tixing_op_config > /dev/null 2>&1
   cd ${GITHUB_WORKSPACE}
   clear
   echo
