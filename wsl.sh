@@ -178,10 +178,8 @@ function bianyi_xuanxiang() {
   echo
   echo
   source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini > /dev/null 2>&1
-  tixing_op_config
-  
+  tixing_op_config > /dev/null 2>&1
   ECHOY "您当前OP_DIY自定义文件夹的配置机型为：${TARGET_PROFILE}"
-  
   ECHOGG "是否需要选择机型和增删插件?"
   read -p " [输入[ Y/y ]回车确认，直接回车则为否]： " MENUu
   case $MENUu in
@@ -800,7 +798,7 @@ menu() {
 
 menuop() {
   op_firmware
-  tixing_op_config
+  tixing_op_config > /dev/null 2>&1
   cd ${GITHUB_WORKSPACE}
   clear
   echo
