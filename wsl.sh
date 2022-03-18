@@ -369,9 +369,9 @@ function op_config() {
 
 function tixing_op_config() {
   cd $Home
-  if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/${firmware}/config"` -eq '1' ]]; then
+  if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config"` -eq '1' ]]; then
     export TARGET_PROFILE="x86-64"
-  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/${firmware}/config"` -eq '1' ]]; then
+  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config"` -eq '1' ]]; then
     export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/${firmware}/config" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
   else
     export TARGET_PROFILE="armvirt"
