@@ -243,9 +243,6 @@ function feeds_clean() {
   chmod -R 775 ${Home}/files
   rm -rf ${Home}/files/{README,README.md} > /dev/null 2>&1
   rm -rf ${Home}/dl
-  if [[ "${firmware}" == "openwrt_amlogic" ]]; then
-    amlogic_s9xxx
-  fi
 }
 
 function amlogic_s9xxx() {
@@ -256,7 +253,7 @@ function amlogic_s9xxx() {
       ECHOGG "发现老旧晶晨内核文件存在，请输入ubuntu密码删除老旧内核"
       sudo rm -rf amlogic
     fi
-    rm -rf amlogic && git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
     judge "内核运行文件下载"
     rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   fi
