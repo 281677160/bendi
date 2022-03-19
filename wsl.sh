@@ -314,7 +314,12 @@ function op_feeds_update() {
   ./scripts/feeds update -a
   ./scripts/feeds install -a > /dev/null 2>&1
   ./scripts/feeds install -a
-  cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
+  if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}" ]]; then
+    cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
+  else
+    ECHOR "OP_DIY/${firmware}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
+    exit 1
+  fi
 }
 
 function op_upgrade1() {
