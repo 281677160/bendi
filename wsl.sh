@@ -223,6 +223,7 @@ function feeds_clean() {
   cd $Home
   git pull
   ./scripts/feeds clean
+  rm -rf ./tmp && rm -rf .config
   rm -rf ${Home}/package/{luci-app-passwall,luci-app-ssr-plus}
   ./scripts/feeds update -a > /dev/null 2>&1
   cp -rf ${Home}/zdefault-settings ${ZZZ}
