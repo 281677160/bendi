@@ -474,7 +474,7 @@ function op_make() {
   rm -rf build.log
   export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   ECHOG "正在编译固件，请耐心等待..."
-  rm -fr ${COMFIRMWARE}/* > /dev/null 2>&1
+  [[ -d "${COMFIRMWARE}" ]] && rm -fr ${COMFIRMWARE}/*
   rm -rf ${Home}/{README,README.md,README_EN.md} > /dev/null 2>&1
   if [[ "$(nproc)" -ge "16" ]];then
     make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
@@ -707,7 +707,7 @@ function openwrt_bgbg() {
       export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
       op_download
       ECHOG "编译固件"
-      rm -rf ${COMFIRMWARE}/*
+      [[ -d "${COMFIRMWARE}" ]] && rm -fr ${COMFIRMWARE}/*
       ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
       if [[ "$(nproc)" -ge "16" ]];then
         make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
