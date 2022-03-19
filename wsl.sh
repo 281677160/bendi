@@ -585,10 +585,10 @@ function op_end() {
   HOUR=$(( $SECONDS/3600 ))
   MIN=$(( ($SECONDS-${HOUR}*3600)/60 ))
   SEC=$(( $SECONDS-${HOUR}*3600-${MIN}*60 ))
-  if [[ ${HOUR} == "0" ]]; then
-    ECHOG "总计用时 ${MIN}分${SEC}秒"
+  if [[ "${HOUR}" == "0" ]]; then
+    ECHOG "编译总计用时 ${MIN}分${SEC}秒"
   else
-    ECHOG "总计用时 ${HOUR}时${MIN}分${SEC}秒"
+    ECHOG "编译总计用时 ${HOUR}时${MIN}分${SEC}秒"
   fi
 }
 
