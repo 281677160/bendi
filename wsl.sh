@@ -885,7 +885,7 @@ menuop() {
 }
 if [[ -f ${Builb}/shibai ]]; then
 	openwrt_sb
-elif [[ -d "${Home}/package" -a -d "${Home}/target" -a -d "${Home}/toolchain" -a -f "${Builb}/chenggong" ]]; then
+elif [[ -d "${Home}/package" && -d "${Home}/target" && -d "${Home}/toolchain" && -f "${Builb}/chenggong" ]]; then
 	menuop "$@"
 else
 	menu "$@"
