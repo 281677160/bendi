@@ -476,10 +476,10 @@ function op_make() {
   ECHOG "正在编译固件，请耐心等待..."
   rm -fr ${COMFIRMWARE}/* > /dev/null 2>&1
   rm -rf ${Home}/{README,README.md,README_EN.md} > /dev/null 2>&1
-  if [[ "$(nproc)" -gt "16" ]];then
-    make -j16 V=s 2>&1 |tee ${Home}/build.log
+  if [[ "$(nproc)" -ge "16" ]];then
+    make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
   else
-     make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
+    make -j16 V=s 2>&1 |tee ${Home}/build.log
   fi
   if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
     rm -rf ${Builb}/chenggong > /dev/null 2>&1
@@ -709,10 +709,10 @@ function openwrt_bgbg() {
       ECHOG "编译固件"
       rm -rf ${COMFIRMWARE}/*
       ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
-      if [[ "$(nproc)" -gt "16" ]];then
-        make -j16 V=s 2>&1 |tee ${Home}/build.log
+      if [[ "$(nproc)" -ge "16" ]];then
+        make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
       else
-         make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
+        make -j16 V=s 2>&1 |tee ${Home}/build.log
       fi
       if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
         print_error "编译失败，请再次尝试!"
