@@ -131,14 +131,14 @@ function op_kongjian() {
     print_error "敬告：可用空间小于[ 20G ]编译容易出错,建议可用空间大于20G,是否继续?"
     read -p " 直接回车退出编译，按[Y/y]回车则继续编译： " YN
     case ${YN} in
-      [Yy]) 
-        ECHOG  "可用空间太小严重影响编译,请满天神佛保佑您成功吧！"
-      ;;
-      *)
-        ECHOY  "您已取消编译,请清理Ubuntu空间或增加硬盘容量..."
-        sleep 1
-        exit 0
-      ;;
+    [Yy]) 
+      ECHOG  "可用空间太小严重影响编译,请满天神佛保佑您成功吧！"
+    ;;
+    *)
+      ECHOY  "您已取消编译,请清理Ubuntu空间或增加硬盘容量..."
+      sleep 1
+      exit 0
+    ;;
     esac
   fi
 }
@@ -163,8 +163,8 @@ function bianyi_xuanxiang() {
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
     explorer.exe .
     while :; do
-    read -p " ${ZDYSZ}： " ZDYSZU
-    case $ZDYSZU in
+      read -p " ${ZDYSZ}： " ZDYSZU
+      case $ZDYSZU in
       [Yy])
         echo
       break
@@ -172,7 +172,7 @@ function bianyi_xuanxiang() {
       *)
         ZDYSZ="确认设置完毕后，请按[Y/y]回车继续编译"
       ;;
-    esac
+      esac
     done
   fi
   echo
@@ -185,14 +185,14 @@ function bianyi_xuanxiang() {
   ECHOGG "是否需要选择机型和增删插件?"
   read -t 20 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,20秒自动跳过)：" MENUu
   case $MENUu in
-    [Yy])
-      export Menuconfig="true"
-      ECHOYY "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
-    ;;
-    *)
-      export Menuconfig="false"
-      ECHORR "您已关闭选择机型和增删插件设置！"
-    ;;
+  [Yy])
+    export Menuconfig="true"
+    ECHOYY "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
+  ;;
+  *)
+    export Menuconfig="false"
+    ECHORR "您已关闭选择机型和增删插件设置！"
+  ;;
   esac
   sleep 2
 }
