@@ -484,7 +484,7 @@ function op_upgrade3() {
     rm -rf ${Home}/upgrade && cp -Rf ${COMFIRMWARE} ${Home}/upgrade
     source ${PATH1}/upgrade.sh && Diy_Part3
   fi
-  if [[ `ls -a ${Home}/bin/Firmware | grep -c "${TARGET_PROFILE}"` -ge '1' ]]; then
+  if [[ `ls -a ${Home}/bin/Firmware | grep -c "${TARGET_BOARD}"` -ge '1' ]]; then
     print_ok "加入‘定时升级插件的固件’操作完成"
     export dsgx="加入‘定时升级插件的固件’已经放入[bin/Firmware]文件夹中"
     export upgra="1"
