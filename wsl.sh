@@ -684,7 +684,7 @@ function openwrt_bgbg() {
       ./scripts/feeds update -a && ./scripts/feeds install -a
       cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
       ECHOG "选择插件"
-      sleep 2
+      sleep 1
       make menuconfig
       make defconfig
       op_config
