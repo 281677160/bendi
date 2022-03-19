@@ -676,10 +676,16 @@ function openwrt_qx() {
 
 function openwrt_bgbg() {
       cd ${Home}
+      ECHOGG "加载源码"
+      git pull
       ./scripts/feeds update -a && ./scripts/feeds install -a
+      ECHOG "选择插件"
+      sleep 2
       make menuconfig
       make defconfig
+      ECHOG "下载DL"
       make -j8 download
+      ECHOG "编译固件"
       PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s
 }
 
@@ -833,7 +839,7 @@ menuop() {
   echo
   echo -e " 2${Green}.${Font}${Yellow}保留缓存,使用[${firmware}]二次编译${Font}(编译[${TARGET_PROFILE}]缓存才有效,但是比较容易出现编译错误)"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}什么都不管,增加或减少插件继续干就是${Font}（二次编译）"
+  echo -e " 3${Green}.${Font}${Yellow}什么都不管,增加或减少插件继续干就是${Font}（请勿改变机型,二次编译）"
   echo
   echo -e " 4${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
