@@ -691,7 +691,12 @@ function openwrt_bgbg() {
       op_config > /dev/null 2>&1
       git pull > /dev/null 2>&1
       ./scripts/feeds update -a && ./scripts/feeds install -a
-      cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
+      if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}" ]]; then
+        cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
+      else
+        ECHOR "OP_DIY/${firmware}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
+        exit 1
+      fi
       ECHOG "选择插件"
       sleep 1
       make menuconfig
@@ -706,6 +711,7 @@ function openwrt_bgbg() {
       make -j$(($(nproc) + 1)) V=s
       if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
         print_error "编译失败，请再次尝试!"
+	exit 1
       else
         print_ok "编译成功!"
         export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
