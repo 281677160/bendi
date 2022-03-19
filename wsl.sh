@@ -576,15 +576,15 @@ function op_end() {
   else
     ECHOR "提示：再次输入编译命令可进行二次编译"
   fi
+  explorer.exe .
   export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   START_SECONDS=$(date --date="$START_TIME" +%s)
   END_SECONDS=$(date --date="$END_TIME" +%s)
   SECONDS=$((END_SECONDS-START_SECONDS))
-  SHI=$(( $SECONDS/24 ))
-  FEN=$(( $SECONDS/60 ))
-  MIAO=$(( $SECONDS-${MIN}*60 ))
-  ECHOG "总计用时 ${SHI}时${FEN}分${MIAO}秒"
-  explorer.exe .
+  HOUR=$(( $SECONDS/3600 ))
+  MIN=$(( ($SECONDS-${HOUR}*3600)/60 ))
+  SEC=$(( $SECONDS-${HOUR}*3600-${MIN}*60 ))
+  ECHOG "总计用时 ${HOUR}时${MIN}分${SEC}秒"
 }
 
 function op_firmware() {
