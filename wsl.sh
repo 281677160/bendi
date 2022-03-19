@@ -215,7 +215,7 @@ function qx_repo_branch() {
 
 function feeds_clean() {
   echo
-  ECHOG "正在更新源码和插件,请耐心等候~~~"
+  ECHOG "正在更新源码,请耐心等候~~~"
   cd ${GITHUB_WORKSPACE}
   if [[ "${firmware}" == "openwrt_amlogic" ]]; then
     amlogic_s9xxx
@@ -229,6 +229,7 @@ function feeds_clean() {
   rm -rf ${Builb}/common && git clone https://github.com/281677160/common ${Builb}/common
   judge "额外扩展脚本下载"
   chmod -R +x ${Builb}/common
+  ECHOG "正在下载插件,请耐心等候~~~"
   cp -Rf ${Builb}/common/*.sh ${Builb}/${firmware}
   source "${PATH1}/common.sh" && ${Diy_zdy}
   source "${PATH1}/common.sh" && Diy_all
