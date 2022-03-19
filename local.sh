@@ -683,6 +683,46 @@ function openwrt_qx() {
       openwrt_by
 }
 
+function openwrt_bgbg() {
+      cd ${Home}
+      source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
+      ECHOGG "加载源"
+      op_firmware
+      op_config > /dev/null 2>&1
+      git pull > /dev/null 2>&1
+      ./scripts/feeds update -a && ./scripts/feeds install -a
+      cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
+      ECHOG "选择插件"
+      sleep 2
+      make menuconfig
+      make defconfig
+      op_config
+      ECHOG "下载DL"
+      export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
+      make -j8 download
+      ECHOG "编译固件"
+      rm -rf ${COMFIRMWARE}/*
+      ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
+      make -j$(($(nproc) + 1)) V=s
+      if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
+        print_error "编译失败，请再次尝试!"
+      else
+        print_ok "编译成功!"
+        export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
+        START_SECONDS=$(date --date="$START_TIME" +%s)
+        END_SECONDS=$(date --date="$END_TIME" +%s)
+        SECONDS=$((END_SECONDS-START_SECONDS))
+        HOUR=$(( $SECONDS/3600 ))
+        MIN=$(( ($SECONDS-${HOUR}*3600)/60 ))
+        SEC=$(( $SECONDS-${HOUR}*3600-${MIN}*60 ))
+        if [[ "${HOUR}" == "0" ]]; then
+          ECHOG "编译总计用时 ${MIN}分${SEC}秒"
+        else
+          ECHOG "编译总计用时 ${HOUR}时${MIN}分${SEC}秒"
+        fi
+      fi
+}
+
 function openwrt_sb() {
     clear
     echo
@@ -833,11 +873,13 @@ menuop() {
   echo
   echo -e " 2${Green}.${Font}${Yellow}保留缓存,使用[${firmware}]二次编译${Font}(编译[${TARGET_PROFILE}]缓存才有效,但是比较容易出现编译错误)"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
+  echo -e " 3${Green}.${Font}${Yellow}什么都不管,增加或减少插件继续干就是${Font}（请勿改变机型,二次编译）"
   echo
-  echo -e " 4${Green}.${Font}${Yellow}打包N1和晶晨系列CPU固件${Font}"
+  echo -e " 4${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
-  echo -e " 5${Green}.${Font}${Yellow}退出${Font}"
+  echo -e " 5${Green}.${Font}${Yellow}打包N1和晶晨系列CPU固件${Font}"
+  echo
+  echo -e " 6${Green}.${Font}${Yellow}退出${Font}"
   echo
   echo
   XUANZHE="请输入数字"
@@ -845,7 +887,7 @@ menuop() {
   read -p " ${XUANZHE}：" menu_num
   case $menu_num in
   1)
-    export byop="1"
+    byop="1"
     op_firmware
     op_kongjian
     op_diywenjian
@@ -870,7 +912,7 @@ menuop() {
   break
   ;;
   2)
-    export byop="0"
+    byop="0"
     op_firmware
     bianyi_xuanxiang
     feeds_clean
@@ -889,14 +931,18 @@ menuop() {
   break
   ;;
   3)
-    menu
+    openwrt_bgbg
   break
   ;;
   4)
+    menu
+  break
+  ;;
+  5)
     op_amlogic
   break
   ;;   
-  5)
+  6)
     exit 0
     break
   ;;
@@ -906,6 +952,7 @@ menuop() {
   esac
   done
 }
+
 if [[ -f ${Builb}/shibai ]]; then
 	openwrt_sb
 elif [[ -d "${Home}/package" && -d "${Home}/target" && -d "${Home}/toolchain" && -f "${Builb}/chenggong" ]]; then
