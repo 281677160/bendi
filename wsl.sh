@@ -397,6 +397,8 @@ function tixing_op_config() {
   else
     export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${Home}/.config)"
   fi
+  export COMFIRMWARE="${Home}/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
+  export OPENGUJIAN="openwrt/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
 }
 
 function op_upgrade2() {
