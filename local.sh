@@ -188,7 +188,9 @@ function bianyi_xuanxiang() {
   echo
   source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini > /dev/null 2>&1
   tixing_op_config > /dev/null 2>&1
-  ECHOY "您当前OP_DIY自定义文件夹的配置机型为：${TARGET_PROFILE}"
+  echo
+  echo -e "${Red}提示${Font}：${Blue}您当前OP_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
+  echo
   ECHOGG "是否需要选择机型和增删插件?"
   read -p " [输入[ Y/y ]回车确认，直接回车则为否]： " MENUu
   case $MENUu in
@@ -224,20 +226,23 @@ function qx_repo_branch() {
 
 function feeds_clean() {
   echo
-  ECHOG "正在更新源码和插件,请耐心等候~~~"
+  ECHOG "正在更新源码,请耐心等候~~~"
   cd ${GITHUB_WORKSPACE}
   if [[ "${firmware}" == "openwrt_amlogic" ]]; then
     amlogic_s9xxx
   fi
   cd $Home
-  git pull
   ./scripts/feeds clean
-  rm -rf ${Home}/package/{luci-app-passwall,luci-app-ssr-plus}
+  rm -rf ./tmp && rm -rf .config
+  git stash push --include-untracked
+  git pull
+  rm -rf ${Home}/package/{luci-app-passwall,luci-app-passwall2,luci-app-ssr-plus}
   ./scripts/feeds update -a > /dev/null 2>&1
-  cp -rf ${Home}/zdefault-settings ${ZZZ}
+  cp -Rf ${Home}/zdefault-settings ${ZZZ}
   rm -rf ${Builb}/common && git clone https://github.com/281677160/common ${Builb}/common
   judge "额外扩展脚本下载"
   chmod -R +x ${Builb}/common
+  ECHOG "正在下载插件,请耐心等候~~~"
   cp -Rf ${Builb}/common/*.sh ${Builb}/${firmware}
   source "${PATH1}/common.sh" && ${Diy_zdy}
   source "${PATH1}/common.sh" && Diy_all
@@ -320,7 +325,12 @@ function op_feeds_update() {
   ./scripts/feeds update -a
   ./scripts/feeds install -a > /dev/null 2>&1
   ./scripts/feeds install -a
-  cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
+  if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}" ]]; then
+    cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
+  else
+    ECHOR "OP_DIY/${firmware}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
+    exit 1
+  fi
 }
 
 function op_upgrade1() {
@@ -361,14 +371,16 @@ function make_defconfig() {
 
 function op_config() {
   cd $Home
-  export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' .config)"
-  export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' .config)"
-  if [[ `grep -c "CONFIG_TARGET_x86_64=y" .config` -eq '1' ]]; then
+  export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${Home}/.config)"
+  export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' ${Home}/.config)"
+  if [[ `grep -c "CONFIG_TARGET_x86_64=y" ${Home}/.config` -eq '1' ]]; then
     export TARGET_PROFILE="x86-64"
-  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" .config` -eq '1' ]]; then
-    export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" .config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${Home}/.config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" ${Home}/.config` == '0' ]]; then
+    export TARGET_PROFILE="x86_32"
+  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" ${Home}/.config` -eq '1' ]]; then
+    export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" ${Home}/.config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
   else
-    export TARGET_PROFILE="armvirt"
+    export TARGET_PROFILE="${TARGET_BOARD}"
   fi
   export COMFIRMWARE="${Home}/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
   export OPENGUJIAN="openwrt/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
@@ -464,6 +476,7 @@ function op_cpuxinghao() {
 function op_make() {
   cd $Home
   rm -rf build.log
+  export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   ECHOG "正在编译固件，请耐心等待..."
   npro="$(nproc)"
   if [[ "${npro}" -gt "16" ]];then
@@ -472,32 +485,20 @@ function op_make() {
   rm -fr ${COMFIRMWARE}/* > /dev/null 2>&1
   rm -rf ${Home}/{README,README.md,README_EN.md} > /dev/null 2>&1
   make -j${npro} V=s 2>&1 |tee ${Home}/build.log
-  if [[ ${firmware} == "Mortal_source" ]] || [[ "${firmware}" == "Tianling_source" ]]; then
-    if [[ `ls -a ${COMFIRMWARE} | grep -c "immortalwrt"` == '0' ]]; then
-      if [[ ${byop} == "1" ]]; then
-        echo "shibai" >${Builb}/shibai
-      fi
-      print_error "编译失败~~!"
-      print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
-      ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
-      sleep 1
-      exit 1
-    fi
+  if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
+    rm -rf ${Builb}/chenggong > /dev/null 2>&1
+    echo "shibai" >${Builb}/shibai
+    print_error "编译失败~~!"
+    print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
+    ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
+    sleep 1
+    exit 1
   else
-    if [[ `ls -a ${COMFIRMWARE} | grep -c "openwrt"` == '0' ]]; then
-      if [[ ${byop} == "1" ]]; then
-        echo "shibai" >${Builb}/shibai
-      fi
-      print_error "编译失败~~!"
-      print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
-      ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
-      sleep 1
-      exit 1
-    fi
+    rm -rf ${Builb}/shibai > /dev/null 2>&1
+    echo "chenggong" >${Builb}/chenggong
+    rm -rf ${Home}/build.log
+    cp -Rf ${COMFIRMWARE}/config.buildinfo ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
   fi
-  echo "chenggong" >${Builb}/chenggong
-  rm -rf ${Home}/build.log
-  cp -Rf ${COMFIRMWARE}/config.buildinfo ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
 }
 
 function op_upgrade3() {
@@ -599,8 +600,18 @@ function op_end() {
   else
     ECHOR "提示：再次输入编译命令可进行二次编译"
   fi
-  ECHOG "开始时间：${Begin}"
-  ECHOG "结束时间：${End}"
+  export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
+  START_SECONDS=$(date --date="$START_TIME" +%s)
+  END_SECONDS=$(date --date="$END_TIME" +%s)
+  SECONDS=$((END_SECONDS-START_SECONDS))
+  HOUR=$(( $SECONDS/3600 ))
+  MIN=$(( ($SECONDS-${HOUR}*3600)/60 ))
+  SEC=$(( $SECONDS-${HOUR}*3600-${MIN}*60 ))
+  if [[ "${HOUR}" == "0" ]]; then
+    ECHOG "编译总计用时 ${MIN}分${SEC}秒"
+  else
+    ECHOG "编译总计用时 ${HOUR}时${MIN}分${SEC}秒"
+  fi
 }
 
 function op_firmware() {
@@ -894,7 +905,7 @@ menuop() {
 }
 if [[ -f ${Builb}/shibai ]]; then
 	openwrt_sb
-elif [[ -d ${Home}/build_dir ]] && [[ -d ${Home}/toolchain ]] && [[ -d ${Home}/tools ]] && [[ -d ${Home}/staging_dir ]] && [[ -f ${Builb}/chenggong ]] && [[ -f ${Home}/.config ]]; then
+elif [[ -d "${Home}/package" && -d "${Home}/target" && -d "${Home}/toolchain" && -f "${Builb}/chenggong" ]]; then
 	menuop "$@"
 else
 	menu "$@"
