@@ -676,11 +676,13 @@ function openwrt_qx() {
 
 function openwrt_bgbg() {
       cd ${Home}
-      ECHOGG "加载源码"
+      source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
+      ECHOGG "加载源"
       op_firmware
       op_config > /dev/null 2>&1
       git pull
       ./scripts/feeds update -a && ./scripts/feeds install -a
+      cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
       ECHOG "选择插件"
       sleep 2
       make menuconfig
@@ -691,6 +693,7 @@ function openwrt_bgbg() {
       make -j8 download
       ECHOG "编译固件"
       rm -rf ${COMFIRMWARE}/*
+      ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
       PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s
       if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
         print_error "编译失败，请再次尝试!"
