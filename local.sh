@@ -354,14 +354,14 @@ function make_defconfig() {
   cd $Home
   source ${PATH1}/common.sh && Diy_chajian
   make defconfig
-  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${config_bf}
+  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
   if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ]; then
     clear
     echo
     echo
     chmod -R +x ${Home}/CHONGTU
     source ${Home}/CHONGTU
-    rm -rf {CHONGTU,Chajianlibiao}
+    rm -rf ${Home}/{CHONGTU,Chajianlibiao,EXT4}
     ECHOG "如需重新编译请按 Ctrl+C 结束此次编译，否则30秒后继续编译!"
     make defconfig > /dev/null 2>&1
     sleep 30
@@ -488,14 +488,12 @@ function op_make() {
     echo "shibai" >${Builb}/shibai
     print_error "编译失败~~!"
     print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
-    ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
     sleep 1
     exit 1
   else
     rm -rf ${Builb}/shibai > /dev/null 2>&1
     echo "chenggong" >${Builb}/chenggong
     rm -rf ${Home}/build.log
-    cp -Rf ${COMFIRMWARE}/config.buildinfo ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
   fi
 }
 
