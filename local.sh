@@ -707,7 +707,6 @@ function openwrt_bgbg() {
       ;;
       esac
       make defconfig > /dev/null 2>&1
-      ECHOG "下载DL"
       export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
       op_download
       ECHOG "编译固件"
