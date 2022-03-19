@@ -224,7 +224,7 @@ function feeds_clean() {
   git pull
   ./scripts/feeds clean
   rm -rf ./tmp && rm -rf .config
-  rm -rf ${Home}/package/{luci-app-passwall,luci-app-ssr-plus}
+  rm -rf ${Home}/package/{luci-app-passwall,luci-app-passwall2,luci-app-ssr-plus}
   ./scripts/feeds update -a > /dev/null 2>&1
   cp -rf ${Home}/zdefault-settings ${ZZZ}
   rm -rf ${Builb}/common && git clone https://github.com/281677160/common ${Builb}/common
