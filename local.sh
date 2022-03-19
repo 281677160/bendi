@@ -697,9 +697,17 @@ function openwrt_bgbg() {
         ECHOR "OP_DIY/${firmware}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
         exit 1
       fi
-      ECHOG "选择插件"
-      sleep 1
-      make menuconfig
+      echo
+      ECHOGG "是否需要增删插件?"
+      read -t 30 -p " [输入[ Y/y ]回车确认，直接回车则为否]： " MNUu
+      case $MNUu in
+      [Yy])
+        make menuconfig
+      ;;
+      *)
+        ECHOR "您已跳过增删插件选择！"
+      ;;
+      esac
       make defconfig
       op_config
       ECHOG "下载DL"
