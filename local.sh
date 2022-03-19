@@ -411,7 +411,6 @@ function openwrt_zuihouchuli() {
 }
 
 function op_download() {
-  export Begin="$(date "+%Y/%m/%d-%H.%M")"
   cd $Home
   ECHOG "下载DL文件，请耐心等候..."
   rm -fr ${Home}/build.log
