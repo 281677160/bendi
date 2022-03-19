@@ -474,13 +474,13 @@ function op_make() {
   rm -rf build.log
   export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   ECHOG "正在编译固件，请耐心等待..."
-  npro="$(nproc)"
-  if [[ "${npro}" -gt "16" ]];then
-    npro="16"
-  fi
   rm -fr ${COMFIRMWARE}/* > /dev/null 2>&1
   rm -rf ${Home}/{README,README.md,README_EN.md} > /dev/null 2>&1
-  make -j${npro} V=s 2>&1 |tee ${Home}/build.log
+  if [[ "$(nproc)" -gt "16" ]];then
+    make -j16 V=s 2>&1 |tee ${Home}/build.log
+  else
+     make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
+  fi
   if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
     rm -rf ${Builb}/chenggong > /dev/null 2>&1
     echo "shibai" >${Builb}/shibai
@@ -709,7 +709,11 @@ function openwrt_bgbg() {
       ECHOG "编译固件"
       rm -rf ${COMFIRMWARE}/*
       ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
-      make -j$(($(nproc) + 1)) V=s
+      if [[ "$(nproc)" -gt "16" ]];then
+        make -j16 V=s 2>&1 |tee ${Home}/build.log
+      else
+         make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
+      fi
       if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
         print_error "编译失败，请再次尝试!"
 	exit 1
