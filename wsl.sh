@@ -227,8 +227,8 @@ function feeds_clean() {
   rm -rf ./tmp && rm -rf .config
   git stash push --include-untracked
   git stash push --include-untracked
-  git pull
   op_firmware
+  git pull
   rm -rf "${Home}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${Home}/build"
   echo "chenggong" >${Builb}/chenggong
   ./scripts/feeds update -a > /dev/null 2>&1
