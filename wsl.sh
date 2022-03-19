@@ -612,6 +612,7 @@ function op_firmware() {
     export ZZZ="${Home}/package/lean/default-settings/files/zzz-default-settings"
     export Diy_zdy="Diy_lede"
     export OpenWrt_name="18.06"
+    echo "${Home}/.Lede_core" >${Home}/.Lede_core
   fi
   if [[ "${firmware}" == "Lienol_source" ]] || [[ -n "$(ls -A "${Home}/.Lienol_core" 2>/dev/null)" ]]; then
     export firmware="Lienol_source"
