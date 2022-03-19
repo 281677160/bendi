@@ -345,16 +345,24 @@ function make_defconfig() {
   source ${PATH1}/common.sh && Diy_chajian
   make defconfig
   ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
-  if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ]; then
+  if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ] || [ -n "$(ls -A "${Home}/EXT4" 2>/dev/null)" ]; then
     clear
     echo
     echo
     chmod -R +x ${Home}/CHONGTU
     source ${Home}/CHONGTU
-    rm -rf {CHONGTU,Chajianlibiao}
-    ECHOG "如需重新编译请按 Ctrl+C 结束此次编译，否则30秒后继续编译!"
+    rm -rf ${Home}/{CHONGTU,Chajianlibiao,EXT4}
+    read -t 30 -p " [如需重新编译请按输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " MNUu
+    case $MNUu in
+    [Yy])
+      sleep 1
+      exit 1
+    ;;
+    *)
+      ECHOG "继续编译中...！"
+    ;;
+    esac
     make defconfig > /dev/null 2>&1
-    sleep 30
   fi
 }
 
