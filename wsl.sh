@@ -364,7 +364,6 @@ function op_config() {
   fi
   export COMFIRMWARE="${Home}/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
   export OPENGUJIAN="openwrt/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
-  export Rename="${TARGET_PROFILE}"
 }
 
 function tixing_op_config() {
