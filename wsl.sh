@@ -318,8 +318,7 @@ function op_feeds_update() {
 
 function op_upgrade1() {
   cd $Home
-  echo "Compile_Date=$(date +%Y%m%d%H%M)" > Openwrt.info && source Openwrt.info
-  rm -rf Openwrt.info
+  export Compile_Date="$(date +%Y%m%d%H%M)"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     source ${PATH1}/upgrade.sh && Diy_Part1
   fi
@@ -488,7 +487,7 @@ function op_upgrade3() {
     rm -rf ${Home}/upgrade && cp -Rf ${COMFIRMWARE} ${Home}/upgrade
     source ${PATH1}/upgrade.sh && Diy_Part3
   fi
-  if [[ `ls -a ${Home}/bin/Firmware | grep -c "${TARGET_BOARD}"` -ge '1' ]]; then
+  if [[ `ls -a ${Home}/bin/Firmware | grep -c "${Compile_Date}"` -ge '1' ]]; then
     print_ok "加入‘定时升级插件的固件’操作完成"
     export dsgx="加入‘定时升级插件的固件’已经放入[bin/Firmware]文件夹中"
     export upgra="1"
