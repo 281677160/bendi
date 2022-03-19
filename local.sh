@@ -79,17 +79,17 @@ judge() {
   fi
 }
 
+export Ubname=`cat /etc/issue`
+export xtname="Ubuntu"
+export xtbit=`getconf LONG_BIT`
+if [[ ( $Ubname != *$xtname* ) || ( $xtbit != 64 ) ]]; then
+  print_error "请使用Ubuntu 64位系统，推荐 Ubuntu 18 LTS 或 Ubuntu 20 LTS"
+  exit 1
+fi
 if [[ "$USER" == "root" ]]; then
   print_error "警告：请勿使用root用户编译，换一个普通用户吧~~"
-  exit 0
+  exit 1
 fi
-export Ubname="$(. /etc/os-release && echo "$ID")"
-export xtbit=`getconf LONG_BIT`
-if [[ ! "${Ubname}" == "ubuntu" ]] && [[ ! "${xtbit}" == "64" ]]; then
-  print_error "请使用Ubuntu 64位系统，推荐 Ubuntu 18 LTS 或 Ubuntu 20 LTS"
-  exit 0
-fi
-
 Google_Check=$(curl -I -s --connect-timeout 8 google.com -w %{http_code} | tail -n1)
 if [ ! "$Google_Check" == 301 ];then
   print_error "提醒：编译之前请自备梯子，编译全程都需要稳定梯子~~"
@@ -114,16 +114,6 @@ cd ${GITHUB_WORKSPACE}
   judge "部署编译环境"
   sudo apt-get autoremove -y --purge
   sudo apt-get clean -y
-  sudo timedatectl set-timezone "Asia/Shanghai"
-  if [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
-    sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
-    sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
-    sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
-    sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
-    sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
-    sudo sh -c 'echo PermitRootLogin yes >> /etc/ssh/sshd_config'
-    sudo service ssh restart
-  fi
 }
 
 function op_kongjian() {
@@ -141,14 +131,14 @@ function op_kongjian() {
     print_error "敬告：可用空间小于[ 20G ]编译容易出错,建议可用空间大于20G,是否继续?"
     read -p " 直接回车退出编译，按[Y/y]回车则继续编译： " YN
     case ${YN} in
-      [Yy]) 
-        ECHOG  "可用空间太小严重影响编译,请满天神佛保佑您成功吧！"
-      ;;
-      *)
-        ECHOY  "您已取消编译,请清理Ubuntu空间或增加硬盘容量..."
-        sleep 1
-        exit 0
-      ;;
+    [Yy]) 
+      ECHOG  "可用空间太小严重影响编译,请满天神佛保佑您成功吧！"
+    ;;
+    *)
+      ECHOY  "您已取消编译,请清理Ubuntu空间或增加硬盘容量..."
+      sleep 1
+      exit 0
+    ;;
     esac
   fi
 }
@@ -169,11 +159,11 @@ function bianyi_xuanxiang() {
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
   source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
-    ECHOY "请用WinSCP工具连接ubuntu，然后在 OP_DIY/${firmware} 里面设置好自定义文件"
+    ECHOY "请在 OP_DIY/${firmware} 里面设置好自定义文件"
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
     while :; do
-    read -p " ${ZDYSZ}： " ZDYSZU
-    case $ZDYSZU in
+      read -p " ${ZDYSZ}： " ZDYSZU
+      case $ZDYSZU in
       [Yy])
         echo
       break
@@ -181,7 +171,7 @@ function bianyi_xuanxiang() {
       *)
         ZDYSZ="确认设置完毕后，请按[Y/y]回车继续编译"
       ;;
-    esac
+      esac
     done
   fi
   echo
@@ -192,16 +182,16 @@ function bianyi_xuanxiang() {
   echo -e "${Red} 提示${Font}：${Blue}您当前OP_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
   echo
   ECHOGG "是否需要选择机型和增删插件?"
-  read -t 20 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,20秒自动跳过)： " MENUu
+  read -t 20 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,20秒自动跳过)：" MENUu
   case $MENUu in
-    [Yy])
-      export Menuconfig="true"
-      ECHOYY "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
-    ;;
-    *)
-      export Menuconfig="false"
-      ECHORR "您已关闭选择机型和增删插件设置！"
-    ;;
+  [Yy])
+    export Menuconfig="true"
+    ECHOYY "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
+  ;;
+  *)
+    export Menuconfig="false"
+    ECHORR "您已关闭选择机型和增删插件设置！"
+  ;;
   esac
   sleep 2
 }
@@ -238,6 +228,7 @@ function feeds_clean() {
   git stash push --include-untracked > /dev/null 2>&1
   op_firmware
   git pull
+  git pull > /dev/null 2>&1
   rm -rf "${Home}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${Home}/build"
   echo "chenggong" >${Builb}/chenggong
   ./scripts/feeds update -a > /dev/null 2>&1
@@ -288,7 +279,7 @@ function op_diy_zdy() {
   ECHOG "正在下载插件包,请耐心等候~~~"
   cd $Home
   ./scripts/feeds update -a > /dev/null 2>&1
-  cp -rf ${Home}/zdefault-settings ${ZZZ}
+  cp -Rf ${Home}/zdefault-settings ${ZZZ}
   source "${PATH1}/common.sh" && ${Diy_zdy}
   source "${PATH1}/common.sh" && Diy_all
   judge "插件包下载"
@@ -334,8 +325,7 @@ function op_feeds_update() {
 
 function op_upgrade1() {
   cd $Home
-  echo "Compile_Date=$(date +%Y%m%d%H%M)" > Openwrt.info && source Openwrt.info
-  rm -rf Openwrt.info
+  export Compile_Date="$(date +%Y%m%d%H%M)"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     source ${PATH1}/upgrade.sh && Diy_Part1
   fi
@@ -355,13 +345,13 @@ function make_defconfig() {
   source ${PATH1}/common.sh && Diy_chajian
   make defconfig
   ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
-  if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ] || [ -n "$(ls -A "${Home}/EXT4" 2>/dev/null)" ]; then
+  if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ]; then
     clear
     echo
     echo
     chmod -R +x ${Home}/CHONGTU
     source ${Home}/CHONGTU
-    rm -rf ${Home}/{CHONGTU,Chajianlibiao,EXT4}
+    rm -rf ${Home}/{CHONGTU,Chajianlibiao}
     read -t 30 -p " [如需重新编译请按输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " MNUu
     case $MNUu in
     [Yy])
@@ -421,7 +411,7 @@ function op_download() {
   cd $Home
   ECHOG "下载DL文件，请耐心等候..."
   rm -fr ${Home}/build.log
-  make -j8 download 2>&1 |tee ${Home}/build.log
+  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j8 download 2>&1 |tee ${Home}/build.log
   find dl -size -1024c -exec ls -l {} \;
   find dl -size -1024c -exec rm -f {} \;
   if [[ `grep -c "make with -j1 V=s or V=sc" ${Home}/build.log` == '0' ]] || [[ `grep -c "ERROR" ${Home}/build.log` == '0' ]]; then
@@ -432,29 +422,29 @@ function op_download() {
     print_error "下载DL失败，更换节点后再尝试下载？"
     QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或输入[N/n]回车,退出编译"
     while :; do
-        read -p " [${QLMEUN}]： " XZDLE
-        case $XZDLE in
-            [Yy])
-                op_download
-            break
-            ;;
-            [Nn])
-                ECHOR "退出编译程序!"
-                sleep 2
-                exit 1
-            break
-            ;;
-            *)
-                QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或现在输入[N/n]回车,退出编译"
-            ;;
-        esac
+      read -p " [${QLMEUN}]： " XZDLE
+      case $XZDLE in
+      [Yy])
+        op_download
+      break
+      ;;
+      [Nn])
+        ECHOR "退出编译程序!"
+        sleep 2
+        exit 1
+       break
+       ;;
+       *)
+         QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或现在输入[N/n]回车,退出编译"
+       ;;
+       esac
     done
   fi
-  rm -fr ${Home}/build.log
 }
 
 function op_cpuxinghao() {
   cd $Home
+  rm -rf build.log
   cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c > CPU
   cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
   sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
@@ -476,7 +466,7 @@ function op_cpuxinghao() {
   else
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[1]小时左右,请耐心等待..."
   fi
-  sleep 5
+  sleep 3
 }
 
 function op_make() {
@@ -509,7 +499,7 @@ function op_upgrade3() {
   cd $Home
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     rm -fr ${Home}/bin/Firmware/* > /dev/null 2>&1
-    cp -Rf ${Home}/bin/targets/*/* ${Home}/upgrade
+    rm -rf ${Home}/upgrade && cp -Rf ${COMFIRMWARE} ${Home}/upgrade
     source ${PATH1}/upgrade.sh && Diy_Part3
   fi
   if [[ `ls -a ${Home}/bin/Firmware | grep -c "${Compile_Date}"` -ge '1' ]]; then
@@ -523,9 +513,8 @@ function op_upgrade3() {
   cd ${COMFIRMWARE}
   rename -v "s/^immortalwrt/openwrt/" * > /dev/null 2>&1
   if [[ -f ${GITHUB_WORKSPACE}/Clear ]]; then
-    mv -f ${GITHUB_WORKSPACE}/Clear ./
-    chmod +x Clear && source Clear
-    rm -fr Clear
+    cp -Rf ${GITHUB_WORKSPACE}/Clear ${COMFIRMWARE}/Clear.sh
+    chmod +x Clear.sh && source Clear.sh
   fi
   rename -v "s/^openwrt/${date1}-${CODE}/" * > /dev/null 2>&1
   cd ${Home}
@@ -587,7 +576,6 @@ function op_end() {
   clear
   echo
   echo
-  export End="$(date "+%Y/%m/%d-%H.%M")"
   if [[ ${firmware} == "openwrt_amlogic" ]]; then
     print_ok "使用[ ${firmware} ]文件夹，编译[ N1和晶晨系列盒子专用固件 ]顺利编译完成~~~"
   else
@@ -691,12 +679,7 @@ function openwrt_qx() {
 
 function openwrt_bgbg() {
       cd ${Home}
-      if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini" ]]; then
-        source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
-      else
-        print_error "OP_DIY/${firmware}文件夹没发现settings.ini文件,请检查OP_DIY"
-        exit 1
-      fi
+      source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
       ECHOG "加载源"
       op_firmware
       op_config > /dev/null 2>&1
@@ -705,7 +688,7 @@ function openwrt_bgbg() {
       if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}" ]]; then
         cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
       else
-        print_error "OP_DIY/${firmware}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
+        ECHOR "OP_DIY/${firmware}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
         exit 1
       fi
       echo
@@ -719,19 +702,19 @@ function openwrt_bgbg() {
         ECHOR "您已跳过增删插件选择！"
       ;;
       esac
-      make defconfig > /dev/null 2>&1
+      make defconfig
+      op_config
       export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
       op_download
       ECHOG "编译固件"
       rm -rf ${COMFIRMWARE}/*
       ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
-      PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s
+      make -j$(($(nproc) + 1)) V=s
       if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
         print_error "编译失败，请再次尝试!"
 	exit 1
       else
         print_ok "编译成功!"
-	explorer.exe .
         export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
         START_SECONDS=$(date --date="$START_TIME" +%s)
         END_SECONDS=$(date --date="$END_TIME" +%s)
@@ -804,7 +787,7 @@ function openwrt_by() {
     op_end
 }
 menu() {
-  ECHOB "正在加载当前内核版本信息，请稍后..."
+  ECHOB "正在加载信息中，请稍后..."
   cd ${GITHUB_WORKSPACE}
   curl -fsSL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/x86/Makefile > Makefile
   export ledenh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
@@ -835,25 +818,25 @@ menu() {
   case $CHOOSE in
     1)
       export firmware="Lede_source"
-      ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
+      ECHOG "您选择了：Lede_5.4内核,LUCI 18.06版本"
       openwrt_qx
     break
     ;;
     2)
       export firmware="Lienol_source"
-      ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI 17.01版本"
+      ECHOG "您选择了：Lienol_4.14内核,LUCI 17.01版本"
       openwrt_qx
     break
     ;;
     3)
       export firmware="Mortal_source"
-      ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
+      ECHOG "您选择了：Immortalwrt_5.4内核,LUCI 21.02版本"
       openwrt_qx
     break
     ;;
     4)
       export firmware="Tianling_source"
-      ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
+      ECHOG "您选择了：Immortalwrt_4.14内核,LUCI 18.06版本"
       openwrt_qx
     break
     ;;
@@ -897,7 +880,7 @@ menuop() {
   echo
   echo -e " 2${Green}.${Font}${Yellow}保留缓存,使用[${firmware}]二次编译${Font}(编译[${TARGET_PROFILE}]缓存才有效,但是比较容易出现编译错误)"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}什么都不管,增加或减少插件继续干就是${Font}（请勿改变机型,二次编译）"
+  echo -e " 3${Green}.${Font}${Yellow}不作自定义修改,增加或减少固件插件编译${Font}（请勿改变机型,二次编译）"
   echo
   echo -e " 4${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
@@ -976,7 +959,6 @@ menuop() {
   esac
   done
 }
-
 if [[ -f ${Builb}/shibai ]]; then
 	openwrt_sb
 elif [[ -d "${Home}/package" && -d "${Home}/target" && -d "${Home}/toolchain" && -f "${Builb}/chenggong" ]]; then
