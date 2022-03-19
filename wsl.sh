@@ -453,7 +453,7 @@ function op_cpuxinghao() {
 
 function op_make() {
   cd $Home
-  export Begin="$(date "+%Y/%m/%d-%H.%M")"
+  export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   ECHOG "正在编译固件，请耐心等待..."
   npro="$(nproc)"
   if [[ "${npro}" -gt "16" ]];then
@@ -573,7 +573,6 @@ function op_end() {
   clear
   echo
   echo
-  export End="$(date "+%Y/%m/%d-%H.%M")"
   if [[ ${firmware} == "openwrt_amlogic" ]]; then
     print_ok "使用[ ${firmware} ]文件夹，编译[ N1和晶晨系列盒子专用固件 ]顺利编译完成~~~"
   else
@@ -590,8 +589,14 @@ function op_end() {
   else
     ECHOR "提示：再次输入编译命令可进行二次编译"
   fi
-  ECHOG "开始时间：${Begin}"
-  ECHOG "结束时间：${End}"
+  export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
+  START_SECONDS=$(date --date="$START_TIME" +%s)
+  END_SECONDS=$(date --date="$END_TIME" +%s)
+  SECONDS=$((END_SECONDS-START_SECONDS))
+  SHI=$(( $SECONDS/60 ))
+  FEN=$(( $SECONDS/60 ))
+  MIAO=$(( $SECONDS-${MIN}*60 ))
+  ECHOG "总计用时 ${SHI}时${FEN}分${MIAO}秒"
   explorer.exe .
 }
 
