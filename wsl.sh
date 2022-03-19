@@ -463,7 +463,7 @@ function op_make() {
   rm -rf ${Home}/{README,README.md,README_EN.md} > /dev/null 2>&1
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j${npro} V=s 2>&1 |tee ${Home}/build.log
   if [[ ${firmware} == "Mortal_source" ]] || [[ "${firmware}" == "Tianling_source" ]]; then
-    if [[ `ls -a ${COMFIRMWARE} | grep -c "immortalwrt"` == '0' ]]; then
+    if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
       if [[ ${byop} == "1" ]]; then
         echo "shibai" >${Builb}/shibai
       fi
@@ -474,7 +474,7 @@ function op_make() {
       exit 1
     fi
   else
-    if [[ `ls -a ${COMFIRMWARE} | grep -c "openwrt"` == '0' ]]; then
+    if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
       if [[ ${byop} == "1" ]]; then
         echo "shibai" >${Builb}/shibai
       fi
