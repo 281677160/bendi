@@ -701,9 +701,8 @@ function openwrt_bgbg() {
       esac
       make defconfig
       op_config
-      ECHOG "下载DL"
       export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
-      make -j8 download
+      op_download
       ECHOG "编译固件"
       rm -rf ${COMFIRMWARE}/*
       ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
