@@ -824,7 +824,7 @@ menuop() {
   echo
   echo -e " 2${Green}.${Font}${Yellow}保留缓存,使用[${firmware}]二次编译${Font}(编译[${TARGET_PROFILE}]缓存才有效,但是比较容易出现编译错误)"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}什么都不管,增加或减少插件继续干就是${Font}"
+  echo -e " 3${Green}.${Font}${Yellow}什么都不管,增加或减少插件继续干就是${Font}（二次编译）"
   echo
   echo -e " 4${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
