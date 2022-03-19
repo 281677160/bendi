@@ -40,7 +40,7 @@ cat >$DELETE <<-EOF
 EOF
 
 
-# 修改插件名字
+# 修改插件名字(本地编译保存缓存二次编译不使用)
 sed -i 's/"aMule设置"/"电驴下载"/g' `grep "aMule设置" -rl ./`
 sed -i 's/"网络存储"/"NAS"/g' `grep "网络存储" -rl ./`
 sed -i 's/"Turbo ACC 网络加速"/"网络加速"/g' `grep "Turbo ACC 网络加速" -rl ./`
