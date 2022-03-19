@@ -710,7 +710,7 @@ function openwrt_by() {
     op_end
 }
 menu() {
-  ECHOB "正在加载当前内核版本信息，请稍后..."
+  ECHOB "正在加载信息中，请稍后..."
   cd ${GITHUB_WORKSPACE}
   curl -fsSL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/x86/Makefile > Makefile
   export ledenh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
