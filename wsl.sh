@@ -466,18 +466,19 @@ function op_make() {
   rm -rf ${Home}/{README,README.md,README_EN.md} > /dev/null 2>&1
   PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j${npro} V=s 2>&1 |tee ${Home}/build.log
   if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
-    if [[ ${byop} == "1" ]]; then
-      echo "shibai" >${Builb}/shibai
-    fi
+    rm -rf ${Builb}/chenggong > /dev/null 2>&1
+    echo "shibai" >${Builb}/shibai
     print_error "编译失败~~!"
     print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
     ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
     sleep 1
     exit 1
+  else
+    rm -rf ${Builb}/shibai > /dev/null 2>&1
+    echo "chenggong" >${Builb}/chenggong
+    rm -rf ${Home}/build.log
+    cp -Rf ${COMFIRMWARE}/config.buildinfo ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
   fi
-  echo "chenggong" >${Builb}/chenggong
-  rm -rf ${Home}/build.log
-  cp -Rf ${COMFIRMWARE}/config.buildinfo ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
 }
 
 function op_upgrade3() {
