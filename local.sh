@@ -684,7 +684,7 @@ function openwrt_qx() {
 function openwrt_bgbg() {
       cd ${Home}
       source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
-      ECHOGG "加载源"
+      ECHOG "加载源"
       op_firmware
       op_config > /dev/null 2>&1
       git pull > /dev/null 2>&1
@@ -714,12 +714,13 @@ function openwrt_bgbg() {
       ECHOG "编译固件"
       rm -rf ${COMFIRMWARE}/*
       ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
-      make -j$(($(nproc) + 1)) V=s
+      PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s
       if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
         print_error "编译失败，请再次尝试!"
 	exit 1
       else
         print_ok "编译成功!"
+	explorer.exe .
         export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
         START_SECONDS=$(date --date="$START_TIME" +%s)
         END_SECONDS=$(date --date="$END_TIME" +%s)
