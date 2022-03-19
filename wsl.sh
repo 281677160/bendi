@@ -279,7 +279,7 @@ function op_diy_zdy() {
   ECHOG "正在下载插件包,请耐心等候~~~"
   cd $Home
   ./scripts/feeds update -a > /dev/null 2>&1
-  cp -rf ${Home}/zdefault-settings ${ZZZ}
+  cp -Rf ${Home}/zdefault-settings ${ZZZ}
   source "${PATH1}/common.sh" && ${Diy_zdy}
   source "${PATH1}/common.sh" && Diy_all
   judge "插件包下载"
@@ -493,7 +493,6 @@ function op_make() {
     rm -rf ${Builb}/shibai > /dev/null 2>&1
     echo "chenggong" >${Builb}/chenggong
     rm -rf ${Home}/build.log
-    cp -Rf ${COMFIRMWARE}/config.buildinfo ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
   fi
 }
 
@@ -515,9 +514,8 @@ function op_upgrade3() {
   cd ${COMFIRMWARE}
   rename -v "s/^immortalwrt/openwrt/" * > /dev/null 2>&1
   if [[ -f ${GITHUB_WORKSPACE}/Clear ]]; then
-    mv -f ${GITHUB_WORKSPACE}/Clear ./Clear
+    cp -Rf ${GITHUB_WORKSPACE}/Clear ${COMFIRMWARE}/Clear
     chmod +x Clear && source Clear
-    rm -fr Clear
   fi
   rename -v "s/^openwrt/${date1}-${CODE}/" * > /dev/null 2>&1
   cd ${Home}
