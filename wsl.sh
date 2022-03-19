@@ -593,7 +593,7 @@ function op_end() {
   START_SECONDS=$(date --date="$START_TIME" +%s)
   END_SECONDS=$(date --date="$END_TIME" +%s)
   SECONDS=$((END_SECONDS-START_SECONDS))
-  SHI=$(( $SECONDS/60 ))
+  SHI=$(( $SECONDS/24 ))
   FEN=$(( $SECONDS/60 ))
   MIAO=$(( $SECONDS-${MIN}*60 ))
   ECHOG "总计用时 ${SHI}时${FEN}分${MIAO}秒"
