@@ -516,8 +516,8 @@ function op_upgrade3() {
   cd ${COMFIRMWARE}
   rename -v "s/^immortalwrt/openwrt/" * > /dev/null 2>&1
   if [[ -f ${GITHUB_WORKSPACE}/Clear ]]; then
-    cp -Rf ${GITHUB_WORKSPACE}/Clear ${COMFIRMWARE}/Clear
-    chmod +x Clear && source Clear
+    cp -Rf ${GITHUB_WORKSPACE}/Clear ${COMFIRMWARE}/Clear.sh
+    chmod +x Clear.sh && source Clear.sh
   fi
   rename -v "s/^openwrt/${date1}-${CODE}/" * > /dev/null 2>&1
   cd ${Home}
