@@ -885,7 +885,7 @@ menuop() {
 }
 if [[ -f ${Builb}/shibai ]]; then
 	openwrt_sb
-elif [[ -d ${Home}/build_dir ]] && [[ -d ${Home}/toolchain ]] && [[ -d ${Home}/tools ]] && [[ -d ${Home}/staging_dir ]] && [[ -f ${Builb}/chenggong ]] && [[ -f ${Home}/.config ]]; then
+elif [[ -d "${Home}/package" -a -d "${Home}/target" -a -d "${Home}/toolchain" -a -f "${Builb}/chenggong" ]]; then
 	menuop "$@"
 else
 	menu "$@"
