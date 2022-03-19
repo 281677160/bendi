@@ -236,6 +236,7 @@ function feeds_clean() {
   rm -rf ./tmp && rm -rf .config
   git stash push --include-untracked
   git stash push --include-untracked
+  op_firmware
   git pull
   rm -rf "${Home}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${Home}/build"
   echo "chenggong" >${Builb}/chenggong
@@ -621,6 +622,7 @@ function op_firmware() {
     export ZZZ="${Home}/package/lean/default-settings/files/zzz-default-settings"
     export Diy_zdy="Diy_lede"
     export OpenWrt_name="18.06"
+    echo "jilu" > "${Home}/.Lede_core"
   fi
   if [[ "${firmware}" == "Lienol_source" ]] || [[ -n "$(ls -A "${Home}/.Lienol_core" 2>/dev/null)" ]]; then
     export firmware="Lienol_source"
@@ -631,6 +633,7 @@ function op_firmware() {
     export ZZZ="${Home}/package/default-settings/files/zzz-default-settings"
     export Diy_zdy="Diy_lienol"
     export OpenWrt_name="20.06"
+    echo "jilu" > "${Home}/.Lienol_core"
   fi
   if [[ "${firmware}" == "Mortal_source" ]] || [[ -n "$(ls -A "${Home}/.Mortal_core" 2>/dev/null)" ]]; then
     export firmware="Mortal_source"
@@ -641,6 +644,7 @@ function op_firmware() {
     export ZZZ="${Home}/package/emortal/default-settings/files/99-default-settings"
     export Diy_zdy="Diy_mortal"
     export OpenWrt_name="21.02"
+    echo "jilu" > "${Home}/.Mortal_core"
   fi
   if [[ "${firmware}" == "Tianling_source" ]] || [[ -n "$(ls -A "${Home}/.Tianling_core" 2>/dev/null)" ]]; then
     export firmware="Tianling_source"
@@ -651,6 +655,7 @@ function op_firmware() {
     export ZZZ="${Home}/package/emortal/default-settings/files/99-default-settings"
     export Diy_zdy="Diy_Tianling"
     export OpenWrt_name="18.06_tl"
+    echo "jilu" > "${Home}/.Tianling_core"
   fi
   if [[ "${firmware}" == "openwrt_amlogic" ]] || [[ -n "$(ls -A "${Home}/.amlogic_core" 2>/dev/null)" ]]; then
     export firmware="openwrt_amlogic"
@@ -661,6 +666,7 @@ function op_firmware() {
     export ZZZ="${Home}/package/lean/default-settings/files/zzz-default-settings"
     export Diy_zdy="Diy_lede"
     export OpenWrt_name="18.06"
+    echo "jilu" > "${Home}/.amlogic_core"
   fi
 }
 
