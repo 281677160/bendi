@@ -231,8 +231,6 @@ function feeds_clean() {
   git pull
   rm -rf "${Home}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${Home}/build"
   echo "chenggong" >${Builb}/chenggong
-  echo "chenggong" >${Home}/EXT4
-  echo "echo \"chenggong\"" >${Home}/CHONGTU
   ./scripts/feeds update -a > /dev/null 2>&1
   git clone https://github.com/281677160/common ${Builb}/common
   judge "额外扩展脚本下载"
