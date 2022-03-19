@@ -344,7 +344,7 @@ function make_defconfig() {
   cd $Home
   source ${PATH1}/common.sh && Diy_chajian
   make defconfig
-  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${config_bf}
+  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
   if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ]; then
     clear
     echo
