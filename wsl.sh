@@ -680,7 +680,7 @@ function openwrt_bgbg() {
       ECHOGG "加载源"
       op_firmware
       op_config > /dev/null 2>&1
-      git pull
+      git pull > /dev/null 2>&1
       ./scripts/feeds update -a && ./scripts/feeds install -a
       cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
       ECHOG "选择插件"
