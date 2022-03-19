@@ -361,14 +361,16 @@ function make_defconfig() {
 
 function op_config() {
   cd $Home
-  export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' .config)"
-  export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' .config)"
-  if [[ `grep -c "CONFIG_TARGET_x86_64=y" .config` -eq '1' ]]; then
+  export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${Home}/.config)"
+  export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' ${Home}/.config)"
+  if [[ `grep -c "CONFIG_TARGET_x86_64=y" ${Home}/.config` -eq '1' ]]; then
     export TARGET_PROFILE="x86-64"
-  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" .config` -eq '1' ]]; then
-    export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" .config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${Home}/.config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" ${Home}/.config` == '0' ]]; then
+    export TARGET_PROFILE="x86_32"
+  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" ${Home}/.config` -eq '1' ]]; then
+    export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" ${Home}/.config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
   else
-    export TARGET_PROFILE="armvirt"
+    export TARGET_PROFILE="${TARGET_BOARD}"
   fi
   export COMFIRMWARE="${Home}/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
   export OPENGUJIAN="openwrt/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
