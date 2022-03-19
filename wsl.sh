@@ -290,7 +290,7 @@ function op_diy_part() {
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
   cd $Home
   ECHOG "加载自定义设置"
-  ## [[ "${byop}" == "0" ]] && sed -i '/-rl/d' "${PATH1}/${DIY_PART_SH}"
+  [[ "${byop}" == "0" ]] && sed -i '/-rl/d' "${PATH1}/${DIY_PART_SH}"
   source "${PATH1}/settings.ini"
   source "${PATH1}/$DIY_PART_SH"
   IP="$(grep 'network.lan.ipaddr=' ${PATH1}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
