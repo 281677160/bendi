@@ -887,6 +887,7 @@ menuop() {
     make defconfig
     make -j8 download
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s
+    exit 0
   break
   ;;
   4)
