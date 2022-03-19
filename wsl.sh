@@ -674,6 +674,15 @@ function openwrt_qx() {
       openwrt_by
 }
 
+function openwrt_bgbg() {
+      cd ${Home}
+      ./scripts/feeds update -a && ./scripts/feeds install -a
+      make menuconfig
+      make defconfig
+      make -j8 download
+      PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s
+}
+
 function openwrt_sb() {
     clear
     echo
@@ -882,12 +891,7 @@ menuop() {
   break
   ;;
   3)
-    ./scripts/feeds update -a && ./scripts/feeds install -a
-    make menuconfig
-    make defconfig
-    make -j8 download
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s
-    exit 0
+    openwrt_bgbg
   break
   ;;
   4)
