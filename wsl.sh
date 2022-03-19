@@ -464,6 +464,7 @@ function op_cpuxinghao() {
 
 function op_make() {
   cd $Home
+  rm -rf build.log
   export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   ECHOG "正在编译固件，请耐心等待..."
   npro="$(nproc)"
