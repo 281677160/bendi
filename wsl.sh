@@ -229,6 +229,7 @@ function feeds_clean() {
   git stash push --include-untracked > /dev/null 2>&1
   op_firmware
   git pull
+  git pull > /dev/null 2>&1
   rm -rf "${Home}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${Home}/build"
   echo "chenggong" >${Builb}/chenggong
   ./scripts/feeds update -a > /dev/null 2>&1
@@ -422,22 +423,22 @@ function op_download() {
     print_error "下载DL失败，更换节点后再尝试下载？"
     QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或输入[N/n]回车,退出编译"
     while :; do
-        read -p " [${QLMEUN}]： " XZDLE
-        case $XZDLE in
-            [Yy])
-                op_download
-            break
-            ;;
-            [Nn])
-                ECHOR "退出编译程序!"
-                sleep 2
-                exit 1
-            break
-            ;;
-            *)
-                QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或现在输入[N/n]回车,退出编译"
-            ;;
-        esac
+      read -p " [${QLMEUN}]： " XZDLE
+      case $XZDLE in
+      [Yy])
+        op_download
+      break
+      ;;
+      [Nn])
+        ECHOR "退出编译程序!"
+        sleep 2
+        exit 1
+       break
+       ;;
+       *)
+         QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或现在输入[N/n]回车,退出编译"
+       ;;
+       esac
     done
   fi
 }
@@ -466,7 +467,7 @@ function op_cpuxinghao() {
   else
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[1]小时左右,请耐心等待..."
   fi
-  sleep 5
+  sleep 3
 }
 
 function op_make() {
@@ -486,7 +487,6 @@ function op_make() {
     echo "shibai" >${Builb}/shibai
     print_error "编译失败~~!"
     print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
-    ECHOY "友情提示：因为编译失败，如若${CONFIG_FILE}配置有更改，请把OP_DIY/${config_bf}内容复制,然后覆盖到OP_DIY/${firmware}/${CONFIG_FILE}更新保存配置"
     sleep 1
     exit 1
   else
@@ -884,7 +884,7 @@ menuop() {
   echo
   echo -e " 2${Green}.${Font}${Yellow}保留缓存,使用[${firmware}]二次编译${Font}(编译[${TARGET_PROFILE}]缓存才有效,但是比较容易出现编译错误)"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}什么都不管,增加或减少插件继续干就是${Font}（请勿改变机型,二次编译）"
+  echo -e " 3${Green}.${Font}${Yellow}不作自定义修改,增加或减少固件插件编译${Font}（请勿改变机型,二次编译）"
   echo
   echo -e " 4${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
