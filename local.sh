@@ -683,7 +683,12 @@ function openwrt_qx() {
 
 function openwrt_bgbg() {
       cd ${Home}
-      source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
+      if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini" ]]; then
+        source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
+      else
+        print_error "OP_DIY/${firmware}文件夹没发现settings.ini文件,请检查OP_DIY"
+        exit 1
+      fi
       ECHOG "加载源"
       op_firmware
       op_config > /dev/null 2>&1
@@ -692,7 +697,7 @@ function openwrt_bgbg() {
       if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}" ]]; then
         cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
       else
-        ECHOR "OP_DIY/${firmware}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
+        print_error "OP_DIY/${firmware}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
         exit 1
       fi
       echo
