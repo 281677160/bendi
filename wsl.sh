@@ -226,7 +226,7 @@ function feeds_clean() {
   ./scripts/feeds clean
   rm -rf ./tmp && rm -rf .config
   git stash push --include-untracked
-  git stash push --include-untracked
+  git stash push --include-untracked > /dev/null 2>&1
   op_firmware
   git pull
   rm -rf "${Home}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${Home}/build"
