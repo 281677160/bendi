@@ -223,6 +223,7 @@ function feeds_clean() {
   cd $Home
   ./scripts/feeds clean
   rm -rf ./tmp && rm -rf .config
+  git stash push --include-untracked
   git pull
   rm -rf ${Home}/package/{luci-app-passwall,luci-app-passwall2,luci-app-ssr-plus}
   ./scripts/feeds update -a > /dev/null 2>&1
