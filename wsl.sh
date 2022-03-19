@@ -683,10 +683,30 @@ function openwrt_bgbg() {
       sleep 2
       make menuconfig
       make defconfig
+      op_config
       ECHOG "下载DL"
+      export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
       make -j8 download
       ECHOG "编译固件"
       PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s
+      if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
+        print_error "编译失败，请再次尝试!"
+      else
+        print_ok "编译成功!"
+	explorer.exe .
+        export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
+        START_SECONDS=$(date --date="$START_TIME" +%s)
+        END_SECONDS=$(date --date="$END_TIME" +%s)
+        SECONDS=$((END_SECONDS-START_SECONDS))
+        HOUR=$(( $SECONDS/3600 ))
+        MIN=$(( ($SECONDS-${HOUR}*3600)/60 ))
+        SEC=$(( $SECONDS-${HOUR}*3600-${MIN}*60 ))
+        if [[ "${HOUR}" == "0" ]]; then
+          ECHOG "编译总计用时 ${MIN}分${SEC}秒"
+        else
+          ECHOG "编译总计用时 ${HOUR}时${MIN}分${SEC}秒"
+        fi
+      fi
 }
 
 function openwrt_sb() {
