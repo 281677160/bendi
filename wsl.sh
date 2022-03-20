@@ -229,12 +229,12 @@ function feeds_clean() {
   if [[ "${REPO_BRANCH}" == "master" ]]; then
     for i in "target" "package" "scripts"; do \
       svn checkout "${REPO_URL}/trunk/$i" "$Home/$i"; \
-      rm -rf openwrt/target/.svn openwrt/package/.svn
+      rm -rf $Home/*/.svn
     done
   else
     for i in "target" "package" "scripts"; do \
       svn checkout "${REPO_URL}/branches/${REPO_BRANCH}/$i" "$Home/$i"; \
-      rm -rf openwrt/target/.svn openwrt/package/.svn
+      rm -rf $Home/*/.svn
     done
   fi
   git pull
