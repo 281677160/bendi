@@ -828,25 +828,25 @@ menu() {
   case $CHOOSE in
     1)
       export firmware="Lede_source"
-      ECHOG "您选择了：Lede_5.4内核,LUCI 18.06版本"
+      ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
       openwrt_qx
     break
     ;;
     2)
       export firmware="Lienol_source"
-      ECHOG "您选择了：Lienol_4.14内核,LUCI 17.01版本"
+      ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI Master版本"
       openwrt_qx
     break
     ;;
     3)
       export firmware="Mortal_source"
-      ECHOG "您选择了：Immortalwrt_5.4内核,LUCI 21.02版本"
+      ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
       openwrt_qx
     break
     ;;
     4)
       export firmware="Tianling_source"
-      ECHOG "您选择了：Immortalwrt_4.14内核,LUCI 18.06版本"
+      ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
       openwrt_qx
     break
     ;;
