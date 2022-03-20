@@ -751,31 +751,6 @@ function openwrt_bgbg() {
       fi
 }
 
-function openwrt_sb() {
-    byop="1"
-    op_firmware
-    op_kongjian
-    op_diywenjian
-    bianyi_xuanxiang
-    qx_repo_branch
-    amlogic_s9xxx
-    op_jiaoben
-    op_diy_zdy
-    op_diy_part
-    op_feeds_update
-    op_upgrade1
-    op_menuconfig
-    make_defconfig
-    op_config
-    op_upgrade2
-    openwrt_zuihouchuli
-    op_download
-    op_cpuxinghao
-    op_make
-    op_upgrade3
-    op_end
-}
-
 function openwrt_by() {
     byop="1"
     op_busuhuanjing
@@ -999,7 +974,8 @@ mecuowu() {
   case $menu_cuowu in
   1)
     ECHOG "开始以${firmware}最新源码重新编译"
-    openwrt_sb
+    export firmware="${firmware}"
+    openwrt_qx
   break
   ;;
   2)
