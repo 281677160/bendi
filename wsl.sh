@@ -944,6 +944,7 @@ menuop() {
     make_defconfig
     op_config
     op_upgrade2
+    openwrt_zuihouchuli
     op_download
     op_make
     op_upgrade3
