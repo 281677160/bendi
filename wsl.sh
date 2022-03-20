@@ -225,11 +225,19 @@ function feeds_clean() {
   cd $Home
   ./scripts/feeds clean
   rm -rf ./tmp && rm -rf .config
-  git stash push --include-untracked
-  git stash push --include-untracked > /dev/null 2>&1
-  op_firmware
+  rm -rf $Home/{package,target}
+  if [[ "${REPO_BRANCH}" == "master" ]]; then
+    for i in "target" "package" "scripts"; do \
+      svn checkout "${REPO_URL}/trunk/$i" "$Home/$i"; \
+      rm -rf openwrt/target/.svn openwrt/package/.svn
+    done
+  else
+    for i in "target" "package" "scripts"; do \
+      svn checkout "${REPO_URL}/branches/${REPO_BRANCH}/$i" "$Home/$i"; \
+      rm -rf openwrt/target/.svn openwrt/package/.svn
+    done
+  fi
   git pull
-  git pull > /dev/null 2>&1
   rm -rf "${Home}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${Home}/build"
   echo "chenggong" >${Builb}/chenggong
   ./scripts/feeds update -a > /dev/null 2>&1
