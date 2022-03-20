@@ -225,7 +225,7 @@ function feeds_clean() {
   cd $Home
   ./scripts/feeds clean
   rm -rf ./tmp && rm -rf .config
-  rm -rf $Home/{package,target}
+  rm -rf $Home/{package,target,scripts}
   if [[ "${REPO_BRANCH}" == "master" ]]; then
     for i in "target" "package" "scripts"; do \
       svn checkout "${REPO_URL}/trunk/$i" "$Home/$i"; \
