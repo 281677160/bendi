@@ -451,8 +451,8 @@ function op_download() {
 function op_cpuxinghao() {
   cd $Home
   rm -rf build.log
-  Model_Name="$(cat /proc/cpuinfo | grep 'model name' | cut -f2 -d: | sed 's/^[ ]*//g')"
-  Cpu_Cores="$(cat /proc/cpuinfo | grep 'cpu cores' | cut -f2 -d: | sed 's/^[ ]*//g')"
+  Model_Name="$(cat /proc/cpuinfo |grep 'model name' |awk 'END {print}' |cut -f2 -d: |sed 's/^[ ]*//g')"
+  Cpu_Cores="$(cat /proc/cpuinfo | grep 'cpu cores' |awk 'END {print}' | cut -f2 -d: | sed 's/^[ ]*//g')"
   clear
   ECHOG "您的CPU型号为[ ${Model_Name} ]"
   ECHOG "在Ubuntu使用核心数为[ ${Cpu_Cores} ],线程数为[ $(nproc) ]"
@@ -468,6 +468,7 @@ function op_cpuxinghao() {
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[1.5]小时左右,请耐心等待..."
   else
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[1]小时左右,请耐心等待..."
+    ECHOG "若您的CPU线程数超过16线程的话，强制使用16线程编译"
   fi
   sleep 3
 }
