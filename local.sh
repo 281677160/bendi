@@ -519,6 +519,7 @@ function op_upgrade3() {
   if [[ -f ${GITHUB_WORKSPACE}/Clear ]]; then
     cp -Rf ${GITHUB_WORKSPACE}/Clear ${COMFIRMWARE}/Clear.sh
     chmod +x Clear.sh && source Clear.sh
+    rm -rf Clear.sh
   fi
   rename -v "s/^openwrt/${date1}-${CODE}/" * > /dev/null 2>&1
   cd ${Home}
@@ -939,6 +940,7 @@ menuop() {
     make_defconfig
     op_config
     op_upgrade2
+    openwrt_zuihouchuli
     op_download
     op_make
     op_upgrade3
