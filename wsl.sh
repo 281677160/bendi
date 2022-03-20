@@ -480,9 +480,8 @@ function op_make() {
   ECHOG "正在编译固件，请耐心等待..."
   [[ -d "${COMFIRMWARE}" ]] && rm -fr ${COMFIRMWARE}/*
   rm -rf ${Home}/{README,README.md,README_EN.md} > /dev/null 2>&1
-  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j${npro} V=s 2>&1 |tee ${Home}/build.log
   if [[ "$(nproc)" -ge "16" ]];then
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(nproc) V=s 2>&1 |tee ${Home}/build.log
   else
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 V=s 2>&1 |tee ${Home}/build.log
   fi
@@ -717,7 +716,7 @@ function openwrt_bgbg() {
       [[ -d "${COMFIRMWARE}" ]] && rm -fr ${COMFIRMWARE}/*
       ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
       if [[ "$(nproc)" -ge "16" ]];then
-        PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
+        PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(nproc) V=s 2>&1 |tee ${Home}/build.log
       else
         PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 V=s 2>&1 |tee ${Home}/build.log
       fi
