@@ -980,7 +980,7 @@ mecuowu() {
   ;;
   2)
     menuop
-    rm -rf "${Builb}/shibai"
+    rm -rf "${Builb}/{shibai,chenggong}"
   break
   ;;
   3)
