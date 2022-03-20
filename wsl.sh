@@ -223,7 +223,7 @@ function feeds_clean() {
     amlogic_s9xxx
   fi
   cd $Home
-  git clone -b "${REPO_BRANCH}" "${REPO_URL}" reserve
+  rm -rf reserve && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" reserve
   ./scripts/feeds clean
   rm -rf ./tmp && rm -rf .config
   rm -rf $Home/{package,target,scripts}
