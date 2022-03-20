@@ -228,7 +228,7 @@ function feeds_clean() {
   rm -rf $Home/{package,target,scripts}
   if [[ "${REPO_BRANCH}" == "master" ]]; then
     for i in "target" "package" "scripts"; do \
-      svn co ${REPO_URL}/trunk/$i" "$Home/$i"; \
+      svn co "${REPO_URL}/trunk/$i" "$Home/$i"; \
       rm -rf $Home/*/.svn
     done
   else
