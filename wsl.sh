@@ -752,12 +752,6 @@ function openwrt_bgbg() {
 }
 
 function openwrt_sb() {
-    clear
-    echo
-    echo
-    ECHOY "因上回编译失败，删除旧源码，从新下载${firmware}全新源码编译"
-    echo
-    sleep 5
     byop="1"
     op_firmware
     op_kongjian
@@ -981,8 +975,51 @@ menuop() {
   esac
   done
 }
+
+mecuowu() {
+  op_firmware
+  tixing_op_config > /dev/null 2>&1
+  cd ${GITHUB_WORKSPACE}
+  clear
+  echo
+  echo
+  echo -e " ${Yellow}您上回使用[${firmware}]源码编译出现错误，请作如下选择${Font}"
+  echo
+  echo
+  echo -e " 1${Red}.${Font}${Blue}删除旧源码,继续使用[${firmware}]源码全新编译${Font}"
+  echo
+  echo -e " 2${Red}.${Font}${Blue}保留缓存(菜单)${Font}"
+  echo
+  echo -e " 3${Red}.${Font}${Blue}更换其他作者源码(菜单)${Font}"
+  echo
+  echo
+  XUANZHE="请输入数字"
+  while :; do
+  read -p " ${XUANZHE}：" menu_cuowu
+  case $menu_cuowu in
+  1)
+    ECHOG "开始以${firmware}最新源码重新编译"
+    openwrt_sb
+  break
+  ;;
+  2)
+    menuop
+    rm -rf "${Builb}/shibai"
+  break
+  ;;
+  3)
+    menu
+    break
+  ;;
+  *)
+    XUANZHE="请输入正确的数字编号!"
+  ;;
+  esac
+  done
+}
+
 if [[ -f ${Builb}/shibai ]]; then
-	openwrt_sb
+	mecuowu "$@"
 elif [[ -d "${Home}/package" && -d "${Home}/target" && -d "${Home}/toolchain" && -f "${Builb}/chenggong" ]]; then
 	menuop "$@"
 else
