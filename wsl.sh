@@ -223,20 +223,11 @@ function feeds_clean() {
     amlogic_s9xxx
   fi
   cd $Home
+  git clone -b "${REPO_BRANCH}" "${REPO_URL}" reserve
   ./scripts/feeds clean
   rm -rf ./tmp && rm -rf .config
   rm -rf $Home/{package,target,scripts}
-  if [[ "${REPO_BRANCH}" == "master" ]]; then
-    for i in "target" "package" "scripts"; do \
-      svn co "${REPO_URL}/trunk/$i" "$Home/$i"; \
-      rm -rf $Home/*/.svn
-    done
-  else
-    for i in "target" "package" "scripts"; do \
-      svn co "${REPO_URL}/branches/${REPO_BRANCH}/$i" "$Home/$i"; \
-      rm -rf $Home/*/.svn
-    done
-  fi
+  cp -Rf $Home/reserve/{package,target,scripts} $Home/
   git pull
   rm -rf "${Home}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${Home}/build"
   echo "chenggong" >${Builb}/chenggong
