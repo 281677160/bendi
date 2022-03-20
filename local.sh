@@ -236,9 +236,6 @@ function feeds_clean() {
   judge "额外扩展脚本下载"
   chmod -R +x ${Builb}/common
   ECHOG "正在下载插件,请耐心等候~~~"
-  [[ -d "${Home}/package/luci-app-passwall" ]] && rm -rf "${Home}/package/luci-app-passwall"
-  [[ -d "${Home}/package/luci-app-passwall2" ]] && rm -rf "${Home}/package/luci-app-passwall2"
-  [[ -d "${Home}/package/luci-app-ssr-plus" ]] && rm -rf "${Home}/package/luci-app-ssr-plus"
   cp -Rf ${Builb}/common/*.sh ${Builb}/${firmware}
   source "${PATH1}/common.sh" && ${Diy_zdy}
   source "${PATH1}/common.sh" && Diy_all
