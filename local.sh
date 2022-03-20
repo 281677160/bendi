@@ -451,14 +451,11 @@ function op_download() {
 function op_cpuxinghao() {
   cd $Home
   rm -rf build.log
-  cat /proc/cpuinfo | grep name | cut -f2 -d: | uniq -c > CPU
-  cat /proc/cpuinfo | grep "cpu cores" | uniq >> CPU
-  sed -i 's|[[:space:]]||g; s|^.||' CPU && sed -i 's|CPU||g; s|pucores:||' CPU
-  CPUNAME="$(awk 'NR==1' CPU)" && CPUCORES="$(awk 'NR==2' CPU)"
-  rm -rf CPU
+  Model_Name="$(cat /proc/cpuinfo | grep 'model name' | cut -f2 -d: | sed 's/^[ ]*//g')"
+  Cpu_Cores="$(cat /proc/cpuinfo | grep 'cpu cores' | cut -f2 -d: | sed 's/^[ ]*//g')"
   clear
-  ECHOG "您的CPU型号为[ ${CPUNAME} ]"
-  ECHOG "在Ubuntu使用核心数为[ ${CPUCORES} ],线程数为[ $(nproc) ]"
+  ECHOG "您的CPU型号为[ ${Model_Name} ]"
+  ECHOG "在Ubuntu使用核心数为[ ${Cpu_Cores} ],线程数为[ $(nproc) ]"
   if [[ "$(nproc)" == "1" ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[3.5]小时左右,请耐心等待..."
   elif [[ "$(nproc)" =~ (2|3) ]]; then
