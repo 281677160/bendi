@@ -223,12 +223,13 @@ function feeds_clean() {
     amlogic_s9xxx
   fi
   cd $Home
-  rm -rf reserve && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" reserve
   ./scripts/feeds clean
   rm -rf ./tmp && rm -rf .config
-  rm -rf $Home/{package,target,scripts}
-  cp -Rf $Home/reserve/{package,target,scripts} $Home/
+  git stash push --include-untracked
+  git stash push --include-untracked > /dev/null 2>&1
+  op_firmware
   git pull
+  git pull > /dev/null 2>&1
   rm -rf "${Home}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${Home}/build"
   echo "chenggong" >${Builb}/chenggong
   ./scripts/feeds update -a > /dev/null 2>&1
