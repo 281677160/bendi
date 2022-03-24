@@ -683,20 +683,17 @@ function openwrt_by() {
     amlogic_s9xxx
     op_jiaoben
     op_diy_zdy
-    op_diy_part
-    op_feeds_update
-    op_upgrade1
     op_menuconfig
     make_defconfig
     op_config
     op_upgrade2
-    openwrt_zuihouchuli
     op_download
     op_cpuxinghao
     op_make
     op_upgrade3
     op_end
 }
+
 menu() {
   ECHOB "正在加载信息中，请稍后..."
   cd ${GITHUB_WORKSPACE}
