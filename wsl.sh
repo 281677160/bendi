@@ -330,15 +330,14 @@ function tixing_op_config() {
   export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config")"
   if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config"` -eq '1' ]]; then
     export TARGET_PROFILE="x86-64"
-  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${HOME_PATH}/.config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config"` == '0' ]]; then
+  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config"` == '0' ]]; then
     export TARGET_PROFILE="x86_32"
   elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config"` -eq '1' ]]; then
     export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
   else
-    export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${HOME_PATH}/.config)"
+    export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config)"
   fi
-  export COMFIRMWARE="${HOME_PATH}/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
-  export OPENGUJIAN="openwrt/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
+export TARGET_BSGET="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
 }
 
 function op_upgrade2() {
