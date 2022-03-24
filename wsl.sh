@@ -555,7 +555,6 @@ function op_firmware() {
     export Core=".Lede_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/lean/default-settings/files/zzz-default-settings"
-    export Diy_zdy="Diy_lede"
     export LUCI_EDITION="18.06"
     [[ -d "${HOME_PATH}" ]] && echo "Lede_source" > "${HOME_PATH}/.Lede_core"
   fi
@@ -565,7 +564,6 @@ function op_firmware() {
     export Core=".Lienol_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/default-settings/files/zzz-default-settings"
-    export Diy_zdy="Diy_lienol"
     export LUCI_EDITION="20.06"
     [[ -d "${HOME_PATH}" ]] && echo "Lienol_source" > "${HOME_PATH}/.Lienol_core"
   fi
@@ -575,7 +573,6 @@ function op_firmware() {
     export Core=".Tianling_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/emortal/default-settings/files/99-default-settings"
-    export Diy_zdy="Diy_Tianling"
     export LUCI_EDITION="18.06"
     [[ -d "${HOME_PATH}" ]] && echo "Tianling_source" > "${HOME_PATH}/.Tianling_core"
   fi
@@ -585,7 +582,6 @@ function op_firmware() {
     export Core=".Mortal_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/emortal/default-settings/files/99-default-settings"
-    export Diy_zdy="Diy_mortal"
     export LUCI_EDITION="21.02"
     [[ -d "${HOME_PATH}" ]] && echo "Mortal_source" > "${HOME_PATH}/.Mortal_core"
   fi
@@ -595,7 +591,6 @@ function op_firmware() {
     export Core=".amlogic_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/lean/default-settings/files/zzz-default-settings"
-    export Diy_zdy="Diy_lede"
     export LUCI_EDITION="18.06"
     [[ -d "${HOME_PATH}" ]] && echo "openwrt_amlogic" > "${HOME_PATH}/.amlogic_core"
   fi
