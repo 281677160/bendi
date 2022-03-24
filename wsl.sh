@@ -290,7 +290,7 @@ function op_diy_zdy() {
     export CangKu="${Apidz##*/}"
   fi
   
-  export Compile_Date="$(date +%Y%m%d%H%M)"
+  export Upgrade_Date="$(date +%Y%m%d%H%M)"
 }
 
 function op_menuconfig() {
