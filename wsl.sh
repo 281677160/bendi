@@ -273,7 +273,7 @@ function op_jiaoben() {
   judge "额外扩展脚本下载"
   chmod -R +x common && cp -Rf common ${LOCAL_Build}
   rm -rf common
-  cp -Rf ${LOCAL_Build}/common/*.sh ${LOCAL_Build}/${matrixtarget}
+  cp -Rf ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
   cp -rf ${ZZZ_PATH_PATH} ${HOME_PATH}/zdefault-settings
 }
 
