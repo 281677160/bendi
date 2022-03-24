@@ -238,7 +238,7 @@ function feeds_clean() {
   judge "额外扩展脚本下载"
   chmod -R +x ${LOCAL_Build}/common
   ECHOG "正在下载插件,请耐心等候~~~"
-  cp -Rf ${LOCAL_Build}/common/*.sh ${LOCAL_Build}/${matrixtarget}
+  cp -Rf ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
   source "${BUILD_PATH}/common.sh" && ${Diy_zdy}
   source "${BUILD_PATH}/common.sh" && Diy_all
   cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* "${LOCAL_Build}"
@@ -620,7 +620,7 @@ function op_firmware() {
     export matrixtarget="Lede_source"
     export SOURCE="Lede"
     export Core=".Lede_core"
-    export BUILD_PATH="${LOCAL_Build}/${matrixtarget}"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/lean/default-settings/files/zzz-default-settings"
     export Diy_zdy="Diy_lede"
     export LUCI_EDITION="18.06"
@@ -630,7 +630,7 @@ function op_firmware() {
     export matrixtarget="Lienol_source"
     export SOURCE="Lienol"
     export Core=".Lienol_core"
-    export BUILD_PATH="${LOCAL_Build}/${matrixtarget}"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/default-settings/files/zzz-default-settings"
     export Diy_zdy="Diy_lienol"
     export LUCI_EDITION="20.06"
@@ -640,7 +640,7 @@ function op_firmware() {
     export matrixtarget="Tianling_source"
     export SOURCE="Tianling"
     export Core=".Tianling_core"
-    export BUILD_PATH="${LOCAL_Build}/${matrixtarget}"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/emortal/default-settings/files/99-default-settings"
     export Diy_zdy="Diy_Tianling"
     export LUCI_EDITION="18.06"
@@ -650,7 +650,7 @@ function op_firmware() {
     export matrixtarget="Mortal_source"
     export SOURCE="Mortal"
     export Core=".Mortal_core"
-    export BUILD_PATH="${LOCAL_Build}/${matrixtarget}"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/emortal/default-settings/files/99-default-settings"
     export Diy_zdy="Diy_mortal"
     export LUCI_EDITION="21.02"
@@ -660,7 +660,7 @@ function op_firmware() {
     export matrixtarget="openwrt_amlogic"
     export SOURCE="Lede"
     export Core=".amlogic_core"
-    export BUILD_PATH="${LOCAL_Build}/${matrixtarget}"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/lean/default-settings/files/zzz-default-settings"
     export Diy_zdy="Diy_lede"
     export LUCI_EDITION="18.06"
