@@ -264,37 +264,19 @@ function amlogic_s9xxx() {
 
 function op_jiaoben() {
   cd ${GITHUB_WORKSPACE}
-  rm -rf build-actions && git clone https://github.com/281677160/build-actions
-  judge "编译脚本下载"
-  cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* build-actions/build
-  chmod -R +x build-actions/build && cp -Rf build-actions/build ${HOME_PATH}
-  rm -rf build-actions
-  rm -rf common && git clone https://github.com/281677160/common
+  cp -Rf OP_DIY ${HOME_PATH}/build
+  git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展脚本下载"
-  chmod -R +x common && cp -Rf common ${LOCAL_Build}
-  rm -rf common
-  cp -Rf ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
-  cp -rf ${ZZZ_PATH_PATH} ${HOME_PATH}/zdefault-settings
+  mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
+  chmod -R +x ${BUILD_PATH}
 }
 
 function op_diy_zdy() {
   ECHOG "正在下载插件包,请耐心等候~~~"
   cd ${HOME_PATH}
-  ./scripts/feeds update -a > /dev/null 2>&1
-  cp -Rf ${HOME_PATH}/zdefault-settings ${ZZZ_PATH_PATH}
-  source "${BUILD_PATH}/common.sh" && ${Diy_zdy}
-  source "${BUILD_PATH}/common.sh" && Diy_all
-  judge "插件包下载"
-}
-
-function op_diy_part() {
-  cd ${GITHUB_WORKSPACE}
-  [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
-  cd ${HOME_PATH}
-  ECHOG "加载自定义设置"
-  [[ "${byop}" == "0" ]] && sed -i '/-rl/d' "${BUILD_PATH}/${DIY_PART_SH}"
   source "${BUILD_PATH}/settings.ini"
-  source "${BUILD_PATH}/$DIY_PART_SH"
+  source "${BUILD_PATH}/common.sh" && Diy_menu
+  
   IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Core}" > ${HOME_PATH}/${Core}
@@ -307,30 +289,8 @@ function op_diy_part() {
     export Author="${Apidz%/*}"
     export CangKu="${Apidz##*/}"
   fi
-  echo
-  sleep 3
-}
-
-function op_feeds_update() {
-  ECHOG "正在加载源和安装源,请耐心等候~~~"
-  cd ${HOME_PATH}
-  ./scripts/feeds update -a
-  ./scripts/feeds install -a > /dev/null 2>&1
-  ./scripts/feeds install -a
-  if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}" ]]; then
-    cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE} ${HOME_PATH}/.config
-  else
-    ECHOR "OP_DIY/${matrixtarget}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
-    exit 1
-  fi
-}
-
-function op_upgrade1() {
-  cd ${HOME_PATH}
+  
   export Compile_Date="$(date +%Y%m%d%H%M)"
-  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    source ${BUILD_PATH}/upgrade.sh && Diy_Part1
-  fi
 }
 
 function op_menuconfig() {
@@ -342,18 +302,9 @@ function op_menuconfig() {
 
 function make_defconfig() {
   ECHOG "正在生成配置文件，请稍后..."
-  config_bf="${SOURCE}.config"
-  cd ${HOME_PATH}
-  source ${BUILD_PATH}/common.sh && Diy_chajian
-  make defconfig
+  source "${BUILD_PATH}/common.sh" && Diy_menu2
   ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
-  if [ -n "$(ls -A "${HOME_PATH}/Chajianlibiao" 2>/dev/null)" ]; then
-    clear
-    echo
-    echo
-    chmod -R +x ${HOME_PATH}/CHONGTU
-    source ${HOME_PATH}/CHONGTU
-    rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao}
+  if [[ -f ${HOME_PATH}/EXT4 ]] || [[ -f ${HOME_PATH}/Chajianlibiao ]]; then
     read -t 30 -p " [如需重新编译请按输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " MNUu
     case $MNUu in
     [Yy])
@@ -364,25 +315,13 @@ function make_defconfig() {
       ECHOG "继续编译中...！"
     ;;
     esac
-    make defconfig > /dev/null 2>&1
   fi
+  rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4} > /dev/null 2>&1
 }
 
 function op_config() {
   cd ${HOME_PATH}
-  export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${HOME_PATH}/.config)"
-  export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' ${HOME_PATH}/.config)"
-  if [[ `grep -c "CONFIG_TARGET_x86_64=y" ${HOME_PATH}/.config` -eq '1' ]]; then
-    export TARGET_PROFILE="x86-64"
-  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${HOME_PATH}/.config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" ${HOME_PATH}/.config` == '0' ]]; then
-    export TARGET_PROFILE="x86_32"
-  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" ${HOME_PATH}/.config` -eq '1' ]]; then
-    export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" ${HOME_PATH}/.config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
-  else
-    export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${HOME_PATH}/.config)"
-  fi
-  export COMFIRMWARE="${HOME_PATH}/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
-  export OPENGUJIAN="openwrt/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
+  source "${BUILD_PATH}/common.sh" && Make_upgrade
 }
 
 function tixing_op_config() {
@@ -407,12 +346,6 @@ function op_upgrade2() {
   if [ "${REGULAR_UPDATE}" == "true" ]; then
     source ${BUILD_PATH}/upgrade.sh && Diy_Part2
   fi
-}
-
-function openwrt_zuihouchuli() {
-  # 为编译做最后处理
-  cd ${HOME_PATH}
-  source ${BUILD_PATH}/common.sh && Diy_chuli
 }
 
 function op_download() {
@@ -480,14 +413,14 @@ function op_make() {
   rm -rf build.log
   export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   ECHOG "正在编译固件，请耐心等待..."
-  [[ -d "${COMFIRMWARE}" ]] && rm -fr ${COMFIRMWARE}/*
+  [[ -d "${TARGET_BSGET}" ]] && rm -fr ${TARGET_BSGET}/*
   rm -rf ${HOME_PATH}/{README,README.md,README_EN.md} > /dev/null 2>&1
   if [[ "$(nproc)" -ge "16" ]];then
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
   else
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
   fi
-  if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
+  if [[ `ls -a ${TARGET_BSGET} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
     rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
     echo "shibai" >${LOCAL_Build}/shibai
     print_error "编译失败~~!"
@@ -505,10 +438,10 @@ function op_upgrade3() {
   cd ${HOME_PATH}
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     rm -fr ${HOME_PATH}/bin/Firmware/* > /dev/null 2>&1
-    rm -rf ${HOME_PATH}/upgrade && cp -Rf ${COMFIRMWARE} ${HOME_PATH}/upgrade
+    rm -rf ${HOME_PATH}/upgrade && cp -Rf ${TARGET_BSGET} ${HOME_PATH}/upgrade
     source ${BUILD_PATH}/upgrade.sh && Diy_Part3
   fi
-  if [[ `ls -a ${HOME_PATH}/bin/Firmware | grep -c "${Compile_Date}"` -ge '1' ]]; then
+  if [[ `ls -a ${HOME_PATH}/bin/Firmware | grep -c "${Upgrade_Date}"` -ge '1' ]]; then
     print_ok "加入‘定时升级插件的固件’操作完成"
     export dsgx="加入‘定时升级插件的固件’已经放入[bin/Firmware]文件夹中"
     export upgra="1"
@@ -516,14 +449,14 @@ function op_upgrade3() {
     print_error "加入‘定时升级固件插件’的固件失败，您的机型或者不支持定时更新!"
     export upgra="0"
   fi
-  cd ${COMFIRMWARE}
+  cd ${TARGET_BSGET}
   rename -v "s/^immortalwrt/openwrt/" * > /dev/null 2>&1
   if [[ -f ${GITHUB_WORKSPACE}/Clear ]]; then
-    cp -Rf ${GITHUB_WORKSPACE}/Clear ${COMFIRMWARE}/Clear.sh
+    cp -Rf ${GITHUB_WORKSPACE}/Clear ${TARGET_BSGET}/Clear.sh
     chmod +x Clear.sh && source Clear.sh
     rm -rf Clear.sh
   fi
-  rename -v "s/^openwrt/${date1}-${SOURCE}/" * > /dev/null 2>&1
+  rename -v "s/^openwrt/${SOURCE}/" * > /dev/null 2>&1
   cd ${HOME_PATH}
 }
 
