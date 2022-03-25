@@ -324,7 +324,7 @@ function op_download() {
   cd ${HOME_PATH}
   ECHOG "下载DL文件，请耐心等候..."
   rm -fr ${HOME_PATH}/build.log
-  make -j8 download 2>&1 |tee ${HOME_PATH}/build.log
+  make -j1 download 2>&1 |tee ${HOME_PATH}/build.log
   find dl -size -1024c -exec ls -l {} \;
   find dl -size -1024c -exec rm -f {} \;
   if [[ `grep -c "make with -j1 V=s or V=sc" ${HOME_PATH}/build.log` == '0' ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build.log` == '0' ]]; then
