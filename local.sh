@@ -287,7 +287,6 @@ function op_config() {
 }
 
 function tixing_op_config() {
-  cd ${HOME_PATH}
   export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config")"
   export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config")"
   if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config"` -eq '1' ]]; then
