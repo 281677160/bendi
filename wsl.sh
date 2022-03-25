@@ -665,6 +665,31 @@ function openwrt_bgbg() {
       fi
 }
 
+
+function openwrt_erci() {
+op_firmware
+op_kongjian
+op_diywenjian
+if [[ "${REGULAR_UPDATE}" == "true" ]]; then
+  source $BUILD_PATH/upgrade.sh && Diy_Part1
+fi
+git pull
+./scripts/feeds update -a && ./scripts/feeds install -a
+bianyi_xuanxiang
+op_jiaoben
+op_menuconfig
+source "${BUILD_PATH}/common.sh" && Diy_prevent
+source "${BUILD_PATH}/common.sh" && Diy_adguardhome
+source "${BUILD_PATH}/common.sh" && Diy_files
+op_config
+op_upgrade2
+op_download
+op_make
+op_upgrade3
+op_end
+}
+
+
 function openwrt_by() {
     byop="1"
     op_busuhuanjing
@@ -820,27 +845,8 @@ menuop() {
   break
   ;;
   2)
-    byop="0"
     op_firmware
-    op_kongjian
-    op_diywenjian
-    if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-      source $BUILD_PATH/upgrade.sh && Diy_Part1
-    fi
-    git pull
-    ./scripts/feeds update -a && ./scripts/feeds install -a
-    bianyi_xuanxiang
-    op_jiaoben
-    op_menuconfig
-    Diy_prevent
-    Diy_adguardhome
-    source "${BUILD_PATH}/common.sh" && Diy_files
-    op_config
-    op_upgrade2
-    op_download
-    op_make
-    op_upgrade3
-    op_end
+    openwrt_erci
   break
   ;;
   3)
