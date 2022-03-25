@@ -4,7 +4,7 @@
 #	System Request:Ubuntu 18.04+/20.04+
 #	Author:	281677160
 #	Dscription: openwrt onekey Management
-#	github: https://github.com/281677160/danshui
+#	github: https://github.com/281677160
 #====================================================
 
 # 字体颜色配置
@@ -467,7 +467,6 @@ function op_amlogic() {
   sudo ./make -d -b ${model} -k ${kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
-    explorer.exe .
   else
     print_error "打包失败，请再次尝试!"
   fi
