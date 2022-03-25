@@ -824,7 +824,6 @@ function mecuowu() {
   ;;
   2)
     menuop
-    rm -rf "${LOCAL_Build}/{shibai,chenggong}"
   break
   ;;
   3)
@@ -838,9 +837,9 @@ function mecuowu() {
   done
 }
 
-if [[ -f ${LOCAL_Build}/shibai ]]; then
+if [[ -f "${LOCAL_Build}/shibai" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
 	mecuowu "$@"
-elif [[ -d "${HOME_PATH}/package" && -d "${HOME_PATH}/target" && -d "${HOME_PATH}/toolchain" && -f "${LOCAL_Build}/chenggong" ]]; then
+elif [[ -d "${HOME_PATH}/package" && -d "${HOME_PATH}/target" && -d "${HOME_PATH}/toolchain" && -f "${LOCAL_Build}/chenggong" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
 	menuop "$@"
 else
 	menu "$@"
