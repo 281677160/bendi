@@ -671,11 +671,11 @@ function openwrt_bgbg() {
 function openwrt_erci() {
   cd ${HOME_PATH}
   op_firmware
+  op_diywenjian
   op_jiaoben
   git pull
   ./scripts/feeds update -a && ./scripts/feeds install -a
   op_kongjian
-  op_diywenjian
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     source $BUILD_PATH/upgrade.sh && Diy_Part1
   fi
