@@ -249,22 +249,20 @@ function feeds_clean() {
 }
 
 function amlogic_s9xxx() {
-  cd ${GITHUB_WORKSPACE}
   if [[ "${matrixtarget}" == "openwrt_amlogic" ]]; then
     ECHOY "正在下载打包所需的内核,请耐心等候~~~"
-    if [[ -d amlogic/amlogic-s9xxx ]]; then
+    if [[ -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
       ECHOGG "发现老旧晶晨内核文件存在，请输入ubuntu密码删除老旧内核"
-      sudo rm -rf amlogic
+      sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
     fi
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
     judge "内核运行文件下载"
-    rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
+    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   fi
 }
 
 function op_jiaoben() {
-  cd ${GITHUB_WORKSPACE}
-  cp -Rf OP_DIY/* ${HOME_PATH}/build/
+  cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${HOME_PATH}/build/
   rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展脚本下载"
   mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
@@ -279,6 +277,7 @@ function op_diy_zdy() {
 }
   
 function op_diy_ip() {
+  cd ${HOME_PATH}
   IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Core}" > ${HOME_PATH}/${Core}
@@ -302,6 +301,7 @@ function op_menuconfig() {
 
 function make_defconfig() {
   ECHOG "正在生成配置文件，请稍后..."
+  cd ${HOME_PATH}
   source "${BUILD_PATH}/common.sh" && Diy_menu2
   ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
   if [[ -f ${HOME_PATH}/EXT4 ]] || [[ -f ${HOME_PATH}/Chajianlibiao ]]; then
@@ -337,7 +337,7 @@ function tixing_op_config() {
   else
     export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config)"
   fi
-export TARGET_BSGET="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
+  export TARGET_BSGET="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
 }
 
 function op_upgrade2() {
@@ -511,12 +511,14 @@ function op_amlogic() {
   else
     print_error "打包失败，请再次尝试!"
   fi
+  [[ -d ${HOME_PATH} ]] && cd ${HOME_PATH}
 }
 
 function op_end() {
   clear
   echo
   echo
+  cd ${HOME_PATH}
   if [[ ${matrixtarget} == "openwrt_amlogic" ]]; then
     print_ok "使用[ ${matrixtarget} ]文件夹，编译[ N1和晶晨系列盒子专用固件 ]顺利编译完成~~~"
   else
