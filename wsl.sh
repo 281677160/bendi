@@ -673,14 +673,18 @@ function openwrt_bgbg() {
       fi
 }
 
+function openwrt_gitpull() {
+  cd ${HOME_PATH}
+  git pull
+  ./scripts/feeds update -a && ./scripts/feeds install -a
+}
 
 function openwrt_erci() {
   cd ${HOME_PATH}
   op_firmware
   op_diywenjian
   op_jiaoben
-  git pull
-  ./scripts/feeds update -a && ./scripts/feeds install -a
+  openwrt_gitpull
   op_kongjian
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     source $BUILD_PATH/upgrade.sh && Diy_Part1
