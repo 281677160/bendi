@@ -97,7 +97,7 @@ if [ ! "$Google_Check" == 301 ];then
   exit 0
 fi
 if [[ "$(echo ${GITHUB_WORKSPACE} |grep -c 'openwrt')" -ge '1' ]]; then
-  print_error "请注意命令的执行路径，并非在openwrt文件夹内执行"
+  print_error "请注意命令的执行路径,并非在openwrt文件夹内执行,如果您ubuntu就叫openwrt的话,贡献您,就是不给您用,改名吧少年!"
   exit 0
 fi
 
