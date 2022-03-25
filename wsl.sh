@@ -580,7 +580,6 @@ function openwrt_qx() {
         ECHOGG "发现老源码存在，正在删除老源码"
         rm -rf ${HOME_PATH}
       fi
-      openwrt_by
 }
 
 function openwrt_bgbg() {
@@ -648,7 +647,7 @@ function openwrt_gitpull() {
 }
 
 
-function openwrt_dldl() {
+function op_continue() {
   cd ${HOME_PATH}
   op_firmware
   op_diywenjian
@@ -672,8 +671,7 @@ function openwrt_dldl() {
   op_end
 }
 
-
-function openwrt_erci() {
+function op_again() {
   cd ${HOME_PATH}
   op_firmware
   op_diywenjian
@@ -698,31 +696,51 @@ function openwrt_erci() {
   op_end
 }
 
-
-function openwrt_by() {
-    byop="1"
-    op_busuhuanjing
-    op_firmware
-    op_kongjian
-    op_diywenjian
-    bianyi_xuanxiang
-    op_repo_branch
-    amlogic_s9xxx
-    op_jiaoben
-    op_diy_zdy
-    op_diy_ip
-    op_menuconfig
-    make_defconfig
-    op_config
-    op_upgrade2
-    op_download
-    op_cpuxinghao
-    op_make
-    op_upgrade3
-    op_end
+function op_afresh() {
+  op_firmware
+  op_kongjian
+  op_diywenjian
+  bianyi_xuanxiang
+  qx_repo_branch
+  op_busuhuanjing
+  amlogic_s9xxx
+  op_jiaoben
+  op_diy_zdy
+  op_diy_ip
+  op_menuconfig
+  make_defconfig
+  op_config
+  op_upgrade2
+  op_download
+  op_cpuxinghao
+  op_make
+  op_upgrade3
+  op_end
 }
 
-menu() {
+function openwrt_new() {
+  op_busuhuanjing
+  op_firmware
+  op_kongjian
+  op_diywenjian
+  bianyi_xuanxiang
+  op_repo_branch
+  amlogic_s9xxx
+  op_jiaoben
+  op_diy_zdy
+  op_diy_ip
+  op_menuconfig
+  make_defconfig
+  op_config
+  op_upgrade2
+  op_download
+  op_cpuxinghao
+  op_make
+  op_upgrade3
+  op_end
+}
+
+function menu() {
   ECHOB "正在加载信息中，请稍后..."
   cd ${GITHUB_WORKSPACE}
   curl -fsSL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/x86/Makefile > Makefile
@@ -756,30 +774,35 @@ menu() {
       export matrixtarget="Lede_source"
       ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
       openwrt_qx
+      openwrt_new
     break
     ;;
     2)
       export matrixtarget="Lienol_source"
       ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI Master版本"
       openwrt_qx
+      openwrt_new
     break
     ;;
     3)
       export matrixtarget="Tianling_source"
       ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
       openwrt_qx
+      openwrt_new
     break
     ;;
     4)
       export matrixtarget="Mortal_source"
       ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
       openwrt_qx
+      openwrt_new
     break
     ;;
     5)
       export matrixtarget="openwrt_amlogic"
       ECHOG "您选择了：N1和晶晨系列CPU盒子专用"
       openwrt_qx
+      openwrt_new
     break
     ;;
     6)
@@ -801,7 +824,7 @@ menu() {
     done
 }
 
-menuop() {
+function menuop() {
   op_firmware
   tixing_op_config > /dev/null 2>&1
   cd ${GITHUB_WORKSPACE}
@@ -814,9 +837,9 @@ menuop() {
   echo
   echo -e " 1${Green}.${Font}${Yellow}删除旧源码,使用[${matrixtarget}]源码全新编译${Font}(推荐)"
   echo
-  echo -e " 2${Green}.${Font}${Yellow}保留缓存,使用[${matrixtarget}]二次编译${Font}(编译[${TARGET_PROFILE}]缓存才有效,但是比较容易出现编译错误)"
+  echo -e " 2${Green}.${Font}${Yellow}同步上游固件源码,再次编译${Font}"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}不作自定义修改,增加或减少固件插件编译${Font}（请勿改变机型,二次编译）"
+  echo -e " 3${Green}.${Font}${Yellow}不需同步上游固件源码,再次编译${Font}"
   echo
   echo -e " 4${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
@@ -830,33 +853,15 @@ menuop() {
   read -p " ${XUANZHE}：" menu_num
   case $menu_num in
   1)
-    op_firmware
-    op_kongjian
-    op_diywenjian
-    bianyi_xuanxiang
-    qx_repo_branch
-    op_busuhuanjing
-    amlogic_s9xxx
-    op_jiaoben
-    op_diy_zdy
-    op_diy_ip
-    op_menuconfig
-    make_defconfig
-    op_config
-    op_upgrade2
-    op_download
-    op_cpuxinghao
-    op_make
-    op_upgrade3
-    op_end
+    op_afresh
   break
   ;;
   2)
-    openwrt_erci
+    op_again
   break
   ;;
   3)
-    openwrt_dldl
+    op_continue
   break
   ;;
   4)
@@ -878,7 +883,7 @@ menuop() {
   done
 }
 
-mecuowu() {
+function mecuowu() {
   op_firmware
   tixing_op_config > /dev/null 2>&1
   cd ${GITHUB_WORKSPACE}
