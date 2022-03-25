@@ -165,7 +165,6 @@ function bianyi_xuanxiang() {
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
-    explorer.exe .
     while :; do
       read -p " ${ZDYSZ}： " ZDYSZU
       case $ZDYSZU in
@@ -440,10 +439,10 @@ function op_amlogic() {
   export model=${model:-"s905d"}
   ECHOYY "您设置的机型为：${model}"
   echo
-  ECHOGG "设置打包的内核版本[ 直接回车则默认自动检测最新内核(5.10.100_5.4.180 -a true) ]"
+  ECHOGG "设置打包的内核版本[直接回车则默认自动检测最新内核]"
   read -p " 请输入您要设置的内核：" kernel
   export kernel=${kernel:-"5.10.100_5.4.180 -a true"}
-  ECHOYY "您设置的内核版本为：${kernel}"
+  ECHOYY "您设置的内核版本为：自动检测最新内核打包"
   echo
   ECHOGG "设置ROOTFS分区大小[ 直接回车则默认 960 ]"
   read -p " 请输入ROOTFS分区大小：" rootfs
@@ -496,7 +495,6 @@ function op_end() {
   else
     ECHOR "提示：再次输入编译命令可进行二次编译"
   fi
-  explorer.exe .
   export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   START_SECONDS=$(date --date="$START_TIME" +%s)
   END_SECONDS=$(date --date="$END_TIME" +%s)
