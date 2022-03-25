@@ -671,19 +671,17 @@ function openwrt_bgbg() {
 function openwrt_erci() {
   cd ${HOME_PATH}
   op_firmware
+  op_jiaoben
+  git pull
+  ./scripts/feeds update -a && ./scripts/feeds install -a
   op_kongjian
   op_diywenjian
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     source $BUILD_PATH/upgrade.sh && Diy_Part1
   fi
-  cd ${HOME_PATH}
-  git pull
-  ./scripts/feeds update -a && ./scripts/feeds install -a
   bianyi_xuanxiang
-  op_jiaoben
   op_diy_ip
   op_menuconfig
-  cd ${HOME_PATH}
   if [[ "${Menuconfig}" == "true" ]]; then
     source "${BUILD_PATH}/common.sh" && Diy_prevent
   fi
@@ -691,6 +689,7 @@ function openwrt_erci() {
   source "${BUILD_PATH}/common.sh" && Diy_files
   op_config
   op_upgrade2
+  rm -fr ${HOME_PATH}/dl
   op_download
   op_make
   op_upgrade3
