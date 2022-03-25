@@ -117,8 +117,8 @@ cd ${GITHUB_WORKSPACE}
   sudo apt-get full-upgrade -y
   sudo apt-get install -y systemd build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 lib32stdc++6 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf wget curl rename libpcap0.8-dev swig rsync
   judge "部署编译环境"
-  sudo apt-get autoremove -y --purge
-  sudo apt-get clean -y
+  sudo apt-get autoremove -y --purge > /dev/null 2>&1
+  sudo apt-get clean -y > /dev/null 2>&1
 }
 
 function op_kongjian() {
@@ -223,9 +223,11 @@ function amlogic_s9xxx() {
 }
 
 function op_jiaoben() {
+  [[ ! -d ${HOME_PATH}/build ]] && svn checkout https://github.com/281677160/build-actions/trunk/build ${HOME_PATH}/build
+  judge "编译脚本下载"
   cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${HOME_PATH}/build/
   rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
-  judge "额外扩展脚本下载"
+  judge "额外扩展文件下载"
   mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
   chmod -R +x ${BUILD_PATH}
 }
