@@ -641,8 +641,8 @@ function openwrt_new() {
   op_diy_zdy
   op_diy_ip
   op_menuconfig
-  source "${BUILD_PATH}/common.sh" && Diy_menu3
   make_defconfig
+  source "${BUILD_PATH}/common.sh" && Diy_menu3
   op_config
   op_upgrade2
   op_download
