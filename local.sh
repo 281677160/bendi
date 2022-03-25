@@ -20,10 +20,11 @@ ERROR="${Red}[ERROR]${Font}"
 
 # 变量
 export GITHUB_WORKSPACE="$PWD"
-export Home="${GITHUB_WORKSPACE}/openwrt"
-export Builb="${GITHUB_WORKSPACE}/openwrt/build"
-export NETIP="${Home}/package/base-files/files/etc/networkip"
-export DELETE="${Home}/package/base-files/files/etc/deletefile"
+export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
+export LOCAL_Build="${GITHUB_WORKSPACE}/openwrt/build"
+export BASE_PATH="${GITHUB_WORKSPACE}/openwrt/package/base-files/files"
+export NETIP="${HOME_PATH}/package/base-files/files/etc/networkip"
+export DELETE="${HOME_PATH}/package/base-files/files/etc/deletefile"
 export date1="$(date +'%m-%d')"
 
 function print_ok() {
@@ -95,6 +96,10 @@ if [ ! "$Google_Check" == 301 ];then
   print_error "提醒：编译之前请自备梯子，编译全程都需要稳定梯子~~"
   exit 0
 fi
+if [[ "$(echo ${GITHUB_WORKSPACE} |grep -c 'openwrt')" -ge '1' ]]; then
+  print_error "请注意命令的执行路径,并非在openwrt文件夹内执行,如果您ubuntu就叫openwrt的话,贡献您,就是不给您用,改名吧少年!"
+  exit 0
+fi
 
 function op_busuhuanjing() {
 cd ${GITHUB_WORKSPACE}
@@ -149,7 +154,6 @@ function op_diywenjian() {
     rm -rf bendi && git clone https://github.com/281677160/bendi ${GITHUB_WORKSPACE}/bendi
     judge "OP_DIY文件下载"
     cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY ${GITHUB_WORKSPACE}/OP_DIY
-    [[ -f ${Builb} ]] && cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${Builb}/
     rm -rf ${GITHUB_WORKSPACE}/bendi
   fi
 }
@@ -157,10 +161,11 @@ function op_diywenjian() {
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
-  source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
+  source $GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
-    ECHOY "请在 OP_DIY/${firmware} 里面设置好自定义文件"
+    ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
+    explorer.exe .
     while :; do
       read -p " ${ZDYSZ}： " ZDYSZU
       case $ZDYSZU in
@@ -176,13 +181,13 @@ function bianyi_xuanxiang() {
   fi
   echo
   echo
-  source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini > /dev/null 2>&1
+  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
   tixing_op_config > /dev/null 2>&1
   echo
   echo -e "${Red} 提示${Font}：${Blue}您当前OP_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
   echo
   ECHOGG "是否需要选择机型和增删插件?"
-  read -t 20 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,20秒自动跳过)：" MENUu
+  read -t 20 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,20秒自动跳过)： " MENUu
   case $MENUu in
   [Yy])
     export Menuconfig="true"
@@ -201,101 +206,42 @@ function op_repo_branch() {
   echo
   ECHOG "正在下载源码中,请耐心等候~~~"
   rm -rf openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
-  judge "${firmware}源码下载"
-}
-
-function qx_repo_branch() {
-  cd ${GITHUB_WORKSPACE}
-  echo
-  ECHOG "正在下载源码中,请耐心等候~~~"
-  rm -rf openwrte && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrte
-  judge "${firmware}源码下载"
-  ECHOG "正在处理数据,请耐心等候~~~"
-  rm -fr openwrt && mv -f openwrte openwrt
-}
-
-function feeds_clean() {
-  echo
-  ECHOG "正在更新源码,请耐心等候~~~"
-  cd ${GITHUB_WORKSPACE}
-  if [[ "${firmware}" == "openwrt_amlogic" ]]; then
-    amlogic_s9xxx
-  fi
-  cd $Home
-  ./scripts/feeds clean
-  rm -rf ./tmp && rm -rf .config
-  git stash push --include-untracked
-  git stash push --include-untracked > /dev/null 2>&1
-  op_firmware
-  git pull
-  git pull > /dev/null 2>&1
-  rm -rf "${Home}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${Home}/build"
-  echo "chenggong" >${Builb}/chenggong
-  ./scripts/feeds update -a > /dev/null 2>&1
-  git clone https://github.com/281677160/common ${Builb}/common
-  judge "额外扩展脚本下载"
-  chmod -R +x ${Builb}/common
-  ECHOG "正在下载插件,请耐心等候~~~"
-  cp -Rf ${Builb}/common/*.sh ${Builb}/${firmware}
-  source "${PATH1}/common.sh" && ${Diy_zdy}
-  source "${PATH1}/common.sh" && Diy_all
-  cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* "${Builb}"
-  source "${PATH1}/settings.ini"
-  chmod -R 775 ${Home}/files
-  rm -rf ${Home}/files/{README,README.md} > /dev/null 2>&1
-  rm -rf ${Home}/dl
+  judge "${matrixtarget}源码下载"
 }
 
 function amlogic_s9xxx() {
-  cd ${GITHUB_WORKSPACE}
-  if [[ "${firmware}" == "openwrt_amlogic" ]]; then
+  if [[ "${matrixtarget}" == "openwrt_amlogic" ]]; then
     ECHOY "正在下载打包所需的内核,请耐心等候~~~"
-    if [[ -d amlogic/amlogic-s9xxx ]]; then
+    if [[ -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
       ECHOGG "发现老旧晶晨内核文件存在，请输入ubuntu密码删除老旧内核"
-      sudo rm -rf amlogic
+      sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
     fi
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
     judge "内核运行文件下载"
-    rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
+    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   fi
 }
 
 function op_jiaoben() {
-  cd ${GITHUB_WORKSPACE}
-  rm -rf build-actions && git clone https://github.com/281677160/build-actions
-  judge "编译脚本下载"
-  cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* build-actions/build
-  chmod -R +x build-actions/build && cp -Rf build-actions/build ${Home}
-  rm -rf build-actions
-  rm -rf common && git clone https://github.com/281677160/common
+  cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${HOME_PATH}/build/
+  rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展脚本下载"
-  chmod -R +x common && cp -Rf common ${Builb}
-  rm -rf common
-  cp -Rf ${Builb}/common/*.sh ${Builb}/${firmware}
-  cp -rf ${ZZZ} ${Home}/zdefault-settings
+  mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
+  chmod -R +x ${BUILD_PATH}
 }
 
 function op_diy_zdy() {
   ECHOG "正在下载插件包,请耐心等候~~~"
-  cd $Home
-  ./scripts/feeds update -a > /dev/null 2>&1
-  cp -Rf ${Home}/zdefault-settings ${ZZZ}
-  source "${PATH1}/common.sh" && ${Diy_zdy}
-  source "${PATH1}/common.sh" && Diy_all
-  judge "插件包下载"
+  cd ${HOME_PATH}
+  source "${BUILD_PATH}/settings.ini"
+  source "${BUILD_PATH}/common.sh" && Diy_menu
 }
-
-function op_diy_part() {
-  cd ${GITHUB_WORKSPACE}
-  [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
-  cd $Home
-  ECHOG "加载自定义设置"
-  [[ "${byop}" == "0" ]] && sed -i '/-rl/d' "${PATH1}/${DIY_PART_SH}"
-  source "${PATH1}/settings.ini"
-  source "${PATH1}/$DIY_PART_SH"
-  IP="$(grep 'network.lan.ipaddr=' ${PATH1}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
-  [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' $Home/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
-  echo "${Core}" > ${Home}/${Core}
+  
+function op_diy_ip() {
+  cd ${HOME_PATH}
+  IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
+  [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
+  echo "${Core}" > ${HOME_PATH}/${Core}
   echo
   ECHOYY "您的后台IP地址为：$IP"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
@@ -305,34 +251,10 @@ function op_diy_part() {
     export Author="${Apidz%/*}"
     export CangKu="${Apidz##*/}"
   fi
-  echo
-  sleep 3
-}
-
-function op_feeds_update() {
-  ECHOG "正在加载源和安装源,请耐心等候~~~"
-  cd $Home
-  ./scripts/feeds update -a
-  ./scripts/feeds install -a > /dev/null 2>&1
-  ./scripts/feeds install -a
-  if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}" ]]; then
-    cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
-  else
-    ECHOR "OP_DIY/${firmware}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
-    exit 1
-  fi
-}
-
-function op_upgrade1() {
-  cd $Home
-  export Compile_Date="$(date +%Y%m%d%H%M)"
-  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    source ${PATH1}/upgrade.sh && Diy_Part1
-  fi
 }
 
 function op_menuconfig() {
-  cd $Home
+  cd ${HOME_PATH}
   if [[ "${Menuconfig}" == "true" ]]; then
     make menuconfig
   fi
@@ -340,18 +262,10 @@ function op_menuconfig() {
 
 function make_defconfig() {
   ECHOG "正在生成配置文件，请稍后..."
-  config_bf="${CODE}.config"
-  cd $Home
-  source ${PATH1}/common.sh && Diy_chajian
-  make defconfig
-  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
-  if [ -n "$(ls -A "${Home}/Chajianlibiao" 2>/dev/null)" ]; then
-    clear
-    echo
-    echo
-    chmod -R +x ${Home}/CHONGTU
-    source ${Home}/CHONGTU
-    rm -rf ${Home}/{CHONGTU,Chajianlibiao}
+  cd ${HOME_PATH}
+  source "${BUILD_PATH}/common.sh" && Diy_menu2
+  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
+  if [[ -f ${HOME_PATH}/EXT4 ]] || [[ -f ${HOME_PATH}/Chajianlibiao ]]; then
     read -t 30 -p " [如需重新编译请按输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " MNUu
     case $MNUu in
     [Yy])
@@ -362,65 +276,47 @@ function make_defconfig() {
       ECHOG "继续编译中...！"
     ;;
     esac
-    make defconfig > /dev/null 2>&1
   fi
+  rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4} > /dev/null 2>&1
 }
 
 function op_config() {
-  cd $Home
-  export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${Home}/.config)"
-  export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' ${Home}/.config)"
-  if [[ `grep -c "CONFIG_TARGET_x86_64=y" ${Home}/.config` -eq '1' ]]; then
-    export TARGET_PROFILE="x86-64"
-  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${Home}/.config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" ${Home}/.config` == '0' ]]; then
-    export TARGET_PROFILE="x86_32"
-  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" ${Home}/.config` -eq '1' ]]; then
-    export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" ${Home}/.config | sed -r 's/.*DEVICE_(.*)=y/\1/')"
-  else
-    export TARGET_PROFILE="${TARGET_BOARD}"
-  fi
-  export COMFIRMWARE="${Home}/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
-  export OPENGUJIAN="openwrt/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
+  cd ${HOME_PATH}
+  source "${BUILD_PATH}/common.sh" && Make_upgrade
 }
 
 function tixing_op_config() {
-  cd $Home
-  export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config")"
-  export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config")"
-  if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config"` -eq '1' ]]; then
+  cd ${HOME_PATH}
+  export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config")"
+  export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config")"
+  if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config"` -eq '1' ]]; then
     export TARGET_PROFILE="x86-64"
-  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${Home}/.config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config"` == '0' ]]; then
+  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config"` == '0' ]]; then
     export TARGET_PROFILE="x86_32"
-  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config"` -eq '1' ]]; then
-    export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/config" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config"` -eq '1' ]]; then
+    export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
   else
-    export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${Home}/.config)"
+    export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/config)"
   fi
-  export COMFIRMWARE="${Home}/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
-  export OPENGUJIAN="openwrt/bin/targets/${TARGET_BOARD}/${TARGET_SUBTARGET}"
+  export TARGET_BSGET="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
 }
 
 function op_upgrade2() {
-  cd $Home
+  cd ${HOME_PATH}
+  export Upgrade_Date="$(date +%Y%m%d%H%M)"
   if [ "${REGULAR_UPDATE}" == "true" ]; then
-    source ${PATH1}/upgrade.sh && Diy_Part2
+    source ${BUILD_PATH}/upgrade.sh && Diy_Part2
   fi
 }
 
-function openwrt_zuihouchuli() {
-  # 为编译做最后处理
-  cd $Home
-  source ${PATH1}/common.sh && Diy_chuli
-}
-
 function op_download() {
-  cd $Home
+  cd ${HOME_PATH}
   ECHOG "下载DL文件，请耐心等候..."
-  rm -fr ${Home}/build.log
-  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j8 download 2>&1 |tee ${Home}/build.log
+  rm -fr ${HOME_PATH}/build.log
+  make -j4 download 2>&1 |tee ${HOME_PATH}/build.log
   find dl -size -1024c -exec ls -l {} \;
   find dl -size -1024c -exec rm -f {} \;
-  if [[ `grep -c "make with -j1 V=s or V=sc" ${Home}/build.log` == '0' ]] || [[ `grep -c "ERROR" ${Home}/build.log` == '0' ]]; then
+  if [[ `grep -c "make with -j1 V=s or V=sc" ${HOME_PATH}/build.log` == '0' ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build.log` == '0' ]]; then
     print_ok "DL文件下载成功"
   else
     clear
@@ -449,7 +345,7 @@ function op_download() {
 }
 
 function op_cpuxinghao() {
-  cd $Home
+  cd ${HOME_PATH}
   rm -rf build.log
   Model_Name="$(cat /proc/cpuinfo |grep 'model name' |awk 'END {print}' |cut -f2 -d: |sed 's/^[ ]*//g')"
   Cpu_Cores="$(cat /proc/cpuinfo | grep 'cpu cores' |awk 'END {print}' | cut -f2 -d: | sed 's/^[ ]*//g')"
@@ -474,39 +370,39 @@ function op_cpuxinghao() {
 }
 
 function op_make() {
-  cd $Home
+  cd ${HOME_PATH}
   rm -rf build.log
   export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   ECHOG "正在编译固件，请耐心等待..."
-  [[ -d "${COMFIRMWARE}" ]] && rm -fr ${COMFIRMWARE}/*
-  rm -rf ${Home}/{README,README.md,README_EN.md} > /dev/null 2>&1
+  [[ -d "${TARGET_BSGET}" ]] && rm -fr ${TARGET_BSGET}/*
+  rm -rf ${HOME_PATH}/{README,README.md,README_EN.md} > /dev/null 2>&1
   if [[ "$(nproc)" -ge "16" ]];then
-    make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
+    make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
   else
-    make -j16 V=s 2>&1 |tee ${Home}/build.log
+    make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
   fi
-  if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
-    rm -rf ${Builb}/chenggong > /dev/null 2>&1
-    echo "shibai" >${Builb}/shibai
+  if [[ `ls -a ${TARGET_BSGET} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
+    rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
+    echo "shibai" >${LOCAL_Build}/shibai
     print_error "编译失败~~!"
     print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
     sleep 1
     exit 1
   else
-    rm -rf ${Builb}/shibai > /dev/null 2>&1
-    echo "chenggong" >${Builb}/chenggong
-    rm -rf ${Home}/build.log
+    rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
+    echo "chenggong" >${LOCAL_Build}/chenggong
+    rm -rf ${HOME_PATH}/build.log
   fi
 }
 
 function op_upgrade3() {
-  cd $Home
+  cd ${HOME_PATH}
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    rm -fr ${Home}/bin/Firmware/* > /dev/null 2>&1
-    rm -rf ${Home}/upgrade && cp -Rf ${COMFIRMWARE} ${Home}/upgrade
-    source ${PATH1}/upgrade.sh && Diy_Part3
+    rm -fr ${HOME_PATH}/bin/Firmware/* > /dev/null 2>&1
+    rm -rf ${HOME_PATH}/upgrade && cp -Rf ${TARGET_BSGET} ${HOME_PATH}/upgrade
+    source ${BUILD_PATH}/upgrade.sh && Diy_Part3
   fi
-  if [[ `ls -a ${Home}/bin/Firmware | grep -c "${Compile_Date}"` -ge '1' ]]; then
+  if [[ `ls -a ${HOME_PATH}/bin/Firmware | grep -c "${Upgrade_Date}"` -ge '1' ]]; then
     print_ok "加入‘定时升级插件的固件’操作完成"
     export dsgx="加入‘定时升级插件的固件’已经放入[bin/Firmware]文件夹中"
     export upgra="1"
@@ -514,21 +410,21 @@ function op_upgrade3() {
     print_error "加入‘定时升级固件插件’的固件失败，您的机型或者不支持定时更新!"
     export upgra="0"
   fi
-  cd ${COMFIRMWARE}
+  cd ${TARGET_BSGET}
   rename -v "s/^immortalwrt/openwrt/" * > /dev/null 2>&1
   if [[ -f ${GITHUB_WORKSPACE}/Clear ]]; then
-    cp -Rf ${GITHUB_WORKSPACE}/Clear ${COMFIRMWARE}/Clear.sh
+    cp -Rf ${GITHUB_WORKSPACE}/Clear ${TARGET_BSGET}/Clear.sh
     chmod +x Clear.sh && source Clear.sh
     rm -rf Clear.sh
   fi
-  rename -v "s/^openwrt/${date1}-${CODE}/" * > /dev/null 2>&1
-  cd ${Home}
+  rename -v "s/^openwrt/${SOURCE}/" * > /dev/null 2>&1
+  cd ${HOME_PATH}
 }
 
 function op_amlogic() {
   cd ${GITHUB_WORKSPACE}
-  if [[ `ls -a ${Home}/bin/targets/armvirt/* | grep -c "tar.gz"` == '0' ]]; then
-    mkdir -p ${Home}/bin/targets/armvirt/64
+  if [[ `ls -a ${HOME_PATH}/bin/targets/armvirt/* | grep -c "tar.gz"` == '0' ]]; then
+    mkdir -p ${HOME_PATH}/bin/targets/armvirt/64
     ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
     ECHOYY "openwrt/bin/targets/armvirt/64文件夹内，再进行打包"
     echo
@@ -561,10 +457,10 @@ function op_amlogic() {
   sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
   sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
   sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx/amlogic-kernel/*
-  cp -Rf ${Home}/bin/targets/armvirt/*/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/ && sync
+  cp -Rf ${HOME_PATH}/bin/targets/armvirt/*/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/ && sync
   if [[ `ls -a amlogic/openwrt-armvirt | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
     print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
-    print_error "请检查${Home}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
+    print_error "请检查${HOME_PATH}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     exit 1
   fi
   cd amlogic
@@ -572,19 +468,22 @@ function op_amlogic() {
   sudo ./make -d -b ${model} -k ${kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
+    explorer.exe .
   else
     print_error "打包失败，请再次尝试!"
   fi
+  [[ -d ${HOME_PATH} ]] && cd ${HOME_PATH}
 }
 
 function op_end() {
   clear
   echo
   echo
-  if [[ ${firmware} == "openwrt_amlogic" ]]; then
-    print_ok "使用[ ${firmware} ]文件夹，编译[ N1和晶晨系列盒子专用固件 ]顺利编译完成~~~"
+  cd ${HOME_PATH}
+  if [[ ${matrixtarget} == "openwrt_amlogic" ]]; then
+    print_ok "使用[ ${matrixtarget} ]文件夹，编译[ N1和晶晨系列盒子专用固件 ]顺利编译完成~~~"
   else
-    print_ok "使用[ ${firmware} ]文件夹，编译[ ${TARGET_PROFILE} ]顺利编译完成~~~"
+    print_ok "使用[ ${matrixtarget} ]文件夹，编译[ ${TARGET_PROFILE} ]顺利编译完成~~~"
   fi
   ECHOY "后台地址: ${IP}"
   ECHOY "用户名: root"
@@ -592,11 +491,12 @@ function op_end() {
   if [[ "${upgra}" == "1" ]]; then
     ECHOY "${dsgx}"
   fi
-  if [[ "${firmware}" == "openwrt_amlogic" ]]; then
+  if [[ "${matrixtarget}" == "openwrt_amlogic" ]]; then
     ECHOR "提示：再次输入编译命令可选择二次编译或者打包N1和晶晨系列盒子专用固件"
   else
     ECHOR "提示：再次输入编译命令可进行二次编译"
   fi
+  explorer.exe .
   export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   START_SECONDS=$(date --date="$START_TIME" +%s)
   END_SECONDS=$(date --date="$END_TIME" +%s)
@@ -612,60 +512,50 @@ function op_end() {
 }
 
 function op_firmware() {
-  if [[ "${firmware}" == "Lede_source" ]] || [[ -n "$(ls -A "${Home}/.Lede_core" 2>/dev/null)" ]]; then
-    export firmware="Lede_source"
-    export CODE="lede"
-    export Modelfile="Lede_source"
+  if [[ "${matrixtarget}" == "Lede_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Lede_core" 2>/dev/null)" ]]; then
+    export matrixtarget="Lede_source"
+    export SOURCE="Lede"
     export Core=".Lede_core"
-    export PATH1="${Builb}/${firmware}"
-    export ZZZ="${Home}/package/lean/default-settings/files/zzz-default-settings"
-    export Diy_zdy="Diy_lede"
-    export OpenWrt_name="18.06"
-    [[ -d "${Home}" ]] && echo "jilu" > "${Home}/.Lede_core"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
+    export ZZZ_PATH="${HOME_PATH}/package/lean/default-settings/files/zzz-default-settings"
+    export LUCI_EDITION="18.06"
+    [[ -d "${HOME_PATH}" ]] && echo "Lede_source" > "${HOME_PATH}/.Lede_core"
   fi
-  if [[ "${firmware}" == "Lienol_source" ]] || [[ -n "$(ls -A "${Home}/.Lienol_core" 2>/dev/null)" ]]; then
-    export firmware="Lienol_source"
-    export CODE="lienol"
-    export Modelfile="Lienol_source"
+  if [[ "${matrixtarget}" == "Lienol_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Lienol_core" 2>/dev/null)" ]]; then
+    export matrixtarget="Lienol_source"
+    export SOURCE="Lienol"
     export Core=".Lienol_core"
-    export PATH1="${Builb}/${firmware}"
-    export ZZZ="${Home}/package/default-settings/files/zzz-default-settings"
-    export Diy_zdy="Diy_lienol"
-    export OpenWrt_name="20.06"
-    [[ -d "${Home}" ]] && echo "jilu" > "${Home}/.Lienol_core"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
+    export ZZZ_PATH="${HOME_PATH}/package/default-settings/files/zzz-default-settings"
+    export LUCI_EDITION="20.06"
+    [[ -d "${HOME_PATH}" ]] && echo "Lienol_source" > "${HOME_PATH}/.Lienol_core"
   fi
-  if [[ "${firmware}" == "Mortal_source" ]] || [[ -n "$(ls -A "${Home}/.Mortal_core" 2>/dev/null)" ]]; then
-    export firmware="Mortal_source"
-    export CODE="mortal"
-    export Modelfile="Mortal_source"
-    export Core=".Mortal_core"
-    export PATH1="${Builb}/${firmware}"
-    export ZZZ="${Home}/package/emortal/default-settings/files/99-default-settings"
-    export Diy_zdy="Diy_mortal"
-    export OpenWrt_name="21.02"
-    [[ -d "${Home}" ]] && echo "jilu" > "${Home}/.Mortal_core"
-  fi
-  if [[ "${firmware}" == "Tianling_source" ]] || [[ -n "$(ls -A "${Home}/.Tianling_core" 2>/dev/null)" ]]; then
-    export firmware="Tianling_source"
-    export CODE="tianling"
-    export Modelfile="Tianling_source"
+  if [[ "${matrixtarget}" == "Tianling_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Tianling_core" 2>/dev/null)" ]]; then
+    export matrixtarget="Tianling_source"
+    export SOURCE="Tianling"
     export Core=".Tianling_core"
-    export PATH1="${Builb}/${firmware}"
-    export ZZZ="${Home}/package/emortal/default-settings/files/99-default-settings"
-    export Diy_zdy="Diy_Tianling"
-    export OpenWrt_name="18.06_tl"
-    [[ -d "${Home}" ]] && echo "jilu" > "${Home}/.Tianling_core"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
+    export ZZZ_PATH="${HOME_PATH}/package/emortal/default-settings/files/99-default-settings"
+    export LUCI_EDITION="18.06"
+    [[ -d "${HOME_PATH}" ]] && echo "Tianling_source" > "${HOME_PATH}/.Tianling_core"
   fi
-  if [[ "${firmware}" == "openwrt_amlogic" ]] || [[ -n "$(ls -A "${Home}/.amlogic_core" 2>/dev/null)" ]]; then
-    export firmware="openwrt_amlogic"
-    export CODE="lede"
-    export Modelfile="openwrt_amlogic"
+  if [[ "${matrixtarget}" == "Mortal_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Mortal_core" 2>/dev/null)" ]]; then
+    export matrixtarget="Mortal_source"
+    export SOURCE="Mortal"
+    export Core=".Mortal_core"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
+    export ZZZ_PATH="${HOME_PATH}/package/emortal/default-settings/files/99-default-settings"
+    export LUCI_EDITION="21.02"
+    [[ -d "${HOME_PATH}" ]] && echo "Mortal_source" > "${HOME_PATH}/.Mortal_core"
+  fi
+  if [[ "${matrixtarget}" == "openwrt_amlogic" ]] || [[ -n "$(ls -A "${HOME_PATH}/.amlogic_core" 2>/dev/null)" ]]; then
+    export matrixtarget="openwrt_amlogic"
+    export SOURCE="Lede"
     export Core=".amlogic_core"
-    export PATH1="${Builb}/${firmware}"
-    export ZZZ="${Home}/package/lean/default-settings/files/zzz-default-settings"
-    export Diy_zdy="Diy_lede"
-    export OpenWrt_name="18.06"
-    [[ -d "${Home}" ]] && echo "jilu" > "${Home}/.amlogic_core"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
+    export ZZZ_PATH="${HOME_PATH}/package/lean/default-settings/files/zzz-default-settings"
+    export LUCI_EDITION="18.06"
+    [[ -d "${HOME_PATH}" ]] && echo "openwrt_amlogic" > "${HOME_PATH}/.amlogic_core"
   fi
 }
 
@@ -677,125 +567,88 @@ function openwrt_qx() {
       fi
       if [[ -d ${GITHUB_WORKSPACE}/openwrt ]]; then
         ECHOGG "发现老源码存在，正在删除老源码"
-        rm -rf ${Home}
-      fi
-      openwrt_by
-}
-
-function openwrt_bgbg() {
-      cd ${Home}
-      source ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/settings.ini
-      ECHOG "加载源"
-      op_firmware
-      op_config > /dev/null 2>&1
-      git pull > /dev/null 2>&1
-      ./scripts/feeds update -a && ./scripts/feeds install -a
-      if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}" ]]; then
-        cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE} ${Home}/.config
-      else
-        ECHOR "OP_DIY/${firmware}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
-        exit 1
-      fi
-      echo
-      ECHOGG "是否需要增删插件?"
-      read -t 20 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,20秒自动跳过)： " MNUu
-      case $MNUu in
-      [Yy])
-        make menuconfig
-      ;;
-      *)
-        ECHOR "您已跳过增删插件选择！"
-      ;;
-      esac
-      make defconfig
-      op_config
-      export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
-      op_download
-      ECHOG "编译固件"
-      [[ -d "${COMFIRMWARE}" ]] && rm -fr ${COMFIRMWARE}/*
-      ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${firmware}/${CONFIG_FILE}
-      if [[ "$(nproc)" -ge "16" ]];then
-        make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${Home}/build.log
-      else
-        make -j16 V=s 2>&1 |tee ${Home}/build.log
-      fi
-      if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
-        print_error "编译失败，请再次尝试!"
-	exit 1
-      else
-        print_ok "编译成功!"
-        export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
-        START_SECONDS=$(date --date="$START_TIME" +%s)
-        END_SECONDS=$(date --date="$END_TIME" +%s)
-        SECONDS=$((END_SECONDS-START_SECONDS))
-        HOUR=$(( $SECONDS/3600 ))
-        MIN=$(( ($SECONDS-${HOUR}*3600)/60 ))
-        SEC=$(( $SECONDS-${HOUR}*3600-${MIN}*60 ))
-        if [[ "${HOUR}" == "0" ]]; then
-          ECHOG "编译总计用时 ${MIN}分${SEC}秒"
-        else
-          ECHOG "编译总计用时 ${HOUR}时${MIN}分${SEC}秒"
-        fi
+        rm -rf ${HOME_PATH}
       fi
 }
 
-function openwrt_sb() {
-    clear
-    echo
-    echo
-    ECHOY "因上回编译失败，删除旧源码，从新下载${firmware}全新源码编译"
-    echo
-    sleep 5
-    byop="1"
-    op_firmware
-    op_kongjian
-    op_diywenjian
-    bianyi_xuanxiang
-    qx_repo_branch
-    amlogic_s9xxx
-    op_jiaoben
-    op_diy_zdy
-    op_diy_part
-    op_feeds_update
-    op_upgrade1
-    op_menuconfig
-    make_defconfig
-    op_config
-    op_upgrade2
-    openwrt_zuihouchuli
-    op_download
-    op_cpuxinghao
-    op_make
-    op_upgrade3
-    op_end
+function openwrt_gitpull() {
+  cd ${HOME_PATH}
+  git pull
+  ./scripts/feeds update -a && ./scripts/feeds install -a
 }
 
-function openwrt_by() {
-    byop="1"
-    op_busuhuanjing
-    op_firmware
-    op_kongjian
-    op_diywenjian
-    bianyi_xuanxiang
-    op_repo_branch
-    amlogic_s9xxx
-    op_jiaoben
-    op_diy_zdy
-    op_diy_part
-    op_feeds_update
-    op_upgrade1
-    op_menuconfig
-    make_defconfig
-    op_config
-    op_upgrade2
-    openwrt_zuihouchuli
-    op_download
-    op_cpuxinghao
-    op_make
-    op_upgrade3
-    op_end
+function op_continue() {
+  cd ${HOME_PATH}
+  op_firmware
+  op_diywenjian
+  op_jiaoben
+  op_kongjian
+  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
+    source $BUILD_PATH/upgrade.sh && Diy_Part1
+  fi
+  bianyi_xuanxiang
+  op_diy_ip
+  op_menuconfig
+  if [[ "${Menuconfig}" == "true" ]]; then
+    source "${BUILD_PATH}/common.sh" && Diy_prevent
+  fi
+  source "${BUILD_PATH}/common.sh" && Diy_files
+  op_config
+  op_upgrade2
+  op_download
+  op_make
+  op_upgrade3
+  op_end
 }
-menu() {
+
+function op_again() {
+  cd ${HOME_PATH}
+  op_firmware
+  op_diywenjian
+  op_jiaoben
+  openwrt_gitpull
+  op_kongjian
+  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
+    source $BUILD_PATH/upgrade.sh && Diy_Part1
+  fi
+  bianyi_xuanxiang
+  op_diy_ip
+  op_menuconfig
+  if [[ "${Menuconfig}" == "true" ]]; then
+    source "${BUILD_PATH}/common.sh" && Diy_prevent
+  fi
+  source "${BUILD_PATH}/common.sh" && Diy_files
+  op_config
+  op_upgrade2
+  op_download
+  op_make
+  op_upgrade3
+  op_end
+}
+
+function openwrt_new() {
+  op_busuhuanjing
+  op_firmware
+  op_kongjian
+  op_diywenjian
+  bianyi_xuanxiang
+  op_repo_branch
+  amlogic_s9xxx
+  op_jiaoben
+  op_diy_zdy
+  op_diy_ip
+  op_menuconfig
+  make_defconfig
+  op_config
+  op_upgrade2
+  op_download
+  op_cpuxinghao
+  op_make
+  op_upgrade3
+  op_end
+}
+
+function menu() {
   ECHOB "正在加载信息中，请稍后..."
   cd ${GITHUB_WORKSPACE}
   curl -fsSL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/x86/Makefile > Makefile
@@ -815,8 +668,8 @@ menu() {
   ECHOY " 1. Lede_${ledenh}内核,LUCI 18.06版本(Lede_source)"
   ECHOYY " 2. Lienol_${lienolnh}内核,LUCI Master版本(Lienol_source)"
   echo
-  ECHOYY " 3. Immortalwrt_${mortalnh}内核,LUCI 21.02版本(Mortal_source)"
-  ECHOY " 4. Immortalwrt_${tianlingnh}内核,LUCI 18.06版本(Tianling_source)"
+  ECHOYY " 3. Immortalwrt_${tianlingnh}内核,LUCI 18.06版本(Tianling_source)"
+  ECHOY " 4. Immortalwrt_${mortalnh}内核,LUCI 21.02版本(Mortal_source)"
   ECHOYY " 5. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
   ECHOY " 6. 单独打包晶晨系列固件(前提是您要有armvirt的.tar.gz固件)"
   ECHOYY " 7. 退出编译程序"
@@ -826,33 +679,38 @@ menu() {
   read -p " ${XUANZHEOP}： " CHOOSE
   case $CHOOSE in
     1)
-      export firmware="Lede_source"
+      export matrixtarget="Lede_source"
       ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
       openwrt_qx
+      openwrt_new
     break
     ;;
     2)
-      export firmware="Lienol_source"
+      export matrixtarget="Lienol_source"
       ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI Master版本"
       openwrt_qx
+      openwrt_new
     break
     ;;
     3)
-      export firmware="Mortal_source"
-      ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
+      export matrixtarget="Tianling_source"
+      ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
       openwrt_qx
+      openwrt_new
     break
     ;;
     4)
-      export firmware="Tianling_source"
-      ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
+      export matrixtarget="Mortal_source"
+      ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
       openwrt_qx
+      openwrt_new
     break
     ;;
     5)
-      export firmware="openwrt_amlogic"
+      export matrixtarget="openwrt_amlogic"
       ECHOG "您选择了：N1和晶晨系列CPU盒子专用"
       openwrt_qx
+      openwrt_new
     break
     ;;
     6)
@@ -874,22 +732,22 @@ menu() {
     done
 }
 
-menuop() {
+function menuop() {
   op_firmware
   tixing_op_config > /dev/null 2>&1
   cd ${GITHUB_WORKSPACE}
   clear
   echo
   echo
-  echo -e " ${Blue}当前源码${Font}：${Green}${firmware}${Font}"
+  echo -e " ${Blue}当前源码${Font}：${Green}${matrixtarget}${Font}"
   echo -e " ${Blue}编译机型${Font}：${Green}${TARGET_PROFILE}${Font}"
   echo
   echo
-  echo -e " 1${Green}.${Font}${Yellow}删除旧源码,使用[${firmware}]源码全新编译${Font}(推荐)"
+  echo -e " 1${Green}.${Font}${Yellow}删除旧源码,使用[${matrixtarget}]源码全新编译${Font}(推荐)"
   echo
-  echo -e " 2${Green}.${Font}${Yellow}保留缓存,使用[${firmware}]二次编译${Font}(编译[${TARGET_PROFILE}]缓存才有效,但是比较容易出现编译错误)"
+  echo -e " 2${Green}.${Font}${Yellow}同步上游固件源码,再次编译${Font}"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}不作自定义修改,增加或减少固件插件编译${Font}（请勿改变机型,二次编译）"
+  echo -e " 3${Green}.${Font}${Yellow}不需同步上游固件源码,再次编译${Font}"
   echo
   echo -e " 4${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
@@ -903,52 +761,16 @@ menuop() {
   read -p " ${XUANZHE}：" menu_num
   case $menu_num in
   1)
-    byop="1"
-    op_firmware
-    op_kongjian
-    op_diywenjian
-    bianyi_xuanxiang
-    qx_repo_branch
-    amlogic_s9xxx
-    op_jiaoben
-    op_diy_zdy
-    op_diy_part
-    op_feeds_update
-    op_upgrade1
-    op_menuconfig
-    make_defconfig
-    op_config
-    op_upgrade2
-    openwrt_zuihouchuli
-    op_download
-    op_cpuxinghao
-    op_make
-    op_upgrade3
-    op_end
+    openwrt_qx
+    openwrt_new
   break
   ;;
   2)
-    byop="0"
-    op_firmware
-    bianyi_xuanxiang
-    feeds_clean
-    op_diywenjian
-    op_diy_part
-    op_feeds_update
-    op_upgrade1
-    op_menuconfig
-    make_defconfig
-    op_config
-    op_upgrade2
-    openwrt_zuihouchuli
-    op_download
-    op_make
-    op_upgrade3
-    op_end
+    op_again
   break
   ;;
   3)
-    openwrt_bgbg
+    op_continue
   break
   ;;
   4)
@@ -969,9 +791,53 @@ menuop() {
   esac
   done
 }
-if [[ -f ${Builb}/shibai ]]; then
-	openwrt_sb
-elif [[ -d "${Home}/package" && -d "${Home}/target" && -d "${Home}/toolchain" && -f "${Builb}/chenggong" ]]; then
+
+function mecuowu() {
+  op_firmware
+  tixing_op_config > /dev/null 2>&1
+  cd ${GITHUB_WORKSPACE}
+  clear
+  echo
+  echo
+  echo -e " ${Yellow}您上回使用[${matrixtarget}]源码编译出现错误，请作如下选择${Font}"
+  echo
+  echo
+  echo -e " 1${Red}.${Font}${Blue}删除旧源码,继续使用[${matrixtarget}]源码全新编译${Font}"
+  echo
+  echo -e " 2${Red}.${Font}${Blue}保留缓存(菜单)${Font}"
+  echo
+  echo -e " 3${Red}.${Font}${Blue}更换其他作者源码(菜单)${Font}"
+  echo
+  echo
+  XUANZHE="请输入数字"
+  while :; do
+  read -p " ${XUANZHE}：" menu_cuowu
+  case $menu_cuowu in
+  1)
+    ECHOG "开始以${matrixtarget}最新源码重新编译"
+    export firmware="${matrixtarget}"
+    openwrt_qx
+  break
+  ;;
+  2)
+    menuop
+    rm -rf "${LOCAL_Build}/{shibai,chenggong}"
+  break
+  ;;
+  3)
+    menu
+    break
+  ;;
+  *)
+    XUANZHE="请输入正确的数字编号!"
+  ;;
+  esac
+  done
+}
+
+if [[ -f ${LOCAL_Build}/shibai ]]; then
+	mecuowu "$@"
+elif [[ -d "${HOME_PATH}/package" && -d "${HOME_PATH}/target" && -d "${HOME_PATH}/toolchain" && -f "${LOCAL_Build}/chenggong" ]]; then
 	menuop "$@"
 else
 	menu "$@"
