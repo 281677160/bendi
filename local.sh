@@ -238,7 +238,6 @@ function op_diy_zdy() {
   cd ${HOME_PATH}
   source "${BUILD_PATH}/settings.ini"
   source "${BUILD_PATH}/common.sh" && Diy_menu
-  /bin/bash $BUILD_PATH/$DIY_PAR2_SH
 }
   
 function op_diy_ip() {
