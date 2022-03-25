@@ -162,7 +162,6 @@ function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
   source $GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini
-  echo "${matrixtarget}"
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
@@ -208,16 +207,6 @@ function op_repo_branch() {
   ECHOG "正在下载源码中,请耐心等候~~~"
   rm -rf openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
   judge "${matrixtarget}源码下载"
-}
-
-function qx_repo_branch() {
-  cd ${GITHUB_WORKSPACE}
-  echo
-  ECHOG "正在下载源码中,请耐心等候~~~"
-  rm -rf openwrte && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrte
-  judge "${matrixtarget}源码下载"
-  ECHOG "正在处理数据,请耐心等候~~~"
-  rm -fr openwrt && mv -f openwrte openwrt
 }
 
 function amlogic_s9xxx() {
@@ -582,70 +571,11 @@ function openwrt_qx() {
       fi
 }
 
-function openwrt_bgbg() {
-      cd ${HOME_PATH}
-      source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini
-      ECHOG "加载源"
-      op_firmware
-      op_config > /dev/null 2>&1
-      git pull > /dev/null 2>&1
-      ./scripts/feeds update -a && ./scripts/feeds install -a
-      if [[ -f "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}" ]]; then
-        cp -rf ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE} ${HOME_PATH}/.config
-      else
-        ECHOR "OP_DIY/${matrixtarget}文件夹没发现${CONFIG_FILE}文件,请检查OP_DIY"
-        exit 1
-      fi
-      echo
-      ECHOGG "是否需要增删插件?"
-      read -t 20 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,20秒自动跳过)： " MNUu
-      case $MNUu in
-      [Yy])
-        make menuconfig
-      ;;
-      *)
-        ECHOR "您已跳过增删插件选择！"
-      ;;
-      esac
-      make defconfig
-      op_config
-      export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
-      op_download
-      ECHOG "编译固件"
-      [[ -d "${COMFIRMWARE}" ]] && rm -fr ${COMFIRMWARE}/*
-      ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
-      if [[ "$(nproc)" -ge "16" ]];then
-        PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
-      else
-        PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
-      fi
-      if [[ `ls -a ${COMFIRMWARE} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
-        print_error "编译失败，请再次尝试!"
-	exit 1
-      else
-        print_ok "编译成功!"
-	explorer.exe .
-        export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
-        START_SECONDS=$(date --date="$START_TIME" +%s)
-        END_SECONDS=$(date --date="$END_TIME" +%s)
-        SECONDS=$((END_SECONDS-START_SECONDS))
-        HOUR=$(( $SECONDS/3600 ))
-        MIN=$(( ($SECONDS-${HOUR}*3600)/60 ))
-        SEC=$(( $SECONDS-${HOUR}*3600-${MIN}*60 ))
-        if [[ "${HOUR}" == "0" ]]; then
-          ECHOG "编译总计用时 ${MIN}分${SEC}秒"
-        else
-          ECHOG "编译总计用时 ${HOUR}时${MIN}分${SEC}秒"
-        fi
-      fi
-}
-
 function openwrt_gitpull() {
   cd ${HOME_PATH}
   git pull
   ./scripts/feeds update -a && ./scripts/feeds install -a
 }
-
 
 function op_continue() {
   cd ${HOME_PATH}
@@ -691,28 +621,6 @@ function op_again() {
   op_config
   op_upgrade2
   op_download
-  op_make
-  op_upgrade3
-  op_end
-}
-
-function op_afresh() {
-  op_firmware
-  op_kongjian
-  op_diywenjian
-  bianyi_xuanxiang
-  qx_repo_branch
-  op_busuhuanjing
-  amlogic_s9xxx
-  op_jiaoben
-  op_diy_zdy
-  op_diy_ip
-  op_menuconfig
-  make_defconfig
-  op_config
-  op_upgrade2
-  op_download
-  op_cpuxinghao
   op_make
   op_upgrade3
   op_end
@@ -853,7 +761,8 @@ function menuop() {
   read -p " ${XUANZHE}：" menu_num
   case $menu_num in
   1)
-    op_afresh
+    openwrt_qx
+    openwrt_new
   break
   ;;
   2)
