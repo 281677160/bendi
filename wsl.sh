@@ -829,7 +829,6 @@ function mecuowu() {
   ;;
   2)
     menuop
-    rm -rf "${LOCAL_Build}/{shibai,chenggong}"
   break
   ;;
   3)
