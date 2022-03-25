@@ -265,20 +265,21 @@ function make_defconfig() {
   ECHOG "正在生成配置文件，请稍后..."
   cd ${HOME_PATH}
   source "${BUILD_PATH}/common.sh" && Diy_prevent
-  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
   if [[ -f ${HOME_PATH}/EXT4 ]] || [[ -f ${HOME_PATH}/Chajianlibiao ]]; then
     read -t 30 -p " [如需重新编译请按输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " MNUu
     case $MNUu in
     [Yy])
+      rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4}
       sleep 1
       exit 1
     ;;
     *)
+      rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4}
       ECHOG "继续编译中...！"
     ;;
     esac
   fi
-  rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4} > /dev/null 2>&1
+  source "${BUILD_PATH}/common.sh" && Diy_menu3
 }
 
 function op_config() {
@@ -637,7 +638,6 @@ function openwrt_new() {
   op_diy_zdy
   op_diy_ip
   op_menuconfig
-  source "${BUILD_PATH}/common.sh" && Diy_menu3
   make_defconfig
   op_config
   op_upgrade2
