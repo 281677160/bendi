@@ -647,6 +647,32 @@ function openwrt_gitpull() {
   ./scripts/feeds update -a && ./scripts/feeds install -a
 }
 
+
+function openwrt_dldl() {
+  cd ${HOME_PATH}
+  op_firmware
+  op_diywenjian
+  op_jiaoben
+  op_kongjian
+  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
+    source $BUILD_PATH/upgrade.sh && Diy_Part1
+  fi
+  bianyi_xuanxiang
+  op_diy_ip
+  op_menuconfig
+  if [[ "${Menuconfig}" == "true" ]]; then
+    source "${BUILD_PATH}/common.sh" && Diy_prevent
+  fi
+  source "${BUILD_PATH}/common.sh" && Diy_files
+  op_config
+  op_upgrade2
+  op_download
+  op_make
+  op_upgrade3
+  op_end
+}
+
+
 function openwrt_erci() {
   cd ${HOME_PATH}
   op_firmware
@@ -833,7 +859,7 @@ menuop() {
   break
   ;;
   3)
-    openwrt_bgbg
+    openwrt_dldl
   break
   ;;
   4)
