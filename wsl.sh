@@ -224,7 +224,6 @@ function amlogic_s9xxx() {
 
 function op_jiaoben() {
   [[ ! -d ${HOME_PATH}/build ]] && svn checkout https://github.com/281677160/build-actions/trunk/build ${HOME_PATH}/build
-  judge "编译脚本下载"
   cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${HOME_PATH}/build/
   rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展文件下载"
