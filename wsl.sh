@@ -142,9 +142,11 @@ function op_kongjian() {
     ;;
     esac
   fi
+  echo "1111"
 }
 
 function op_diywenjian() {
+  echo "2222"
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
     rm -rf bendi && git clone https://github.com/281677160/bendi ${GITHUB_WORKSPACE}/bendi
@@ -152,6 +154,7 @@ function op_diywenjian() {
     cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY ${GITHUB_WORKSPACE}/OP_DIY
     rm -rf ${GITHUB_WORKSPACE}/bendi
   fi
+  echo "3333"
 }
 
 function bianyi_xuanxiang() {
