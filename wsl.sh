@@ -523,47 +523,47 @@ function op_firmware() {
   if [[ "${matrixtarget}" == "Lede_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Lede_core" 2>/dev/null)" ]]; then
     export matrixtarget="Lede_source"
     export SOURCE="Lede"
-    export Core=".Lede_core"
+    export Mark_Core=".Lede_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/lean/default-settings/files/zzz-default-settings"
     export LUCI_EDITION="18.06"
-    [[ -d "${HOME_PATH}" ]] && echo "Lede_source" > "${HOME_PATH}/.Lede_core"
+    [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
   fi
   if [[ "${matrixtarget}" == "Lienol_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Lienol_core" 2>/dev/null)" ]]; then
     export matrixtarget="Lienol_source"
     export SOURCE="Lienol"
-    export Core=".Lienol_core"
+    export Mark_Core=".Lienol_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/default-settings/files/zzz-default-settings"
     export LUCI_EDITION="20.06"
-    [[ -d "${HOME_PATH}" ]] && echo "Lienol_source" > "${HOME_PATH}/.Lienol_core"
+    [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
   fi
   if [[ "${matrixtarget}" == "Tianling_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Tianling_core" 2>/dev/null)" ]]; then
     export matrixtarget="Tianling_source"
     export SOURCE="Tianling"
-    export Core=".Tianling_core"
+    export Mark_Core=".Tianling_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/emortal/default-settings/files/99-default-settings"
     export LUCI_EDITION="18.06"
-    [[ -d "${HOME_PATH}" ]] && echo "Tianling_source" > "${HOME_PATH}/.Tianling_core"
+    [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
   fi
   if [[ "${matrixtarget}" == "Mortal_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Mortal_core" 2>/dev/null)" ]]; then
     export matrixtarget="Mortal_source"
     export SOURCE="Mortal"
-    export Core=".Mortal_core"
+    export Mark_Core=".Mortal_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/emortal/default-settings/files/99-default-settings"
     export LUCI_EDITION="21.02"
-    [[ -d "${HOME_PATH}" ]] && echo "Mortal_source" > "${HOME_PATH}/.Mortal_core"
+    [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
   fi
   if [[ "${matrixtarget}" == "openwrt_amlogic" ]] || [[ -n "$(ls -A "${HOME_PATH}/.amlogic_core" 2>/dev/null)" ]]; then
     export matrixtarget="openwrt_amlogic"
     export SOURCE="Lede"
-    export Core=".amlogic_core"
+    export Mark_Core=".amlogic_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/lean/default-settings/files/zzz-default-settings"
     export LUCI_EDITION="18.06"
-    [[ -d "${HOME_PATH}" ]] && echo "openwrt_amlogic" > "${HOME_PATH}/.amlogic_core"
+    [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
   fi
 }
 
