@@ -238,11 +238,12 @@ function op_diy_zdy() {
   cd ${HOME_PATH}
   source "${BUILD_PATH}/settings.ini"
   source "${BUILD_PATH}/common.sh" && Diy_menu
+  /bin/bash $BUILD_PATH/$DIY_PAR2_SH
 }
   
 function op_diy_ip() {
   cd ${HOME_PATH}
-  IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
+  IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PAR2_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Core}" > ${HOME_PATH}/${Core}
   echo
