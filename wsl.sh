@@ -276,7 +276,9 @@ function op_diy_zdy() {
   cd ${HOME_PATH}
   source "${BUILD_PATH}/settings.ini"
   source "${BUILD_PATH}/common.sh" && Diy_menu
+}
   
+function op_diy_ip() {
   IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Core}" > ${HOME_PATH}/${Core}
@@ -667,26 +669,32 @@ function openwrt_bgbg() {
 
 
 function openwrt_erci() {
-op_firmware
-op_kongjian
-op_diywenjian
-if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-  source $BUILD_PATH/upgrade.sh && Diy_Part1
-fi
-git pull
-./scripts/feeds update -a && ./scripts/feeds install -a
-bianyi_xuanxiang
-op_jiaoben
-op_menuconfig
-source "${BUILD_PATH}/common.sh" && Diy_prevent
-source "${BUILD_PATH}/common.sh" && Diy_adguardhome
-source "${BUILD_PATH}/common.sh" && Diy_files
-op_config
-op_upgrade2
-op_download
-op_make
-op_upgrade3
-op_end
+  cd ${HOME_PATH}
+  op_firmware
+  op_kongjian
+  op_diywenjian
+  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
+    source $BUILD_PATH/upgrade.sh && Diy_Part1
+  fi
+  cd ${HOME_PATH}
+  git pull
+  ./scripts/feeds update -a && ./scripts/feeds install -a
+  bianyi_xuanxiang
+  op_jiaoben
+  op_diy_ip
+  op_menuconfig
+  cd ${HOME_PATH}
+  if [[ "${Menuconfig}" == "true" ]]; then
+    source "${BUILD_PATH}/common.sh" && Diy_prevent
+  fi
+  source "${BUILD_PATH}/common.sh" && Diy_adguardhome
+  source "${BUILD_PATH}/common.sh" && Diy_files
+  op_config
+  op_upgrade2
+  op_download
+  op_make
+  op_upgrade3
+  op_end
 }
 
 
@@ -701,6 +709,7 @@ function openwrt_by() {
     amlogic_s9xxx
     op_jiaoben
     op_diy_zdy
+    op_diy_ip
     op_menuconfig
     make_defconfig
     op_config
