@@ -16,10 +16,6 @@ sed -i '/CYXluq4wUazHjmCDBCqXF/d' $ZZZ                                          
 #sed -i 's|^TARGET_|# TARGET_|g; s|# TARGET_DEVICES += phicomm_k3|TARGET_DEVICES += phicomm_k3|' target/linux/bcm53xx/image/Makefile
 
 
-# 在线更新时，删除不想保留固件的某个文件，在EOF跟EOF之间加入删除代码，记住这里对应的是固件的文件路径，比如： rm /etc/config/luci
-cat >$DELETE <<-EOF
-EOF
-
 
 # 修改插件名字(本地编译保存缓存二次编译不要使用，要不然检测会很久)
 sed -i 's/"aMule设置"/"电驴下载"/g' `grep "aMule设置" -rl ./`
