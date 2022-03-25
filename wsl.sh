@@ -220,38 +220,6 @@ function qx_repo_branch() {
   rm -fr openwrt && mv -f openwrte openwrt
 }
 
-function feeds_clean() {
-  echo
-  ECHOG "正在更新源码,请耐心等候~~~"
-  cd ${GITHUB_WORKSPACE}
-  if [[ "${matrixtarget}" == "openwrt_amlogic" ]]; then
-    amlogic_s9xxx
-  fi
-  cd ${HOME_PATH}
-  ./scripts/feeds clean
-  rm -rf ./tmp && rm -rf .config
-  git stash push --include-untracked
-  git stash push --include-untracked > /dev/null 2>&1
-  op_firmware
-  git pull
-  git pull > /dev/null 2>&1
-  rm -rf "${HOME_PATH}/build" && cp -Rf "${GITHUB_WORKSPACE}/OP_DIY" "${HOME_PATH}/build"
-  echo "chenggong" >${LOCAL_Build}/chenggong
-  ./scripts/feeds update -a > /dev/null 2>&1
-  git clone https://github.com/281677160/common ${LOCAL_Build}/common
-  judge "额外扩展脚本下载"
-  chmod -R +x ${LOCAL_Build}/common
-  ECHOG "正在下载插件,请耐心等候~~~"
-  cp -Rf ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
-  source "${BUILD_PATH}/common.sh" && ${Diy_zdy}
-  source "${BUILD_PATH}/common.sh" && Diy_all
-  cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* "${LOCAL_Build}"
-  source "${BUILD_PATH}/settings.ini"
-  chmod -R 775 ${HOME_PATH}/files
-  rm -rf ${HOME_PATH}/files/{README,README.md} > /dev/null 2>&1
-  rm -rf ${HOME_PATH}/dl
-}
-
 function amlogic_s9xxx() {
   if [[ "${matrixtarget}" == "openwrt_amlogic" ]]; then
     ECHOY "正在下载打包所需的内核,请耐心等候~~~"
@@ -695,7 +663,6 @@ function openwrt_erci() {
   if [[ "${Menuconfig}" == "true" ]]; then
     source "${BUILD_PATH}/common.sh" && Diy_prevent
   fi
-  source "${BUILD_PATH}/common.sh" && Diy_adguardhome
   source "${BUILD_PATH}/common.sh" && Diy_files
   op_config
   op_upgrade2
@@ -862,8 +829,6 @@ menuop() {
   break
   ;;
   2)
-    cd ${HOME_PATH}
-    op_firmware
     openwrt_erci
   break
   ;;
