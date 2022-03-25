@@ -23,3 +23,16 @@ uci commit network                                                          # �
 uci set system.@system[0].hostname='OpenWrt-123'                            # 修改主机名称为OpenWrt-123
 #sed -i 's/\/bin\/login/\/bin\/login -f root/' /etc/config/ttyd             # 设置ttyd免帐号登录，如若开启，进入OPENWRT后可能要重启一次才生效
 EOF
+
+
+
+# 整理固件包时候,删除您不想要的固件或者文件
+cat >${GITHUB_WORKSPACE}/Clear <<-EOF
+rm -rf config.buildinfo
+rm -rf feeds.buildinfo
+rm -rf openwrt-x86-64-generic-kernel.bin
+rm -rf openwrt-x86-64-generic.manifest
+rm -rf openwrt-x86-64-generic-squashfs-rootfs.img.gz
+rm -rf sha256sums
+rm -rf version.buildinfo
+EOF
