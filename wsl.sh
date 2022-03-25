@@ -157,7 +157,7 @@ function op_diywenjian() {
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
-  source $GITHUB_WORKSPACE/OP_DIY/Tianling_source/settings.ini
+  source $GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini
   echo "${matrixtarget}"
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
@@ -264,7 +264,7 @@ function amlogic_s9xxx() {
 
 function op_jiaoben() {
   cd ${GITHUB_WORKSPACE}
-  cp -Rf OP_DIY ${HOME_PATH}/build
+  cp -Rf OP_DIY/* ${HOME_PATH}/build/
   rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展脚本下载"
   mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
@@ -667,6 +667,7 @@ function openwrt_bgbg() {
 
 
 function openwrt_erci() {
+cd ${HOME_PATH}
 op_firmware
 op_kongjian
 op_diywenjian
