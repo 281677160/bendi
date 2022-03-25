@@ -667,7 +667,6 @@ function openwrt_bgbg() {
 
 
 function openwrt_erci() {
-cd ${HOME_PATH}
 op_firmware
 op_kongjian
 op_diywenjian
@@ -846,6 +845,7 @@ menuop() {
   break
   ;;
   2)
+    cd ${HOME_PATH}
     op_firmware
     openwrt_erci
   break
