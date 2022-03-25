@@ -96,6 +96,10 @@ if [ ! "$Google_Check" == 301 ];then
   print_error "提醒：编译之前请自备梯子，编译全程都需要稳定梯子~~"
   exit 0
 fi
+if [[ "$(echo ${GITHUB_WORKSPACE} |grep -c 'openwrt')" -ge '1' ]]; then
+  print_error "请注意命令的执行路径，并非在openwrt文件夹内执行"
+  exit 0
+fi
 
 function op_busuhuanjing() {
 cd ${GITHUB_WORKSPACE}
