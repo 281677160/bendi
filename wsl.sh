@@ -582,20 +582,22 @@ function openwrt_qx() {
 function openwrt_gitpull() {
   cd ${HOME_PATH}
   git pull
-  ./scripts/feeds update -a && ./scripts/feeds install -a
+  ./scripts/feeds update -a
+  ./scripts/feeds install -a
+  ./scripts/feeds install -a
 }
 
 function op_continue() {
   cd ${HOME_PATH}
   op_firmware
+  bianyi_xuanxiang
+  op_diy_ip
   op_diywenjian
   op_jiaoben
   op_kongjian
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     source $BUILD_PATH/upgrade.sh && Diy_Part1
   fi
-  bianyi_xuanxiang
-  op_diy_ip
   op_menuconfig
   if [[ "${Menuconfig}" == "true" ]]; then
     source "${BUILD_PATH}/common.sh" && Diy_prevent
@@ -612,15 +614,15 @@ function op_continue() {
 function op_again() {
   cd ${HOME_PATH}
   op_firmware
+  bianyi_xuanxiang
+  op_diy_ip
   op_diywenjian
   op_jiaoben
-  openwrt_gitpull
   op_kongjian
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     source $BUILD_PATH/upgrade.sh && Diy_Part1
   fi
-  bianyi_xuanxiang
-  op_diy_ip
+  openwrt_gitpull
   op_menuconfig
   if [[ "${Menuconfig}" == "true" ]]; then
     source "${BUILD_PATH}/common.sh" && Diy_prevent
