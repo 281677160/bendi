@@ -243,6 +243,7 @@ function op_diy_zdy() {
   
 function op_diy_ip() {
   cd ${HOME_PATH}
+  /bin/bash $BUILD_PATH/$DIY_PAR2_SH
   IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PAR2_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Mark_Core}" > ${HOME_PATH}/${Mark_Core}
