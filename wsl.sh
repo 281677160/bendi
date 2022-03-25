@@ -270,15 +270,17 @@ function make_defconfig() {
     read -t 30 -p " [如需重新编译请按输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " MNUu
     case $MNUu in
     [Yy])
+      rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4}
       sleep 1
       exit 1
     ;;
     *)
+      rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4}
       ECHOG "继续编译中...！"
     ;;
     esac
   fi
-  rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4} > /dev/null 2>&1
+  source "${BUILD_PATH}/common.sh" && Diy_menu3
 }
 
 function op_config() {
@@ -642,7 +644,6 @@ function openwrt_new() {
   op_diy_ip
   op_menuconfig
   make_defconfig
-  source "${BUILD_PATH}/common.sh" && Diy_menu3
   op_config
   op_upgrade2
   op_download
