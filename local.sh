@@ -394,6 +394,7 @@ function op_make() {
     sleep 1
     exit 1
   else
+    ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
     rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
     echo "chenggong" >${LOCAL_Build}/chenggong
     rm -rf ${HOME_PATH}/build.log
