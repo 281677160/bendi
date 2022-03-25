@@ -150,7 +150,6 @@ function op_diywenjian() {
     rm -rf bendi && git clone https://github.com/281677160/bendi ${GITHUB_WORKSPACE}/bendi
     judge "OP_DIY文件下载"
     cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY ${GITHUB_WORKSPACE}/OP_DIY
-    [[ -f ${LOCAL_Build} ]] && cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${LOCAL_Build}/
     rm -rf ${GITHUB_WORKSPACE}/bendi
   fi
 }
@@ -265,7 +264,7 @@ function amlogic_s9xxx() {
 function op_jiaoben() {
   cd ${GITHUB_WORKSPACE}
   cp -Rf OP_DIY ${HOME_PATH}/build
-  git clone https://github.com/281677160/common ${HOME_PATH}/build/common
+  rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展脚本下载"
   mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
   chmod -R +x ${BUILD_PATH}
@@ -289,8 +288,6 @@ function op_diy_zdy() {
     export Author="${Apidz%/*}"
     export CangKu="${Apidz##*/}"
   fi
-  
-  export Upgrade_Date="$(date +%Y%m%d%H%M)"
 }
 
 function op_menuconfig() {
@@ -342,6 +339,7 @@ export TARGET_BSGET="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
 
 function op_upgrade2() {
   cd ${HOME_PATH}
+  export Upgrade_Date="$(date +%Y%m%d%H%M)"
   if [ "${REGULAR_UPDATE}" == "true" ]; then
     source ${BUILD_PATH}/upgrade.sh && Diy_Part2
   fi
@@ -823,17 +821,21 @@ menuop() {
   2)
     byop="0"
     op_firmware
-    bianyi_xuanxiang
-    feeds_clean
+    op_kongjian
     op_diywenjian
-    op_diy_part
-    op_feeds_update
-    op_upgrade1
+    if [[ "${REGULAR_UPDATE}" == "true" ]]; then
+      source $BUILD_PATH/upgrade.sh && Diy_Part1
+    fi
+    git pull
+    ./scripts/feeds update -a && ./scripts/feeds install -a
+    bianyi_xuanxiang
+    op_jiaoben
     op_menuconfig
-    make_defconfig
+    Diy_prevent
+    Diy_adguardhome
+    source "${BUILD_PATH}/common.sh" && Diy_files
     op_config
     op_upgrade2
-    openwrt_zuihouchuli
     op_download
     op_make
     op_upgrade3
