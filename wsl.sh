@@ -830,12 +830,12 @@ menuop() {
   read -p " ${XUANZHE}：" menu_num
   case $menu_num in
   1)
-    op_busuhuanjing
     op_firmware
     op_kongjian
     op_diywenjian
     bianyi_xuanxiang
-    h
+    qx_repo_branch
+    op_busuhuanjing
     amlogic_s9xxx
     op_jiaoben
     op_diy_zdy
