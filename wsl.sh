@@ -4,7 +4,7 @@
 #	System Request:Ubuntu 18.04+/20.04+
 #	Author:	281677160
 #	Dscription: openwrt onekey Management
-#	github: https://github.com/281677160/danshui
+#	github: https://github.com/281677160
 #====================================================
 
 # 字体颜色配置
@@ -427,6 +427,7 @@ function op_amlogic() {
     mkdir -p ${HOME_PATH}/bin/targets/armvirt/64
     ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
     ECHOYY "openwrt/bin/targets/armvirt/64文件夹内，再进行打包"
+    explorer.exe .
     echo
     exit 1
   fi
@@ -440,10 +441,10 @@ function op_amlogic() {
   export model=${model:-"s905d"}
   ECHOYY "您设置的机型为：${model}"
   echo
-  ECHOGG "设置打包的内核版本[ 直接回车则默认自动检测最新内核(5.10.100_5.4.180 -a true) ]"
+  ECHOGG "设置打包的内核版本[直接回车则默认自动检测最新内核]"
   read -p " 请输入您要设置的内核：" kernel
   export kernel=${kernel:-"5.10.100_5.4.180 -a true"}
-  ECHOYY "您设置的内核版本为：${kernel}"
+  ECHOYY "您设置的内核版本为：自动检测最新版内核打包"
   echo
   ECHOGG "设置ROOTFS分区大小[ 直接回车则默认 960 ]"
   read -p " 请输入ROOTFS分区大小：" rootfs
