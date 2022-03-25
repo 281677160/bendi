@@ -157,8 +157,8 @@ function op_diywenjian() {
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
-  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini
-  echo "3333"
+  source $GITHUB_WORKSPACE/OP_DIY/Tianling_source/settings.ini
+  echo "${matrixtarget}"
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
