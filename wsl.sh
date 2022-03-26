@@ -255,13 +255,13 @@ function op_diy_ip() {
   [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Mark_Core}" > ${HOME_PATH}/${Mark_Core}
   echo
-  ECHOYY "您的后台IP地址为：$IP"
+  ECHOY "您的后台IP地址为：$IP"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     export Github=${Github}
-    ECHOY "您的Github地址为：$Github"
-    export Apidz="${Github##*com/}"
+    ECHOYY "您的Github地址为：$Github"
+    export Warehouse="${Github##*com/}"
     export Author="${Apidz%/*}"
-    export CangKu="${Apidz##*/}"
+    export Library="${Apidz##*/}"
   fi
 }
 
