@@ -741,10 +741,15 @@ function menu() {
     done
 }
 
-function menuop() {
-  op_firmware
+function Menu_requirements() {
+  op_firmware > /dev/null 2>&1
+  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
   tixing_op_config > /dev/null 2>&1
   cd ${GITHUB_WORKSPACE}
+}
+
+function menuop() {
+  Menu_requirements
   clear
   echo
   echo
@@ -802,9 +807,7 @@ function menuop() {
 }
 
 function mecuowu() {
-  op_firmware
-  tixing_op_config > /dev/null 2>&1
-  cd ${GITHUB_WORKSPACE}
+  Menu_requirements
   clear
   echo
   echo
