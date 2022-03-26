@@ -6,13 +6,12 @@
 
 sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile                 # 选择argon为默认主题
 
-sed -i "s/OpenWrt /281677160 compiled in $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" $ZZZ_PATH           # 增加个性名字(默认为281677160)
+sed -i "s/OpenWrt /281677160 compiled in $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" ${ZZZ_PATH}         # 增加个性名字(默认为281677160)
 
-sed -i '/CYXluq4wUazHjmCDBCqXF/d' $ZZZ_PATH                                                             # 设置密码为空
+sed -i '/CYXluq4wUazHjmCDBCqXF/d' ${ZZZ_PATH}                                                           # 设置密码为空
 
-sed -i '/to-ports 53/d' $ZZZ_PATH                                                                       # 删除默认防火墙
+sed -i '/to-ports 53/d' ${ZZZ_PATH}                                                                     # 删除默认防火墙
 
-#sed -i 's/PATCHVER:=5.15/PATCHVER:=5.10/g' target/linux/x86/Makefile                                   # x86机型,默认内核5.15，修改内核为5.10
 
 # K3专用，编译K3的时候只会出K3固件
 #sed -i 's|^TARGET_|# TARGET_|g; s|# TARGET_DEVICES += phicomm_k3|TARGET_DEVICES += phicomm_k3|' target/linux/bcm53xx/image/Makefile
