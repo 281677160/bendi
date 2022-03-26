@@ -754,9 +754,9 @@ function menuop() {
   echo
   echo -e " 1${Green}.${Font}${Yellow}删除旧源码,使用[${matrixtarget}]源码全新编译${Font}(推荐)"
   echo
-  echo -e " 2${Green}.${Font}${Yellow}同步上游固件源码,再次编译${Font}"
+  echo -e " 2${Green}.${Font}${Yellow}同步上游仓库源码,再次编译${Font}"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}不需同步上游固件源码,再次编译${Font}"
+  echo -e " 3${Green}.${Font}${Yellow}无需同步上游仓库源码,再次编译${Font}"
   echo
   echo -e " 4${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
