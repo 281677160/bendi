@@ -247,11 +247,17 @@ function op_diy_zdy() {
   source "${BUILD_PATH}/settings.ini"
   source "${BUILD_PATH}/common.sh" && Diy_menu
 }
-  
+
+function op_diy_zdy2() {
+  cd ${HOME_PATH}
+  [[ -f ${NETIP} ]] && rm -rf ${NETIP}
+  [[ -f ${DELETE} ]] && rm -rf ${DELETE}
+  [[ -f ${GITHUB_WORKSPACE}/Clear ]] && rm -rf ${GITHUB_WORKSPACE}/Clear
+  source $BUILD_PATH/$DIY_PAR2_SH
+}
+
 function op_diy_ip() {
   cd ${HOME_PATH}
-  source $BUILD_PATH/$DIY_PAR2_SH
-  echo "$BUILD_PATH/$DIY_PAR2_SH"
   IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PAR2_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Mark_Core}" > ${HOME_PATH}/${Mark_Core}
@@ -602,6 +608,7 @@ function op_continue() {
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
+  op_diy_zdy2
   op_diy_ip
   op_diywenjian
   op_jiaoben
@@ -620,6 +627,7 @@ function op_again() {
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
+  op_diy_zdy2
   op_diy_ip
   op_diywenjian
   op_jiaoben
@@ -645,6 +653,7 @@ function openwrt_new() {
   amlogic_s9xxx
   op_jiaoben
   op_diy_zdy
+  op_diy_zdy2
   op_diy_ip
   op_menuconfig
   make_defconfig
