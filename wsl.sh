@@ -253,8 +253,8 @@ function op_diy_zdy2() {
   [[ -f "${NETIP}" ]] && rm -rf ${NETIP}
   [[ -f "${DELETE}" ]] && rm -rf ${DELETE}
   [[ -f "${GITHUB_WORKSPACE}/Clear" ]] && rm -rf ${GITHUB_WORKSPACE}/Clear
-  chmod +x ${BUILD_PATH}/${DIY_PAR2_SH}
-  cd ${HOME_PATH} && source ${BUILD_PATH}/${DIY_PAR2_SH}
+  chmod +x ${GITHUB_WORKSPACE}/OP_DIY
+  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${DIY_PAR2_SH}
 }
 
 function op_diy_ip() {
