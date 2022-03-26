@@ -838,6 +838,7 @@ function mecuowu() {
     ECHOG "开始以${matrixtarget}最新源码重新编译"
     export firmware="${matrixtarget}"
     openwrt_qx
+    openwrt_new
   break
   ;;
   2)
