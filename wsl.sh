@@ -646,7 +646,6 @@ function openwrt_new() {
   op_diy_ip
   op_menuconfig
   make_defconfig
-  op_config
   op_upgrade2
   op_download
   op_cpuxinghao
