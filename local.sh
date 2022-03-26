@@ -654,7 +654,7 @@ function openwrt_new() {
 }
 
 function menu() {
-  ECHOB "正在加载信息中，请稍后..."
+  ECHOG "正在加载数据中，请稍后..."
   cd ${GITHUB_WORKSPACE}
   curl -fsSL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/x86/Makefile > Makefile
   export ledenh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
@@ -668,7 +668,6 @@ function menu() {
   clear
   clear
   echo
-  cd ${GITHUB_WORKSPACE}
   ECHOB "  请选择编译源码"
   ECHOY " 1. Lede_${ledenh}内核,LUCI 18.06版本(Lede_source)"
   ECHOYY " 2. Lienol_${lienolnh}内核,LUCI Master版本(Lienol_source)"
@@ -737,10 +736,15 @@ function menu() {
     done
 }
 
-function menuop() {
-  op_firmware
+function Menu_requirements() {
+  op_firmware > /dev/null 2>&1
+  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
   tixing_op_config > /dev/null 2>&1
   cd ${GITHUB_WORKSPACE}
+}
+
+function menuop() {
+  Menu_requirements
   clear
   echo
   echo
@@ -798,9 +802,7 @@ function menuop() {
 }
 
 function mecuowu() {
-  op_firmware
-  tixing_op_config > /dev/null 2>&1
-  cd ${GITHUB_WORKSPACE}
+  Menu_requirements
   clear
   echo
   echo
@@ -809,7 +811,7 @@ function mecuowu() {
   echo
   echo -e " 1${Red}.${Font}${Blue}删除旧源码,继续使用[${matrixtarget}]源码全新编译${Font}"
   echo
-  echo -e " 2${Red}.${Font}${Blue}保留缓存(菜单)${Font}"
+  echo -e " 2${Red}.${Font}${Blue}使用旧源码继续编译(菜单)${Font}"
   echo
   echo -e " 3${Red}.${Font}${Blue}更换其他作者源码(菜单)${Font}"
   echo
