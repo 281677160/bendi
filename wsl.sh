@@ -242,7 +242,7 @@ function op_jiaoben() {
 }
 
 function op_diy_zdy() {
-  ECHOG "正在下载插件包,请耐心等候~~~"
+  ECHOG "正在下载插件包和更新feeds,请耐心等候~~~"
   cd ${HOME_PATH}
   source "${BUILD_PATH}/settings.ini"
   source "${BUILD_PATH}/common.sh" && Diy_menu
@@ -262,7 +262,9 @@ function op_diy_ip() {
     export Warehouse="${Github##*com/}"
     export Author="${Apidz%/*}"
     export Library="${Apidz##*/}"
+    echo
   fi
+  sleep 2
 }
 
 function op_menuconfig() {
