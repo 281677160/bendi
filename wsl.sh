@@ -250,10 +250,10 @@ function op_diy_zdy() {
 
 function op_diy_zdy2() {
   cd ${HOME_PATH}
-  [[ -f ${NETIP} ]] && rm -rf ${NETIP}
-  [[ -f ${DELETE} ]] && rm -rf ${DELETE}
-  [[ -f ${GITHUB_WORKSPACE}/Clear ]] && rm -rf ${GITHUB_WORKSPACE}/Clear
-  source $BUILD_PATH/$DIY_PAR2_SH
+  [[ -f "${NETIP}" ]] && rm -rf ${NETIP}
+  [[ -f "${DELETE}" ]] && rm -rf ${DELETE}
+  [[ -f "${GITHUB_WORKSPACE}/Clear" ]] && rm -rf ${GITHUB_WORKSPACE}/Clear
+  source "$BUILD_PATH/$DIY_PAR2_SH"
 }
 
 function op_diy_ip() {
