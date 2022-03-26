@@ -258,10 +258,10 @@ function op_diy_ip() {
   ECHOY "您的后台IP地址为：$IP"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     export Github=${Github}
-    ECHOYY "您的Github地址为：$Github"
     export Warehouse="${Github##*com/}"
-    export Author="${Apidz%/*}"
-    export Library="${Apidz##*/}"
+    export Author="$(echo "${Github}" |cut -d "/" -f4)"
+    export Library="$(echo "${Github}" |cut -d "/" -f5)"
+    ECHOYY "您的Github地址为：$Github"
     echo
   fi
   sleep 2
