@@ -6,7 +6,7 @@
 
 sed -i "s/OpenWrt /281677160 compiled in $(TZ=UTC-8 date "+%Y.%m.%d") @ OpenWrt /g" $ZZZ_PATH          # 增加个性名字(默认为281677160)
 
-sed -i '/CYXluq4wUazHjmCDBCqXF/d' $ZZZ                                                                 # 设置密码为空
+sed -i '/CYXluq4wUazHjmCDBCqXF/d' $ZZZ_PATH                                                            # 设置密码为空
 
 
 # K3专用，编译K3的时候只会出K3固件
