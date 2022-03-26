@@ -727,7 +727,7 @@ function menu() {
     ;;
     6)
       ECHOG "您选择了单独打包晶晨系列固件"
-      export firmware="openwrt_amlogic"
+      export matrixtarget="openwrt_amlogic"
       op_busuhuanjing
       op_amlogic
     break
@@ -832,7 +832,7 @@ function mecuowu() {
   case $menu_cuowu in
   1)
     ECHOG "开始以${matrixtarget}最新源码重新编译"
-    export firmware="${matrixtarget}"
+    export matrixtarget="${matrixtarget}"
     openwrt_qx
     openwrt_new
   break
