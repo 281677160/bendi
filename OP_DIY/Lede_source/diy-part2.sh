@@ -25,6 +25,8 @@ uci set system.@system[0].hostname='OpenWrt-123'                            # �
 EOF
 
 
+#sed -i 's/PATCHVER:=5.15/PATCHVER:=5.10/g' target/linux/x86/Makefile        # x86机型,默认内核5.15，修改内核为5.10
+
 
 # 整理固件包时候,删除您不想要的固件或者文件
 cat >${GITHUB_WORKSPACE}/Clear <<-EOF
