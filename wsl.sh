@@ -502,7 +502,7 @@ function op_end() {
   fi
   ECHOY "后台地址: ${IP}"
   ECHOY "用户名: root"
-  ECHOY "固件已经存入${OPENGUJIAN}文件夹中"
+  ECHOY "固件已经存入${TARGET_OPENWRT}文件夹中"
   if [[ "${upgra}" == "1" ]]; then
     ECHOY "${dsgx}"
   fi
