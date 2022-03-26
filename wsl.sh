@@ -625,7 +625,6 @@ function op_again() {
   openwrt_gitpull
   op_menuconfig
   make_defconfig
-  op_config
   op_upgrade2
   op_download
   op_make
