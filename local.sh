@@ -21,8 +21,8 @@ ERROR="${Red}[ERROR]${Font}"
 # 变量
 export GITHUB_WORKSPACE="$PWD"
 export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
-export LOCAL_Build="${GITHUB_WORKSPACE}/openwrt/build"
-export BASE_PATH="${GITHUB_WORKSPACE}/openwrt/package/base-files/files"
+export LOCAL_Build="${HOME_PATH}/build"
+export BASE_PATH="${HOME_PATH}/package/base-files/files"
 export NETIP="${HOME_PATH}/package/base-files/files/etc/networkip"
 export DELETE="${HOME_PATH}/package/base-files/files/etc/deletefile"
 export date1="$(date +'%m-%d')"
@@ -161,7 +161,6 @@ function op_diywenjian() {
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
-  source $GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini
   if [[ ${Tishi} == "1" ]]; then
     echo
     echo -e "${Red} 提示${Font}：${Blue}二次编译只读取[${DIY_PAR2_SH}和settings.ini],${DIY_PART_SH}不执行${Font}"
@@ -169,6 +168,7 @@ function bianyi_xuanxiang() {
     echo -e "${Red} 提示${Font}：${Blue}[diy和files]继续使用,patches补丁文件不执行${Font}"
     echo
   fi
+  source $GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
@@ -241,27 +241,34 @@ function op_jiaoben() {
 }
 
 function op_diy_zdy() {
-  ECHOG "正在下载插件包,请耐心等候~~~"
+  ECHOG "正在下载插件包和更新feeds,请耐心等候~~~"
   cd ${HOME_PATH}
   source "${BUILD_PATH}/settings.ini"
   source "${BUILD_PATH}/common.sh" && Diy_menu
 }
-  
+
+function op_diy_zdy2() {
+  cd ${HOME_PATH}
+  chmod +x ${BUILD_PATH}/${DIY_TRAP_SH}
+  source ${BUILD_PATH}/${DIY_TRAP_SH}
+}
+
 function op_diy_ip() {
   cd ${HOME_PATH}
-  /bin/bash $BUILD_PATH/$DIY_PAR2_SH
-  IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PAR2_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
+  IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_TRAP_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Mark_Core}" > ${HOME_PATH}/${Mark_Core}
   echo
-  ECHOYY "您的后台IP地址为：$IP"
+  ECHOY "您的后台IP地址为：$IP"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     export Github=${Github}
-    ECHOY "您的Github地址为：$Github"
-    export Apidz="${Github##*com/}"
-    export Author="${Apidz%/*}"
-    export CangKu="${Apidz##*/}"
+    export Warehouse="${Github##*com/}"
+    export Author="$(echo "${Github}" |cut -d "/" -f4)"
+    export Library="$(echo "${Github}" |cut -d "/" -f5)"
+    ECHOYY "您的Github地址为：$Github"
+    echo
   fi
+  sleep 2
 }
 
 function op_menuconfig() {
@@ -290,11 +297,6 @@ function make_defconfig() {
     esac
   fi
   source "${BUILD_PATH}/common.sh" && Diy_menu3
-}
-
-function op_config() {
-  cd ${HOME_PATH}
-  source "${BUILD_PATH}/common.sh" && Make_upgrade
 }
 
 function tixing_op_config() {
@@ -456,7 +458,7 @@ function op_amlogic() {
   ECHOGG "设置打包的内核版本[直接回车则默认自动检测最新内核]"
   read -p " 请输入您要设置的内核：" kernel
   export kernel=${kernel:-"5.10.100_5.4.180 -a true"}
-  ECHOYY "您设置的内核版本为：自动检测最新内核打包"
+  ECHOYY "您设置的内核版本为：自动检测最新版内核打包"
   echo
   ECHOGG "设置ROOTFS分区大小[ 直接回车则默认 960 ]"
   read -p " 请输入ROOTFS分区大小：" rootfs
@@ -590,23 +592,24 @@ function openwrt_gitpull() {
   ./scripts/feeds install -a
 }
 
+function op_upgrade1() {
+  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
+    source $BUILD_PATH/upgrade.sh && Diy_Part1
+  fi
+}
+
 function op_continue() {
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
+  op_diy_zdy2
   op_diy_ip
   op_diywenjian
   op_jiaoben
   op_kongjian
-  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    source $BUILD_PATH/upgrade.sh && Diy_Part1
-  fi
+  op_upgrade1
   op_menuconfig
-  if [[ "${Menuconfig}" == "true" ]]; then
-    source "${BUILD_PATH}/common.sh" && Diy_prevent
-  fi
-  source "${BUILD_PATH}/common.sh" && Diy_files
-  op_config
+  make_defconfig
   op_upgrade2
   op_download
   op_make
@@ -618,20 +621,15 @@ function op_again() {
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
+  op_diy_zdy2
   op_diy_ip
   op_diywenjian
   op_jiaoben
   op_kongjian
-  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    source $BUILD_PATH/upgrade.sh && Diy_Part1
-  fi
+  op_upgrade1
   openwrt_gitpull
   op_menuconfig
-  if [[ "${Menuconfig}" == "true" ]]; then
-    source "${BUILD_PATH}/common.sh" && Diy_prevent
-  fi
-  source "${BUILD_PATH}/common.sh" && Diy_files
-  op_config
+  make_defconfig
   op_upgrade2
   op_download
   op_make
@@ -649,10 +647,10 @@ function openwrt_new() {
   amlogic_s9xxx
   op_jiaoben
   op_diy_zdy
+  op_diy_zdy2
   op_diy_ip
   op_menuconfig
   make_defconfig
-  op_config
   op_upgrade2
   op_download
   op_cpuxinghao
