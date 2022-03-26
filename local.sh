@@ -162,6 +162,13 @@ function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
   source $GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini
+  if [[ ${Tishi} == "1" ]]; then
+    echo
+    echo -e "${Red} 提示${Font}：${Blue}二次编译只读取[${DIY_PAR2_SH}和settings.ini],${DIY_PART_SH}不执行${Font}"
+    echo
+    echo -e "${Red} 提示${Font}：${Blue}[diy和files]继续使用,patches补丁文件不执行${Font}"
+    echo
+  fi
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
@@ -776,10 +783,12 @@ function menuop() {
   break
   ;;
   2)
+    Tishi="1"
     op_again
   break
   ;;
   3)
+    Tishi="1"
     op_continue
   break
   ;;
