@@ -658,7 +658,7 @@ function openwrt_new() {
 }
 
 function menu() {
-  ECHOB "正在加载信息中，请稍后..."
+  ECHOG "正在加载信息中，请稍后..."
   cd ${GITHUB_WORKSPACE}
   curl -fsSL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/x86/Makefile > Makefile
   export ledenh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
