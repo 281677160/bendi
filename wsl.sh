@@ -293,11 +293,6 @@ function make_defconfig() {
   source "${BUILD_PATH}/common.sh" && Diy_menu3
 }
 
-function op_config() {
-  cd ${HOME_PATH}
-  source "${BUILD_PATH}/common.sh" && Make_upgrade
-}
-
 function tixing_op_config() {
   export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}")"
   export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}")"
@@ -594,6 +589,12 @@ function openwrt_gitpull() {
   ./scripts/feeds install -a
 }
 
+function op_upgrade1() {
+  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
+    source $BUILD_PATH/upgrade.sh && Diy_Part1
+  fi
+}
+
 function op_continue() {
   cd ${HOME_PATH}
   op_firmware
@@ -602,15 +603,9 @@ function op_continue() {
   op_diywenjian
   op_jiaoben
   op_kongjian
-  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    source $BUILD_PATH/upgrade.sh && Diy_Part1
-  fi
+  op_upgrade1
   op_menuconfig
-  if [[ "${Menuconfig}" == "true" ]]; then
-    source "${BUILD_PATH}/common.sh" && Diy_prevent
-  fi
-  source "${BUILD_PATH}/common.sh" && Diy_files
-  op_config
+  make_defconfig
   op_upgrade2
   op_download
   op_make
@@ -626,15 +621,10 @@ function op_again() {
   op_diywenjian
   op_jiaoben
   op_kongjian
-  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    source $BUILD_PATH/upgrade.sh && Diy_Part1
-  fi
+  op_upgrade1
   openwrt_gitpull
   op_menuconfig
-  if [[ "${Menuconfig}" == "true" ]]; then
-    source "${BUILD_PATH}/common.sh" && Diy_prevent
-  fi
-  source "${BUILD_PATH}/common.sh" && Diy_files
+  make_defconfig
   op_config
   op_upgrade2
   op_download
