@@ -438,8 +438,8 @@ function op_amlogic() {
     echo
     exit 1
   fi
-  if [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[ ! -f "${GITHUB_WORKSPACE}/amlogic/.success" ]] && \
-       [[ ! -d "${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx" ]] && [[ ! -f "$GITHUB_WORKSPACE/amlogic/make" ]]; then
+  if [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[ ! -f "${GITHUB_WORKSPACE}/amlogic/.success" ]] \
+       && [[ ! -d "${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx" ]] && [[ ! -f "$GITHUB_WORKSPACE/amlogic/make" ]]; then
        ECHOGG "发现老旧打包程序存在，请输入ubuntu密码删除老旧打包程序"
        sudo rm -rf "${GITHUB_WORKSPACE}/amlogic"
        ECHOY "正在下载打包所需的程序,请耐心等候~~~"
