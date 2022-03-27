@@ -452,7 +452,7 @@ function op_amlogic() {
     exit 1
   fi
   ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-  if [[ -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
+  if [[ -d ${GITHUB_WORKSPACE}/amlogic ]]; then
     ECHOGG "发现老旧打包程序存在，请输入ubuntu密码删除老旧打包程序"
     sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
   fi
