@@ -438,14 +438,21 @@ function op_amlogic() {
     echo
     exit 1
   fi
-  if [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[ ! -f "${GITHUB_WORKSPACE}/amlogic/.success" ]] && [[ ! -d "${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx" ]] && [[ ! -f "$GITHUB_WORKSPACE/amlogic/make" ]]; then
-    ECHOGG "发现老旧打包程序存在，请输入ubuntu密码删除老旧打包程序"
+  if [[ ! -d "/home/dan/amlogic" ]]; then
+    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
+    judge "内核运行文件下载"
+    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
+  if [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[  ! -f "${GITHUB_WORKSPACE}/amlogic/make" ]]; then
+    ECHOGG "发现已存在的打包程序缺少文件，请输入ubuntu密码删除打包程序重新下载"
     sudo rm -rf "${GITHUB_WORKSPACE}/amlogic"
     ECHOY "正在下载打包所需的程序,请耐心等候~~~"
     git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
     judge "内核运行文件下载"
     rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-  else
+  elif [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[  ! -f "${GITHUB_WORKSPACE}/amlogic/make" ]]; then
+    ECHOGG "发现已存在的打包程序缺少文件，请输入ubuntu密码删除打包程序重新下载"
+    sudo rm -rf "${GITHUB_WORKSPACE}/amlogic"
     ECHOY "正在下载打包所需的程序,请耐心等候~~~"
     git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
     judge "内核运行文件下载"
