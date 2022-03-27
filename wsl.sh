@@ -458,6 +458,11 @@ function op_amlogic() {
   ECHOGG "设置打包的内核版本[直接回车则默认自动检测最新内核]"
   read -p " 请输入您要设置的内核：" amlogic_kernel
   export amlogic_kernel=${amlogic_kernel:-"5.10.100_5.4.180 -a true"}
+  if [[ "${amlogic_kernel}" == "5.10.100_5.4.180 -a true" ]]; then
+    ECHOYY "您设置的内核版本为：自动检测最新版内核打包"
+  else
+    ECHOYY "您设置的内核版本为：${amlogic_kernel}"
+  fi
   echo
   ECHOGG "设置ROOTFS分区大小[ 直接回车则默认：${root_size} ]"
   read -p " 请输入ROOTFS分区大小：" rootfs_size
