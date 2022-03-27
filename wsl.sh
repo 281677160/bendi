@@ -216,19 +216,6 @@ function op_repo_branch() {
   judge "${matrixtarget}源码下载"
 }
 
-function amlogic_s9xxx() {
-  if [[ "${matrixtarget}" == "openwrt_amlogic" ]]; then
-    ECHOY "正在下载打包所需的内核,请耐心等候~~~"
-    if [[ -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
-      ECHOGG "发现老旧晶晨内核文件存在，请输入ubuntu密码删除老旧内核"
-      sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
-    fi
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
-    judge "内核运行文件下载"
-    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-  fi
-}
-
 function op_jiaoben() {
   if [[ ! -d ${HOME_PATH}/build ]]; then
     cp -Rf ${GITHUB_WORKSPACE}/OP_DIY ${HOME_PATH}/build
@@ -451,17 +438,18 @@ function op_amlogic() {
     echo
     exit 1
   fi
-  ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-  if [[ -d ${GITHUB_WORKSPACE}/amlogic ]] && [[ ! -f ${GITHUB_WORKSPACE}/amlogic/.success ]]; then
+  if [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[ ! -f "${GITHUB_WORKSPACE}/amlogic/.success" ]] && [[ ! -f "$GITHUB_WORKSPACE/amlogic/make" ]]; then
     ECHOGG "发现老旧打包程序存在，请输入ubuntu密码删除老旧打包程序"
-    sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
+    sudo rm -rf "${GITHUB_WORKSPACE}/amlogic"
+    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
+    judge "内核运行文件下载"
+    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   fi
-  git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
-  judge "内核运行文件下载"
-  rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   [ -d amlogic/openwrt-armvirt ] || mkdir -p amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型 ]"
+  export root_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make" |cut -d "=" -f2 |sed 's/\"//g' )"
   read -p " 请输入您要设置的机型：" amlogic_model
   export amlogic_model=${amlogic_model:-"s905x3_s905x2_s905x_s905w_s905d_s922x_s912"}
   ECHOYY "您设置的机型为：${amlogic_model}"
@@ -475,9 +463,9 @@ function op_amlogic() {
     ECHOYY "您设置的内核版本为：${amlogic_kernel}"
   fi
   echo
-  ECHOGG "设置ROOTFS分区大小[ 直接回车则默认 960 ]"
+  ECHOGG "设置ROOTFS分区大小[ 直接回车则默认：${root_size} ]"
   read -p " 请输入ROOTFS分区大小：" rootfs_size
-  export rootfs_size=${rootfs_size:-"960"}
+  export rootfs_size=${rootfs_size:-"${root_size}"}
   ECHOYY "您设置的ROOTFS分区大小为：${rootfs_size}"
   export make_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make")"
   export zhiding_size="ROOT_MB=\"${rootfs_size}\""
@@ -662,7 +650,6 @@ function openwrt_new() {
   op_diywenjian
   bianyi_xuanxiang
   op_repo_branch
-  amlogic_s9xxx
   op_jiaoben
   op_diy_zdy
   op_diy_zdy2
