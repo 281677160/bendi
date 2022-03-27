@@ -593,7 +593,7 @@ function openwrt_qx() {
     cd ${GITHUB_WORKSPACE}
     if [[ -d ${GITHUB_WORKSPACE}/openwrt ]]; then
       ECHOGG "正在删除已存在的openwrt文件夹"
-      rm -r ${HOME_PATH}
+      rm -rf ${HOME_PATH}
     fi
 }
 
@@ -839,7 +839,6 @@ function mecuowu() {
   1)
     ECHOG "开始以${matrixtarget}最新源码重新编译"
     export matrixtarget="${matrixtarget}"
-    openwrt_qx
     openwrt_new
   break
   ;;
