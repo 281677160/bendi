@@ -579,15 +579,11 @@ function op_firmware() {
 }
 
 function openwrt_qx() {
-      cd ${GITHUB_WORKSPACE}
-      if [[ -d amlogic/amlogic-s9xxx ]]; then
-        ECHOGG "发现老旧晶晨内核文件存在，请输入ubuntu密码删除老旧内核"
-        sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
-      fi
-      if [[ -d ${GITHUB_WORKSPACE}/openwrt ]]; then
-        ECHOGG "发现老源码存在，正在删除老源码"
-        rm -rf ${HOME_PATH}
-      fi
+    cd ${GITHUB_WORKSPACE}
+    if [[ -d ${GITHUB_WORKSPACE}/openwrt ]]; then
+      ECHOGG "正在删除已存在的openwrt文件夹"
+      rm -rf ${HOME_PATH}
+    fi
 }
 
 function openwrt_gitpull() {
@@ -644,6 +640,7 @@ function op_again() {
 }
 
 function openwrt_new() {
+  openwrt_qx
   op_busuhuanjing
   op_firmware
   op_kongjian
@@ -696,35 +693,30 @@ function menu() {
     1)
       export matrixtarget="Lede_source"
       ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
-      openwrt_qx
       openwrt_new
     break
     ;;
     2)
       export matrixtarget="Lienol_source"
       ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI Master版本"
-      openwrt_qx
       openwrt_new
     break
     ;;
     3)
       export matrixtarget="Tianling_source"
       ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
-      openwrt_qx
       openwrt_new
     break
     ;;
     4)
       export matrixtarget="Mortal_source"
       ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
-      openwrt_qx
       openwrt_new
     break
     ;;
     5)
       export matrixtarget="openwrt_amlogic"
       ECHOG "您选择了：N1和晶晨系列CPU盒子专用"
-      openwrt_qx
       openwrt_new
     break
     ;;
