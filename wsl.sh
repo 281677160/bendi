@@ -212,7 +212,7 @@ function op_repo_branch() {
   cd ${GITHUB_WORKSPACE}
   echo
   ECHOG "正在下载源码中,请耐心等候~~~"
-  rm -r openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
+  rm -rf openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
   judge "${matrixtarget}源码下载"
 }
 
@@ -222,7 +222,7 @@ function op_jiaoben() {
   else
     cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${HOME_PATH}/build/
   fi
-  rm -r ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
+  rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展文件下载"
   mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
   chmod -R +x ${BUILD_PATH}
@@ -314,7 +314,7 @@ function op_upgrade2() {
 function op_download() {
   cd ${HOME_PATH}
   ECHOG "下载DL文件，请耐心等候..."
-  rm -fr ${HOME_PATH}/build.log
+  rm -rf ${HOME_PATH}/build.log
   if [[ ${Tishi} == "1" ]]; then
     make -j2 download 2>&1 |tee ${HOME_PATH}/build.log
   else
