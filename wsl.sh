@@ -593,7 +593,7 @@ function openwrt_qx() {
     cd ${GITHUB_WORKSPACE}
     if [[ -d ${GITHUB_WORKSPACE}/openwrt ]]; then
       ECHOGG "正在删除已存在的openwrt文件夹"
-      rm -rf ${HOME_PATH}
+      rm -r ${HOME_PATH}
     fi
 }
 
