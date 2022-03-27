@@ -446,15 +446,34 @@ function op_amlogic() {
     mkdir -p ${HOME_PATH}/bin/targets/armvirt/64
     ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
     ECHOYY "openwrt/bin/targets/armvirt/64文件夹内，再进行打包"
+    explorer.exe .
     echo
     exit 1
   fi
-  if [[ ! -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
-    amlogic_s9xxx
+  if [[ ! -d "/home/dan/amlogic" ]]; then
+    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
+    judge "内核运行文件下载"
+    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
+  elif [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[  ! -f "${GITHUB_WORKSPACE}/amlogic/make" ]]; then
+    ECHOGG "发现已存在的打包程序缺少文件，请输入ubuntu密码删除打包程序重新下载"
+    sudo rm -rf "${GITHUB_WORKSPACE}/amlogic"
+    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
+    judge "内核运行文件下载"
+    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
+  elif [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[  ! -d "${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx" ]]; then
+    ECHOGG "发现已存在的打包程序缺少文件，请输入ubuntu密码删除打包程序重新下载"
+    sudo rm -rf "${GITHUB_WORKSPACE}/amlogic"
+    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
+    judge "内核运行文件下载"
+    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   fi
   [ -d amlogic/openwrt-armvirt ] || mkdir -p amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型 ]"
+  export root_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make" |cut -d "=" -f2 |sed 's/\"//g' )"
   read -p " 请输入您要设置的机型：" amlogic_model
   export amlogic_model=${amlogic_model:-"s905x3_s905x2_s905x_s905w_s905d_s922x_s912"}
   ECHOYY "您设置的机型为：${amlogic_model}"
@@ -462,11 +481,15 @@ function op_amlogic() {
   ECHOGG "设置打包的内核版本[直接回车则默认自动检测最新内核]"
   read -p " 请输入您要设置的内核：" amlogic_kernel
   export amlogic_kernel=${amlogic_kernel:-"5.10.100_5.4.180 -a true"}
-  ECHOYY "您设置的内核版本为：自动检测最新版内核打包"
+  if [[ "${amlogic_kernel}" == "5.10.100_5.4.180 -a true" ]]; then
+    ECHOYY "您设置的内核版本为：自动检测最新版内核打包"
+  else
+    ECHOYY "您设置的内核版本为：${amlogic_kernel}"
+  fi
   echo
-  ECHOGG "设置ROOTFS分区大小[ 直接回车则默认 960 ]"
+  ECHOGG "设置ROOTFS分区大小[ 直接回车则默认：${root_size} ]"
   read -p " 请输入ROOTFS分区大小：" rootfs_size
-  export rootfs_size=${rootfs_size:-"960"}
+  export rootfs_size=${rootfs_size:-"${root_size}"}
   ECHOYY "您设置的ROOTFS分区大小为：${rootfs_size}"
   export make_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make")"
   export zhiding_size="ROOT_MB=\"${rootfs_size}\""
@@ -487,6 +510,7 @@ function op_amlogic() {
   sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
+    explorer.exe .
   else
     print_error "打包失败，请再次尝试!"
   fi
@@ -642,6 +666,7 @@ function op_again() {
 }
 
 function openwrt_new() {
+  openwrt_qx
   op_busuhuanjing
   op_firmware
   op_kongjian
@@ -695,35 +720,30 @@ function menu() {
     1)
       export matrixtarget="Lede_source"
       ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
-      openwrt_qx
       openwrt_new
     break
     ;;
     2)
       export matrixtarget="Lienol_source"
       ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI Master版本"
-      openwrt_qx
       openwrt_new
     break
     ;;
     3)
       export matrixtarget="Tianling_source"
       ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
-      openwrt_qx
       openwrt_new
     break
     ;;
     4)
       export matrixtarget="Mortal_source"
       ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
-      openwrt_qx
       openwrt_new
     break
     ;;
     5)
       export matrixtarget="openwrt_amlogic"
       ECHOG "您选择了：N1和晶晨系列CPU盒子专用"
-      openwrt_qx
       openwrt_new
     break
     ;;
@@ -780,7 +800,6 @@ function menuop() {
   read -p " ${XUANZHE}：" menu_num
   case $menu_num in
   1)
-    openwrt_qx
     openwrt_new
   break
   ;;
@@ -835,7 +854,6 @@ function mecuowu() {
   1)
     ECHOG "开始以${matrixtarget}最新源码重新编译"
     export matrixtarget="${matrixtarget}"
-    openwrt_qx
     openwrt_new
   break
   ;;
