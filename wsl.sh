@@ -151,10 +151,10 @@ function op_kongjian() {
 function op_diywenjian() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
-    rm -rf bendi && git clone https://github.com/281677160/bendi ${GITHUB_WORKSPACE}/bendi
+    rm -r bendi && git clone https://github.com/281677160/bendi ${GITHUB_WORKSPACE}/bendi
     judge "OP_DIY文件下载"
     cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY ${GITHUB_WORKSPACE}/OP_DIY
-    rm -rf ${GITHUB_WORKSPACE}/bendi
+    rm -r ${GITHUB_WORKSPACE}/bendi
   fi
 }
 
@@ -212,7 +212,7 @@ function op_repo_branch() {
   cd ${GITHUB_WORKSPACE}
   echo
   ECHOG "正在下载源码中,请耐心等候~~~"
-  rm -rf openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
+  rm -r openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
   judge "${matrixtarget}源码下载"
 }
 
@@ -222,7 +222,7 @@ function op_jiaoben() {
   else
     cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${HOME_PATH}/build/
   fi
-  rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
+  rm -r ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展文件下载"
   mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
   chmod -R +x ${BUILD_PATH}
