@@ -456,23 +456,23 @@ function op_amlogic() {
   fi
   [ -d amlogic/openwrt-armvirt ] || mkdir -p amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
-  ECHOGG "设置要打包固件的机型[ 直接回车则默认 Phicomm-N1（s905d）]"
-  read -p " 请输入您要设置的机型：" model
-  export model=${model:-"s905d"}
-  ECHOYY "您设置的机型为：${model}"
+  ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型 ]"
+  read -p " 请输入您要设置的机型：" amlogic_model
+  export amlogic_model=${amlogic_model:-"s905x3_s905x2_s905x_s905w_s905d_s922x_s912"}
+  ECHOYY "您设置的机型为：${amlogic_model}"
   echo
   ECHOGG "设置打包的内核版本[直接回车则默认自动检测最新内核]"
-  read -p " 请输入您要设置的内核：" kernel
-  export kernel=${kernel:-"5.10.100_5.4.180 -a true"}
+  read -p " 请输入您要设置的内核：" amlogic_kernel
+  export amlogic_kernel=${amlogic_kernel:-"5.10.100_5.4.180 -a true"}
   ECHOYY "您设置的内核版本为：自动检测最新版内核打包"
   echo
   ECHOGG "设置ROOTFS分区大小[ 直接回车则默认 960 ]"
-  read -p " 请输入ROOTFS分区大小：" rootfs
-  export rootfs=${rootfs:-"960"}
-  ECHOYY "您设置的ROOTFS分区大小为：${rootfs}"
-  minsize="$(egrep -o "ROOT_MB=\"[0-9]+\"" ${GITHUB_WORKSPACE}/amlogic/make)"
-  rootfssize="ROOT_MB=\"${rootfs}\""
-  sed -i "s/${minsize}/${rootfssize}/g" ${GITHUB_WORKSPACE}/amlogic/make
+  read -p " 请输入ROOTFS分区大小：" rootfs_size
+  export rootfs_size=${rootfs_size:-"960"}
+  ECHOYY "您设置的ROOTFS分区大小为：${rootfs_size}"
+  export make_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make")"
+  export zhiding_size="ROOT_MB=\"${rootfs_size}\""
+  sed -i "s?${make_size}?${zhiding_size}?g" "$GITHUB_WORKSPACE/amlogic/make"
   echo
   ECHOGG "请输入ubuntu密码进行固件打包程序"
   sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
@@ -486,7 +486,7 @@ function op_amlogic() {
   fi
   cd amlogic
   sudo chmod +x make
-  sudo ./make -d -b ${model} -k ${kernel}
+  sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
     explorer.exe .
