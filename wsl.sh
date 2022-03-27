@@ -452,7 +452,7 @@ function op_amlogic() {
     exit 1
   fi
   ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-  if [[ -d ${GITHUB_WORKSPACE}/amlogic ]]; then
+  if [[ -d ${GITHUB_WORKSPACE}/amlogic ]] && [[ ! -f ${GITHUB_WORKSPACE}/amlogic/.success ]]; then
     ECHOGG "发现老旧打包程序存在，请输入ubuntu密码删除老旧打包程序"
     sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
   fi
@@ -498,6 +498,7 @@ function op_amlogic() {
   sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
+    echo "success" >${GITHUB_WORKSPACE}/amlogic/.success
     explorer.exe .
   else
     print_error "打包失败，请再次尝试!"
