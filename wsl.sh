@@ -498,7 +498,6 @@ function op_amlogic() {
   sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
-    echo "success" >${GITHUB_WORKSPACE}/amlogic/.success
     explorer.exe .
   else
     print_error "打包失败，请再次尝试!"
