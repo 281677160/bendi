@@ -600,8 +600,10 @@ function openwrt_qx() {
 
 function openwrt_gitpull() {
   cd ${HOME_PATH}
+  ECHOG "git pull上游源码"
   git reset --hard
   git pull
+  ECHOG "22222"
   source "${BUILD_PATH}/common.sh" && Diy_menu4
 }
 
