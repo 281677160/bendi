@@ -600,6 +600,7 @@ function openwrt_qx() {
 function openwrt_gitpull() {
   cd ${HOME_PATH}
   ./scripts/feeds clean
+  rm -rf ./tmp && rm -rf .config
   git reset --hard
   git pull
 }
