@@ -603,7 +603,7 @@ function openwrt_gitpull() {
   ECHOG "git pull上游源码"
   git reset --hard
   git pull
-  ECHOG "22222"
+  ECHOG "同步上游源码完毕,开始编译固件"
   source "${BUILD_PATH}/common.sh" && Diy_menu4
 }
 
