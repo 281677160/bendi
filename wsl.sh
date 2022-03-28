@@ -558,7 +558,7 @@ function op_firmware() {
     export Mark_Core=".Lienol_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
     export ZZZ_PATH="${HOME_PATH}/package/default-settings/files/zzz-default-settings"
-    export LUCI_EDITION="20.06"
+    export LUCI_EDITION="20.07"
     [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
   fi
   if [[ "${matrixtarget}" == "Tianling_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Tianling_core" 2>/dev/null)" ]]; then
