@@ -599,6 +599,7 @@ function openwrt_qx() {
 
 function openwrt_gitpull() {
   cd ${HOME_PATH}
+  git reset --hard
   git pull
   ./scripts/feeds update -a
   ./scripts/feeds install -a
