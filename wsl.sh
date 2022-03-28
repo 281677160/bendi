@@ -785,7 +785,6 @@ function menuop() {
   read -p " ${XUANZHE}：" menu_num
   case $menu_num in
   1)
-    openwrt_qx
     openwrt_new
   break
   ;;
