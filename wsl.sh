@@ -599,11 +599,9 @@ function openwrt_qx() {
 
 function openwrt_gitpull() {
   cd ${HOME_PATH}
+  ./scripts/feeds clean
   git reset --hard
   git pull
-  ./scripts/feeds update -a
-  ./scripts/feeds install -a
-  ./scripts/feeds install -a
 }
 
 function op_upgrade1() {
@@ -635,13 +633,14 @@ function op_again() {
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
+  openwrt_gitpull
+  op_diy_zdy
   op_diy_zdy2
   op_diy_ip
   op_diywenjian
   op_jiaoben
   op_kongjian
   op_upgrade1
-  openwrt_gitpull
   op_menuconfig
   make_defconfig
   op_upgrade2
