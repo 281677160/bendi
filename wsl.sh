@@ -241,13 +241,6 @@ function op_diy_zdy2() {
   source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${DIY_TRAP_SH}
 }
 
-function op_diy_zdy3() {
-  cd ${HOME_PATH}
-  chmod -R +x ${GITHUB_WORKSPACE}/OP_DIY
-  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${DIY_PART_SH}
-  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${DIY_TRAP_SH}
-}
-
 function op_diy_ip() {
   cd ${HOME_PATH}
   IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_TRAP_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
@@ -608,9 +601,7 @@ function openwrt_gitpull() {
   cd ${HOME_PATH}
   git reset --hard
   git pull
-  ./scripts/feeds update -a
-  ./scripts/feeds install -a
-  ./scripts/feeds install -a
+  source "${BUILD_PATH}/common.sh" && Diy_menu3
 }
 
 function op_upgrade1() {
@@ -648,7 +639,6 @@ function op_again() {
   op_jiaoben
   openwrt_gitpull
   op_kongjian
-  op_upgrade1
   op_menuconfig
   make_defconfig
   op_upgrade2
