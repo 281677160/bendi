@@ -237,8 +237,15 @@ function op_diy_zdy() {
 
 function op_diy_zdy2() {
   cd ${HOME_PATH}
-  chmod +x ${BUILD_PATH}/${DIY_TRAP_SH}
-  source ${BUILD_PATH}/${DIY_TRAP_SH}
+  chmod -R +x ${GITHUB_WORKSPACE}/OP_DIY
+  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${DIY_TRAP_SH}
+}
+
+function op_diy_zdy3() {
+  cd ${HOME_PATH}
+  chmod -R +x ${GITHUB_WORKSPACE}/OP_DIY
+  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${DIY_PART_SH}
+  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${DIY_TRAP_SH}
 }
 
 function op_diy_ip() {
@@ -599,10 +606,11 @@ function openwrt_qx() {
 
 function openwrt_gitpull() {
   cd ${HOME_PATH}
-  ./scripts/feeds clean
-  rm -rf ./tmp && rm -rf .config
   git reset --hard
   git pull
+  ./scripts/feeds update -a
+  ./scripts/feeds install -a
+  ./scripts/feeds install -a
 }
 
 function op_upgrade1() {
@@ -634,12 +642,11 @@ function op_again() {
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
-  openwrt_gitpull
-  op_diy_zdy
-  op_diy_zdy2
+  op_diy_zdy3
   op_diy_ip
   op_diywenjian
   op_jiaoben
+  openwrt_gitpull
   op_kongjian
   op_upgrade1
   op_menuconfig
