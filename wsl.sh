@@ -601,7 +601,7 @@ function openwrt_gitpull() {
   cd ${HOME_PATH}
   git reset --hard
   git pull
-  source "${BUILD_PATH}/common.sh" && Diy_menu3
+  source "${BUILD_PATH}/common.sh" && Diy_menu4
 }
 
 function op_upgrade1() {
@@ -633,7 +633,6 @@ function op_again() {
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
-  op_diy_zdy3
   op_diy_ip
   op_diywenjian
   op_jiaoben
