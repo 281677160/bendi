@@ -754,6 +754,7 @@ function menuop() {
   break
   ;;
   2)
+    Tishi="1"
     op_again
   break
   ;;
