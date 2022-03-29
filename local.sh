@@ -161,13 +161,6 @@ function op_diywenjian() {
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
-  if [[ ${Tishi} == "1" ]]; then
-    echo
-    echo -e "${Red} 提示${Font}：${Blue}二次编译只读取[${DIY_PAR2_SH}和settings.ini],${DIY_PART_SH}不执行${Font}"
-    echo
-    echo -e "${Red} 提示${Font}：${Blue}[diy和files]继续使用,patches补丁文件不执行${Font}"
-    echo
-  fi
   source $GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
@@ -383,10 +376,11 @@ function op_make() {
   ECHOG "正在编译固件，请耐心等待..."
   [[ -d "${TARGET_BSGET}" ]] && rm -fr ${TARGET_BSGET}/*
   rm -rf ${HOME_PATH}/{README,README.md,README_EN.md} > /dev/null 2>&1
+  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
   if [[ "$(nproc)" -ge "16" ]];then
-    make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
   else
-    make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
   fi
   if [[ `ls -a ${TARGET_BSGET} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
     rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
@@ -396,7 +390,6 @@ function op_make() {
     sleep 1
     exit 1
   else
-    ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
     rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
     echo "chenggong" >${LOCAL_Build}/chenggong
     rm -rf ${HOME_PATH}/build.log
@@ -406,8 +399,8 @@ function op_make() {
 function op_upgrade3() {
   cd ${HOME_PATH}
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    rm -fr ${HOME_PATH}/bin/Firmware/* > /dev/null 2>&1
-    rm -rf ${HOME_PATH}/upgrade && cp -Rf ${TARGET_BSGET} ${HOME_PATH}/upgrade
+    [[ -d "${HOME_PATH}/bin/Firmware" ]] && rm -fr ${HOME_PATH}/bin/Firmware/*
+    [[ -d "${HOME_PATH}/upgrade" ]] && rm -rf ${HOME_PATH}/upgrade && cp -Rf ${TARGET_BSGET} ${HOME_PATH}/upgrade
     source ${BUILD_PATH}/upgrade.sh && Diy_Part3
   fi
   if [[ `ls -a ${HOME_PATH}/bin/Firmware | grep -c "${Upgrade_Date}"` -ge '1' ]]; then
@@ -585,6 +578,13 @@ function openwrt_gitpull() {
   cd ${HOME_PATH}
   ECHOG "git pull上游源码"
   git reset --hard
+  if [[ `grep -c "webweb.sh" ${ZZZ_PATH}` -ge '1' ]]; then
+    git reset --hard
+  fi
+  if [[ `grep -c "webweb.sh" ${ZZZ_PATH}` -ge '1' ]]; then
+    print_error "同步上游源码失败,请检查网络"
+    exit 1
+  fi
   git pull
   ECHOG "同步上游源码完毕,开始编译固件"
   source "${BUILD_PATH}/common.sh" && Diy_menu4
@@ -594,25 +594,6 @@ function op_upgrade1() {
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     source $BUILD_PATH/upgrade.sh && Diy_Part1
   fi
-}
-
-function op_continue() {
-  cd ${HOME_PATH}
-  op_firmware
-  bianyi_xuanxiang
-  op_diy_zdy2
-  op_diy_ip
-  op_diywenjian
-  op_jiaoben
-  op_kongjian
-  op_upgrade1
-  op_menuconfig
-  make_defconfig
-  op_upgrade2
-  op_download
-  op_make
-  op_upgrade3
-  op_end
 }
 
 function op_again() {
@@ -751,15 +732,13 @@ function menuop() {
   echo
   echo -e " 1${Green}.${Font}${Yellow}删除旧源码,使用[${matrixtarget}]源码全新编译${Font}(推荐)"
   echo
-  echo -e " 2${Green}.${Font}${Yellow}同步上游仓库源码,再次编译${Font}"
+  echo -e " 2${Green}.${Font}${Yellow}保留缓存同步上游仓库源码,再次编译${Font}"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}无需同步上游仓库源码,再次编译${Font}"
+  echo -e " 3${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
-  echo -e " 4${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
+  echo -e " 4${Green}.${Font}${Yellow}打包N1和晶晨系列CPU固件${Font}"
   echo
-  echo -e " 5${Green}.${Font}${Yellow}打包N1和晶晨系列CPU固件${Font}"
-  echo
-  echo -e " 6${Green}.${Font}${Yellow}退出${Font}"
+  echo -e " 5${Green}.${Font}${Yellow}退出${Font}"
   echo
   echo
   XUANZHE="请输入数字"
@@ -776,19 +755,14 @@ function menuop() {
   break
   ;;
   3)
-    Tishi="1"
-    op_continue
-  break
-  ;;
-  4)
     menu
   break
   ;;
-  5)
+  4)
     op_amlogic
   break
   ;;   
-  6)
+  5)
     exit 0
     break
   ;;
