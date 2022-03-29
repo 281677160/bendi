@@ -161,13 +161,6 @@ function op_diywenjian() {
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
-  if [[ ${Tishi} == "1" ]]; then
-    echo
-    echo -e "${Red} 提示${Font}：${Blue}二次编译只读取[${DIY_PAR2_SH}和settings.ini],${DIY_PART_SH}不执行${Font}"
-    echo
-    echo -e "${Red} 提示${Font}：${Blue}[diy和files]继续使用,patches补丁文件不执行${Font}"
-    echo
-  fi
   source $GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
@@ -607,25 +600,6 @@ function op_upgrade1() {
   fi
 }
 
-function op_continue() {
-  cd ${HOME_PATH}
-  op_firmware
-  bianyi_xuanxiang
-  op_diy_zdy2
-  op_diy_ip
-  op_diywenjian
-  op_jiaoben
-  op_kongjian
-  op_upgrade1
-  op_menuconfig
-  make_defconfig
-  op_upgrade2
-  op_download
-  op_make
-  op_upgrade3
-  op_end
-}
-
 function op_again() {
   cd ${HOME_PATH}
   op_firmware
@@ -762,15 +736,13 @@ function menuop() {
   echo
   echo -e " 1${Green}.${Font}${Yellow}删除旧源码,使用[${matrixtarget}]源码全新编译${Font}(推荐)"
   echo
-  echo -e " 2${Green}.${Font}${Yellow}同步上游仓库源码,再次编译${Font}"
+  echo -e " 2${Green}.${Font}${Yellow}保留缓存同步上游仓库源码,再次编译${Font}"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}无需同步上游仓库源码,再次编译${Font}"
+  echo -e " 3${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
   echo
-  echo -e " 4${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
+  echo -e " 4${Green}.${Font}${Yellow}打包N1和晶晨系列CPU固件${Font}"
   echo
-  echo -e " 5${Green}.${Font}${Yellow}打包N1和晶晨系列CPU固件${Font}"
-  echo
-  echo -e " 6${Green}.${Font}${Yellow}退出${Font}"
+  echo -e " 5${Green}.${Font}${Yellow}退出${Font}"
   echo
   echo
   XUANZHE="请输入数字"
@@ -782,24 +754,18 @@ function menuop() {
   break
   ;;
   2)
-    Tishi="1"
     op_again
   break
   ;;
   3)
-    Tishi="1"
-    op_continue
-  break
-  ;;
-  4)
     menu
   break
   ;;
-  5)
+  4)
     op_amlogic
   break
   ;;   
-  6)
+  5)
     exit 0
     break
   ;;
