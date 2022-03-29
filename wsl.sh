@@ -384,6 +384,7 @@ function op_make() {
   ECHOG "正在编译固件，请耐心等待..."
   [[ -d "${TARGET_BSGET}" ]] && rm -fr ${TARGET_BSGET}/*
   rm -rf ${HOME_PATH}/{README,README.md,README_EN.md} > /dev/null 2>&1
+  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
   if [[ "$(nproc)" -ge "16" ]];then
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
   else
@@ -397,7 +398,6 @@ function op_make() {
     sleep 1
     exit 1
   else
-    ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
     rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
     echo "chenggong" >${LOCAL_Build}/chenggong
     rm -rf ${HOME_PATH}/build.log
@@ -407,8 +407,8 @@ function op_make() {
 function op_upgrade3() {
   cd ${HOME_PATH}
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    rm -fr ${HOME_PATH}/bin/Firmware/* > /dev/null 2>&1
-    rm -rf ${HOME_PATH}/upgrade && cp -Rf ${TARGET_BSGET} ${HOME_PATH}/upgrade
+    [[ -d "${HOME_PATH}/bin/Firmware" ]] && rm -fr ${HOME_PATH}/bin/Firmware/*
+    [[ -d "${HOME_PATH}/upgrade" ]] && rm -rf ${HOME_PATH}/upgrade && cp -Rf ${TARGET_BSGET} ${HOME_PATH}/upgrade
     source ${BUILD_PATH}/upgrade.sh && Diy_Part3
   fi
   if [[ `ls -a ${HOME_PATH}/bin/Firmware | grep -c "${Upgrade_Date}"` -ge '1' ]]; then
@@ -589,6 +589,13 @@ function openwrt_gitpull() {
   cd ${HOME_PATH}
   ECHOG "git pull上游源码"
   git reset --hard
+  if [[ `grep -c "webweb.sh" ${ZZZ_PATH}` -ge '1' ]]; then
+    git reset --hard
+  fi
+  if [[ `grep -c "webweb.sh" ${ZZZ_PATH}` -ge '1' ]]; then
+    print_error "同步上游源码失败,请检查网络"
+    exit 1
+  fi
   git pull
   ECHOG "同步上游源码完毕,开始编译固件"
   source "${BUILD_PATH}/common.sh" && Diy_menu4
