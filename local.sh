@@ -215,29 +215,18 @@ function op_repo_branch() {
   judge "${matrixtarget}源码下载"
 }
 
-function amlogic_s9xxx() {
-  if [[ "${matrixtarget}" == "openwrt_amlogic" ]]; then
-    ECHOY "正在下载打包所需的内核,请耐心等候~~~"
-    if [[ -d ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx ]]; then
-      ECHOGG "发现老旧晶晨内核文件存在，请输入ubuntu密码删除老旧内核"
-      sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
-    fi
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
-    judge "内核运行文件下载"
-    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-  fi
-}
-
 function op_jiaoben() {
   if [[ ! -d ${HOME_PATH}/build ]]; then
     cp -Rf ${GITHUB_WORKSPACE}/OP_DIY ${HOME_PATH}/build
   else
     cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${HOME_PATH}/build/
   fi
+  [[ "${Tishi}" == "1" ]] && sed -i '/-rl/d' "${BUILD_PATH}/${DIY_PART_SH}"
   rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展文件下载"
   mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
   chmod -R +x ${BUILD_PATH}
+  source "${BUILD_PATH}/common.sh" && Bendi_variable
 }
 
 function op_diy_zdy() {
@@ -249,8 +238,8 @@ function op_diy_zdy() {
 
 function op_diy_zdy2() {
   cd ${HOME_PATH}
-  chmod +x ${BUILD_PATH}/${DIY_TRAP_SH}
-  source ${BUILD_PATH}/${DIY_TRAP_SH}
+  chmod -R +x ${GITHUB_WORKSPACE}/OP_DIY
+  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${DIY_TRAP_SH}
 }
 
 function op_diy_ip() {
@@ -326,7 +315,7 @@ function op_upgrade2() {
 function op_download() {
   cd ${HOME_PATH}
   ECHOG "下载DL文件，请耐心等候..."
-  rm -fr ${HOME_PATH}/build.log
+  rm -rf ${HOME_PATH}/build.log
   if [[ ${Tishi} == "1" ]]; then
     make -j2 download 2>&1 |tee ${HOME_PATH}/build.log
   else
@@ -446,7 +435,6 @@ function op_amlogic() {
     mkdir -p ${HOME_PATH}/bin/targets/armvirt/64
     ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
     ECHOYY "openwrt/bin/targets/armvirt/64文件夹内，再进行打包"
-    explorer.exe .
     echo
     exit 1
   fi
@@ -510,7 +498,6 @@ function op_amlogic() {
   sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
-    explorer.exe .
   else
     print_error "打包失败，请再次尝试!"
   fi
@@ -555,69 +542,52 @@ function op_end() {
 function op_firmware() {
   if [[ "${matrixtarget}" == "Lede_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Lede_core" 2>/dev/null)" ]]; then
     export matrixtarget="Lede_source"
-    export SOURCE="Lede"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
+    [[ -f ${BUILD_PATH}/common.sh ]] && source "${BUILD_PATH}/common.sh" && Bendi_variable
     export Mark_Core=".Lede_core"
-    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
-    export ZZZ_PATH="${HOME_PATH}/package/lean/default-settings/files/zzz-default-settings"
-    export LUCI_EDITION="18.06"
     [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
-  fi
-  if [[ "${matrixtarget}" == "Lienol_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Lienol_core" 2>/dev/null)" ]]; then
+  elif [[ "${matrixtarget}" == "Lienol_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Lienol_core" 2>/dev/null)" ]]; then
     export matrixtarget="Lienol_source"
-    export SOURCE="Lienol"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
+    [[ -f ${BUILD_PATH}/common.sh ]] && source "${BUILD_PATH}/common.sh" && Bendi_variable
     export Mark_Core=".Lienol_core"
-    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
-    export ZZZ_PATH="${HOME_PATH}/package/default-settings/files/zzz-default-settings"
-    export LUCI_EDITION="20.06"
     [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
-  fi
-  if [[ "${matrixtarget}" == "Tianling_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Tianling_core" 2>/dev/null)" ]]; then
+  elif [[ "${matrixtarget}" == "Tianling_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Tianling_core" 2>/dev/null)" ]]; then
     export matrixtarget="Tianling_source"
-    export SOURCE="Tianling"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
+    [[ -f ${BUILD_PATH}/common.sh ]] && source "${BUILD_PATH}/common.sh" && Bendi_variable
     export Mark_Core=".Tianling_core"
-    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
-    export ZZZ_PATH="${HOME_PATH}/package/emortal/default-settings/files/99-default-settings"
-    export LUCI_EDITION="18.06"
     [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
-  fi
-  if [[ "${matrixtarget}" == "Mortal_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Mortal_core" 2>/dev/null)" ]]; then
+  elif [[ "${matrixtarget}" == "Mortal_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Mortal_core" 2>/dev/null)" ]]; then
     export matrixtarget="Mortal_source"
-    export SOURCE="Mortal"
+    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
+    [[ -f ${BUILD_PATH}/common.sh ]] && source "${BUILD_PATH}/common.sh" && Bendi_variable
     export Mark_Core=".Mortal_core"
-    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
-    export ZZZ_PATH="${HOME_PATH}/package/emortal/default-settings/files/99-default-settings"
-    export LUCI_EDITION="21.02"
     [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
-  fi
-  if [[ "${matrixtarget}" == "openwrt_amlogic" ]] || [[ -n "$(ls -A "${HOME_PATH}/.amlogic_core" 2>/dev/null)" ]]; then
+  elif [[ "${matrixtarget}" == "openwrt_amlogic" ]] || [[ -n "$(ls -A "${HOME_PATH}/.amlogic_core" 2>/dev/null)" ]]; then
     export matrixtarget="openwrt_amlogic"
-    export SOURCE="Lede"
-    export Mark_Core=".amlogic_core"
     export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
-    export ZZZ_PATH="${HOME_PATH}/package/lean/default-settings/files/zzz-default-settings"
-    export LUCI_EDITION="18.06"
+    [[ -f ${BUILD_PATH}/common.sh ]] && source "${BUILD_PATH}/common.sh" && Bendi_variable
+    export Mark_Core=".amlogic_core"
     [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
   fi
 }
 
 function openwrt_qx() {
-      cd ${GITHUB_WORKSPACE}
-      if [[ -d amlogic/amlogic-s9xxx ]]; then
-        ECHOGG "发现老旧晶晨内核文件存在，请输入ubuntu密码删除老旧内核"
-        sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
-      fi
-      if [[ -d ${GITHUB_WORKSPACE}/openwrt ]]; then
-        ECHOGG "发现老源码存在，正在删除老源码"
-        rm -rf ${HOME_PATH}
-      fi
+    cd ${GITHUB_WORKSPACE}
+    if [[ -d ${GITHUB_WORKSPACE}/openwrt ]]; then
+      ECHOGG "正在删除已存在的openwrt文件夹"
+      rm -rf ${HOME_PATH}
+    fi
 }
 
 function openwrt_gitpull() {
   cd ${HOME_PATH}
+  ECHOG "git pull上游源码"
+  git reset --hard
   git pull
-  ./scripts/feeds update -a
-  ./scripts/feeds install -a
-  ./scripts/feeds install -a
+  ECHOG "同步上游源码完毕,开始编译固件"
+  source "${BUILD_PATH}/common.sh" && Diy_menu4
 }
 
 function op_upgrade1() {
@@ -649,13 +619,11 @@ function op_again() {
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
-  op_diy_zdy2
   op_diy_ip
   op_diywenjian
   op_jiaoben
-  op_kongjian
-  op_upgrade1
   openwrt_gitpull
+  op_kongjian
   op_menuconfig
   make_defconfig
   op_upgrade2
@@ -673,7 +641,6 @@ function openwrt_new() {
   op_diywenjian
   bianyi_xuanxiang
   op_repo_branch
-  amlogic_s9xxx
   op_jiaoben
   op_diy_zdy
   op_diy_zdy2
