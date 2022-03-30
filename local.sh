@@ -26,7 +26,7 @@ export BASE_PATH="${HOME_PATH}/package/base-files/files"
 export NETIP="${HOME_PATH}/package/base-files/files/etc/networkip"
 export DELETE="${HOME_PATH}/package/base-files/files/etc/deletefile"
 export date1="$(date +'%m-%d')"
-export bendi="1"
+export bendi_script="1"
 
 function print_ok() {
   echo
