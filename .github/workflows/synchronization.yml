@@ -10,11 +10,6 @@
 name: 同步上游仓库
 on:
   workflow_dispatch:
-    inputs:
-      again-fork:
-        description: '[fork-actions]改成[fork],再按[Run workflow]按钮启动,开启同步上游仓库'
-        required: false
-        default: 'fork-actions'
 
 env:
   BILDYML: synchronization.yml
@@ -48,7 +43,6 @@ jobs:
         git clone -b main https://github.com/281677160/bendi.git repogx
         
     - name: 同步上游仓库
-      if: env.REPO_TOKEN && (github.event.inputs.again-fork == 'fork')
       run: |
         cd $GITHUB_WORKSPACE
         rm -fr repogx/Lede_source/*
