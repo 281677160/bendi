@@ -243,12 +243,6 @@ function op_diy_zdy() {
   source "${BUILD_PATH}/common.sh" && Diy_menu
 }
 
-function op_diy_zdy2() {
-  cd ${HOME_PATH}
-  chmod -R +x ${GITHUB_WORKSPACE}/OP_DIY
-  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${DIY_TRAP_SH}
-}
-
 function op_diy_ip() {
   cd ${HOME_PATH}
   IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_TRAP_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
@@ -646,7 +640,6 @@ function openwrt_new() {
   op_repo_branch
   op_jiaoben
   op_diy_zdy
-  op_diy_zdy2
   op_diy_ip
   op_menuconfig
   make_defconfig
