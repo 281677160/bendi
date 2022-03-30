@@ -100,6 +100,11 @@ if [[ "$(echo ${GITHUB_WORKSPACE} |grep -c 'openwrt')" -ge '1' ]]; then
   print_error "请注意命令的执行路径,并非在openwrt文件夹内执行,如果您ubuntu或机器就叫openwrt的话,恭喜您,就是不给您用,改名吧少年!"
   exit 0
 fi
+if [[ `ls -1 /mnt/* | grep -c "Windows"` -ge '1' ]] && [[ `ls -1 /mnt | grep -c "wsl"` -ge '1' ]]; then
+  export WSL_ubuntu="YES"
+else
+  export WSL_ubuntu="NO"
+fi
 
 function op_busuhuanjing() {
 cd ${GITHUB_WORKSPACE}
@@ -165,6 +170,7 @@ function bianyi_xuanxiang() {
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
     ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
+    [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
     while :; do
       read -p " ${ZDYSZ}： " ZDYSZU
       case $ZDYSZU in
@@ -378,10 +384,18 @@ function op_make() {
   [[ -d "${TARGET_BSGET}" ]] && rm -fr ${TARGET_BSGET}/*
   rm -rf ${HOME_PATH}/{README,README.md,README_EN.md} > /dev/null 2>&1
   ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
-  if [[ "$(nproc)" -ge "16" ]];then
-    make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
+  if [[ "${WSL_ubuntu}" == "YES" ]]; then
+    if [[ "$(nproc)" -ge "16" ]];then
+      PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
+    else
+      PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
+    fi
   else
-    make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
+    if [[ "$(nproc)" -ge "16" ]];then
+      make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
+    else
+      make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
+    fi
   fi
   if [[ `ls -a ${TARGET_BSGET} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
     rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
@@ -407,10 +421,8 @@ function op_upgrade3() {
   if [[ `ls -a ${HOME_PATH}/bin/Firmware | grep -c "${Upgrade_Date}"` -ge '1' ]]; then
     print_ok "加入‘定时升级插件的固件’操作完成"
     export dsgx="加入‘定时升级插件的固件’已经放入[bin/Firmware]文件夹中"
-    export upgra="1"
   else
-    print_error "加入‘定时升级固件插件’的固件失败，您的机型或者不支持定时更新!"
-    export upgra="0"
+    export dsgx="加入‘定时升级固件插件’的固件失败，您的机型或者不支持定时更新!"
   fi
   cd ${TARGET_BSGET}
   rename -v "s/^immortalwrt/openwrt/" * > /dev/null 2>&1
@@ -429,6 +441,7 @@ function op_amlogic() {
     mkdir -p ${HOME_PATH}/bin/targets/armvirt/64
     ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
     ECHOYY "openwrt/bin/targets/armvirt/64文件夹内，再进行打包"
+    [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
     echo
     exit 1
   fi
@@ -492,6 +505,7 @@ function op_amlogic() {
   sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
+    [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
   else
     print_error "打包失败，请再次尝试!"
   fi
@@ -511,14 +525,13 @@ function op_end() {
   ECHOY "后台地址: ${IP}"
   ECHOY "用户名: root"
   ECHOY "固件已经存入${TARGET_OPENWRT}文件夹中"
-  if [[ "${upgra}" == "1" ]]; then
-    ECHOY "${dsgx}"
-  fi
+  [[ "${REGULAR_UPDATE}" == "true" ]] && ECHOY "${dsgx}"
   if [[ "${matrixtarget}" == "openwrt_amlogic" ]]; then
     ECHOR "提示：再次输入编译命令可选择二次编译或者打包N1和晶晨系列盒子专用固件"
   else
     ECHOR "提示：再次输入编译命令可进行二次编译"
   fi
+  [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
   ECHOY "编译日期：$(date +'%Y年%m月%d号')"
   export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   START_SECONDS=$(date --date="$START_TIME" +%s)
