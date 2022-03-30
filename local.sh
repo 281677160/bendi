@@ -519,6 +519,7 @@ function op_end() {
   else
     ECHOR "提示：再次输入编译命令可进行二次编译"
   fi
+  ECHOY "编译日期：$(date +'%Y年%m月%d号')"
   export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   START_SECONDS=$(date --date="$START_TIME" +%s)
   END_SECONDS=$(date --date="$END_TIME" +%s)
