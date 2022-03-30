@@ -197,6 +197,7 @@ function bianyi_xuanxiang() {
     ECHORR "您已关闭选择机型和增删插件设置！"
   ;;
   esac
+  echo
   sleep 2
 }
 
