@@ -157,7 +157,7 @@ function op_kongjian() {
 function op_diywenjian() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
-    rm -rf bendi && https://github.com/281677160/build-actions bendi
+    rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
     cp -Rf ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
     rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/start-up
     if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
