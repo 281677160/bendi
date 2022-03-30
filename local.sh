@@ -234,6 +234,7 @@ function op_jiaoben() {
   [[ "${Tishi}" == "1" ]] && sed -i '/-rl/d' "${BUILD_PATH}/${DIY_PART_SH}"
   rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展文件下载"
+  rm -rf ${HOME_PATH}/build/common/OP_DIY
   mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
   chmod -R +x ${BUILD_PATH}
   source "${BUILD_PATH}/common.sh" && Bendi_variable
