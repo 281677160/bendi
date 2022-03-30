@@ -39,24 +39,13 @@ jobs:
       run: |
         cd $GITHUB_WORKSPACE
         git clone -b main https://github.com/281677160/bendi.git shangyou
-        git clone -b main https://github.com/281677160/bendi.git repogx
         
     - name: 同步上游仓库
       run: |
         cd $GITHUB_WORKSPACE
-        rm -fr repogx/Lede_source/*
-        rm -fr repogx/Lienol_source/*
-        rm -fr repogx/Mortal_source/*
-        rm -fr repogx/Tianling_source/*
-        rm -fr repogx/openwrt_amlogic/*
-        
-        cp -Rf $GITHUB_WORKSPACE/shangyou/Lede_source/settings.ini repogx/Lede_source/settings.ini
-        cp -Rf $GITHUB_WORKSPACE/shangyou/Lienol_source/settings.ini repogx/Lienol_source/settings.ini
-        cp -Rf $GITHUB_WORKSPACE/shangyou/Tianling_source/settings.ini repogx/Tianling_source/settings.ini
-        cp -Rf $GITHUB_WORKSPACE/shangyou/Mortal_source/settings.ini repogx/Mortal_source/settings.ini
-        cp -Rf $GITHUB_WORKSPACE/shangyou/openwrt_amlogic/settings.ini repogx/openwrt_amlogic/settings.ini
-        chmod -R 775 repogx
-        cd repogx
+        rm -fr shangyou/OP_DIY
+        chmod -R 775 shangyou
+        cd shangyou
         git add .
         git commit -m "up"
         git push --quiet "https://${{ secrets.REPO_TOKEN }}@github.com/${{github.repository}}" HEAD:main
