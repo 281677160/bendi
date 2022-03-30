@@ -287,7 +287,7 @@ function make_defconfig() {
     ;;
     esac
   fi
-  source "${BUILD_PATH}/common.sh" && Diy_menu3
+  source "${BUILD_PATH}/common.sh" && Diy_menu2
 }
 
 function tixing_op_config() {
@@ -604,7 +604,7 @@ function openwrt_gitpull() {
   fi
   git pull
   ECHOG "同步上游源码完毕,开始编译固件"
-  source "${BUILD_PATH}/common.sh" && Diy_menu4
+  source "${BUILD_PATH}/common.sh" && Diy_menu
 }
 
 function op_upgrade1() {
