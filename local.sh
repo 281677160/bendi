@@ -100,7 +100,7 @@ if [[ "$(echo ${GITHUB_WORKSPACE} |grep -c 'openwrt')" -ge '1' ]]; then
   print_error "请注意命令的执行路径,并非在openwrt文件夹内执行,如果您ubuntu或机器就叫openwrt的话,恭喜您,就是不给您用,改名吧少年!"
   exit 0
 fi
-if [[ `ls -1 /mnt/* | grep -c "Windows"` -ge '1' ]] && [[ `ls -1 /mnt | grep -c "wsl"` -ge '1' ]]; then
+if [[ `ls -1 /mnt/* | grep -c "Windows"` -ge '1' ]] || [[ `ls -1 /mnt | grep -c "wsl"` -ge '1' ]]; then
   export WSL_ubuntu="YES"
 else
   export WSL_ubuntu="NO"
