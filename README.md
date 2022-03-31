@@ -20,7 +20,9 @@ bash <(curl -fsSL git.io/local.sh)
 #
 ---
 - <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" />
+#
 - <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" />
+#
 - <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" />
 - <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" />
  <img src="https://github.com/281677160/bendi/blob/main/doc/5.png" />
