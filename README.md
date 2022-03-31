@@ -17,13 +17,14 @@ sudo apt-get update && sudo apt-get install -y curl
 ```sh
 bash <(curl -fsSL git.io/local.sh)
 ```
+#
 ---
 - <img src="https://github.com/281677160/bendi/blob/main/doc/1.png" />
-- <img src="https://github.com/281677160/bendi/blob/main/doc/1.png" />
-- <img src="https://github.com/281677160/bendi/tree/main/doc/3.png" />
-- <img src="https://github.com/281677160/bendi/tree/main/doc/4.png" />
-- <img src="https://github.com/281677160/bendi/tree/main/doc/5.png" />
-- <img src="https://github.com/281677160/bendi/tree/main/doc/6.png" />
-- <img src="https://github.com/281677160/bendi/tree/main/doc/7.png" />
-- <img src="https://github.com/281677160/bendi/tree/main/doc/8.png" />
+- <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" />
+- <img src="https://github.com/281677160/bendi/blob/main/doc/3.png" />
+- <img src="https://github.com/281677160/bendi/blob/main/doc/4.png" />
+- <img src="https://github.com/281677160/bendi/blob/main/doc/5.png" />
+- <img src="https://github.com/281677160/bendi/blob/main/doc/6.png" />
+- <img src="https://github.com/281677160/bendi/blob/main/doc/7.png" />
+- <img src="https://github.com/281677160/bendi/blob/main/doc/8.png" />
 
