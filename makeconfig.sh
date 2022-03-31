@@ -97,8 +97,8 @@ if [ ! "$Google_Check" == 301 ];then
   print_error "提醒：编译之前请自备梯子，编译全程都需要稳定梯子~~"
   exit 0
 fi
-if [[ "$(echo ${GITHUB_WORKSPACE} |grep -c 'openwrt')" -ge '1' ]]; then
-  print_error "请注意命令的执行路径,并非在openwrt文件夹内执行,如果您ubuntu或机器就叫openwrt的话,恭喜您,就是不给您用,改名吧少年!"
+if [[ "$(echo ${GITHUB_WORKSPACE} |grep -c 'op_config')" -ge '1' ]]; then
+  print_error "请注意命令的执行路径,并非在op_config文件夹内执行,如果您ubuntu或机器就叫op_config的话,恭喜您,就是不给您用,改名吧少年!"
   exit 0
 fi
 if [[ `ls -1 /mnt/* | grep -c "Windows"` -ge '1' ]] || [[ `ls -1 /mnt | grep -c "wsl"` -ge '1' ]]; then
@@ -194,7 +194,7 @@ function op_repo_branch() {
   cd ${GITHUB_WORKSPACE}
   echo
   ECHOG "正在下载源码中,请耐心等候~~~"
-  rm -rf openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
+  rm -rf op_config && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" op_config
   judge "${matrixtarget}源码下载"
 }
 
@@ -325,8 +325,8 @@ function op_firmware() {
 
 function openwrt_qx() {
     cd ${GITHUB_WORKSPACE}
-    if [[ -d ${GITHUB_WORKSPACE}/openwrt ]]; then
-      ECHOGG "正在删除已存在的openwrt文件夹"
+    if [[ -d ${GITHUB_WORKSPACE}/op_config ]]; then
+      ECHOGG "正在删除已存在的op_config文件夹"
       rm -rf ${HOME_PATH}
     fi
 }
