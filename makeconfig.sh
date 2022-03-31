@@ -345,7 +345,6 @@ function openwrt_gitpull() {
     print_error "同步上游源码失败,请检查网络"
     exit 1
   fi
-  git pull
   ECHOG "同步上游源码完毕,开始制作配置文件"
   source "${BUILD_PATH}/common.sh" && Diy_menu
 }
