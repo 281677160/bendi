@@ -264,8 +264,9 @@ function make_defconfig() {
     ;;
     esac
   fi
-  source "${BUILD_PATH}/common.sh" && Diy_menu2
-  ./scripts/diffconfig.sh > "${GITHUB_WORKSPACE}/CONFIG_DIY/${matrixtarget}/${CONFIG_FILE}"
+  source "${BUILD_PATH}/common.sh" && Diy_menu2 > /dev/null 2>&1
+  rm -rf "${OP_DIY}/${matrixtarget}/${CONFIG_FILE}"
+  ./scripts/diffconfig.sh > "${OP_DIY}/${matrixtarget}/${CONFIG_FILE}"
 }
 
 function op_end() {
