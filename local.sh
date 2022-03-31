@@ -378,6 +378,11 @@ function op_cpuxinghao() {
   clear
   ECHOG "您的CPU型号为[ ${Model_Name} ]"
   ECHOG "在Ubuntu使用核心数为[ ${Cpu_Cores} ],线程数为[ $(nproc) ]"
+  if [[ ${matrixtarget} == "openwrt_amlogic" ]]; then
+    ECHOG "使用[ ${matrixtarget} ]文件夹，编译[ N1和晶晨系列盒子专用固件 ]"
+  else
+    ECHOG "使用[ ${matrixtarget} ]文件夹，编译[ ${TARGET_PROFILE} ]"
+  fi
   if [[ "$(nproc)" == "1" ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[3.5]小时左右,请耐心等待..."
   elif [[ "$(nproc)" =~ (2|3) ]]; then
