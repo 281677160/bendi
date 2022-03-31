@@ -20,7 +20,7 @@ ERROR="${Red}[ERROR]${Font}"
 
 # 变量
 export GITHUB_WORKSPACE="$PWD"
-export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
+export HOME_PATH="${GITHUB_WORKSPACE}/op_config"
 export LOCAL_Build="${HOME_PATH}/build"
 export BASE_PATH="${HOME_PATH}/package/base-files/files"
 export NETIP="${HOME_PATH}/package/base-files/files/etc/networkip"
