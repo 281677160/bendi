@@ -19,7 +19,7 @@ bash <(curl -fsSL git.io/local.sh)
 ```
 #
 ---
-![图片](https://github.com/281677160/bendi/blob/main/doc/1.png) ""
+* [片](https://github.com/281677160/bendi/blob/main/doc/1.png) ""
  <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" />
  <img src="https://github.com/281677160/bendi/blob/main/doc/3.png" />
 <img src="https://github.com/281677160/bendi/blob/main/doc/4.png" />
