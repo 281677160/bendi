@@ -18,12 +18,12 @@ sudo apt-get update && sudo apt-get install -y curl
 bash <(curl -fsSL git.io/local.sh)
 ```
 #
-- <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" /> \<br>
-- <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" /> \<br>
-- <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" /> \<br>
-- <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" /> \<br>
-- <img src="https://github.com/281677160/bendi/blob/main/doc/5.png" /> \<br>
-- <img src="https://github.com/281677160/bendi/blob/main/doc/6.png" /> \<br>
-- <img src="https://github.com/281677160/bendi/blob/main/doc/7.png" />
-- <img src="https://github.com/281677160/bendi/blob/main/doc/8.png" />
+# <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" /> <br>
+# <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" /> <br>
+# <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" /> <br>
+# <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" /> <br>
+# <img src="https://github.com/281677160/bendi/blob/main/doc/5.png" /> <br>
+# <img src="https://github.com/281677160/bendi/blob/main/doc/6.png" /> <br>
+# <img src="https://github.com/281677160/bendi/blob/main/doc/7.png" /> <br>
+# <img src="https://github.com/281677160/bendi/blob/main/doc/8.png" /> <br>
 
