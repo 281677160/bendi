@@ -426,6 +426,7 @@ function op_make() {
     rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
     echo "chenggong" >${LOCAL_Build}/chenggong
     rm -rf ${HOME_PATH}/build.log
+    ./scripts/diffconfig.sh > ${BUILD_PATH}/.config
   fi
 }
 
