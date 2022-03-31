@@ -13,7 +13,7 @@
 sudo apt-get update && sudo apt-get install -y curl
 ```
 ---
-- 普通Ubuntu 和 WSL的Ubuntu 通用一键编译openwrt命令
++ 普通Ubuntu 和 WSL的Ubuntu 通用一键编译openwrt命令
 ```sh
 bash <(curl -fsSL git.io/local.sh)
 ```
