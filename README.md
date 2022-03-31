@@ -17,6 +17,8 @@ sudo apt-get update && sudo apt-get install -y curl
 ```sh
 bash <(curl -fsSL git.io/local.sh)
 ```
+---
+---
 #
 # <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" /> <br>
 # <img src="https://github.com/281677160/bendi/blob/main/doc/2.png" /> <br>
