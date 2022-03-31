@@ -137,7 +137,7 @@ function op_diywenjian() {
     if [[ -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]]; then
       rm -rf bendi && git clone https://github.com/281677160/common bendi
       judge  "CONFIG_DIY文件下载"
-      cp -Rf ${GITHUB_WORKSPACE}/bendi/CONFIG_DIY/* ${GITHUB_WORKSPACE}/CONFIG_DIY/
+      cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/CONFIG_DIY/
     else
       print_error "CONFIG_DIY文件下载失败"
       exit 1
@@ -207,7 +207,7 @@ function op_jiaoben() {
   [[ "${Tishi}" == "1" ]] && sed -i '/-rl/d' "${BUILD_PATH}/${DIY_PART_SH}"
   rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展文件下载"
-  rm -rf ${HOME_PATH}/build/common/CONFIG_DIY
+  rm -rf ${HOME_PATH}/build/common/OP_DIY
   mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
   chmod -R +x ${BUILD_PATH}
   source "${BUILD_PATH}/common.sh" && Bendi_variable
