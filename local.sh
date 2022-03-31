@@ -773,11 +773,11 @@ function menuop() {
   echo
   echo
   echo -e " ${Blue}当前使用源码${Font}：${Green}${matrixtarget}${Font}"
-  echo -e " ${Blue}编译成功机型${Font}：${Green}${CG_PROFILE}${Font}"
+  echo -e " ${Blue}当前成功编译机型${Font}：${Green}${CG_PROFILE}${Font}"
   echo -e " ${Blue}OP_DIY配置文件机型${Font}：${Green}${TARGET_PROFILE}${Font}"
   echo
   echo
-  echo -e " 1${Green}.${Font}${Yellow}删除旧源码,使用[${matrixtarget}]源码全新编译${Font}(推荐)"
+  echo -e " 1${Green}.${Font}${Yellow}删除旧源码,重新下载[${matrixtarget}]源码编译${Font}(推荐)"
   echo
   echo -e " 2${Green}.${Font}${Yellow}保留缓存同步上游仓库源码,再次编译${Font}"
   echo
