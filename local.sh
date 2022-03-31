@@ -418,9 +418,11 @@ function op_make() {
 
 function op_upgrade3() {
   cd ${HOME_PATH}
+  echo "${TARGET_BSGET}" > $HOME_PATH/123
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     [[ -d "${HOME_PATH}/bin/Firmware" ]] && rm -fr ${HOME_PATH}/bin/Firmware/*
-    [[ -d "${HOME_PATH}/upgrade" ]] && rm -rf ${HOME_PATH}/upgrade && cp -Rf ${TARGET_BSGET} ${HOME_PATH}/upgrade
+    [[ -d "${HOME_PATH}/upgrade" ]] && rm -rf ${HOME_PATH}/upgrade
+    cp -Rf ${TARGET_BSGET} ${HOME_PATH}/upgrade
     source ${BUILD_PATH}/upgrade.sh && Diy_Part3
   fi
   if [[ `ls -a ${HOME_PATH}/bin/Firmware | grep -c "${Upgrade_Date}"` -ge '1' ]]; then
