@@ -306,7 +306,20 @@ function tixing_op_config() {
     export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE})"
   fi
   export TARGET_BSGET="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
-  [[ -z ${TARGET_PROFILE} ]] && TARGET_PROFILE="OP_DIY/${matrixtarget}没有${CONFIG_FILE}文件,或者${CONFIG_FILE}文件内容为空"
+  [[ -z "${TARGET_PROFILE}" ]] && TARGET_PROFILE="OP_DIY/${matrixtarget}没有${CONFIG_FILE}文件,或者${CONFIG_FILE}文件内容为空"
+}
+
+function chenggong_op_config() {
+  if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${BUILD_PATH}/.config"` -eq '1' ]]; then
+    export CG_PROFILE="x86-64"
+  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${BUILD_PATH}/.config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" "${BUILD_PATH}/.config"` == '0' ]]; then
+    export CG_PROFILE="x86_32"
+  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" "${BUILD_PATH}/.config"` -eq '1' ]]; then
+    export CG_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" "${BUILD_PATH}/.config" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+  else
+    export CG_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${BUILD_PATH}/.config)"
+  fi
+  [[ -z "${CG_PROFILE}" ]] && CG_PROFILE="未知"
 }
 
 function op_upgrade2() {
@@ -738,6 +751,7 @@ function Menu_requirements() {
   op_firmware > /dev/null 2>&1
   source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
   tixing_op_config > /dev/null 2>&1
+  chenggong_op_config > /dev/null 2>&1
   cd ${GITHUB_WORKSPACE}
 }
 
@@ -746,8 +760,9 @@ function menuop() {
   clear
   echo
   echo
-  echo -e " ${Blue}当前源码${Font}：${Green}${matrixtarget}${Font}"
-  echo -e " ${Blue}编译机型${Font}：${Green}${TARGET_PROFILE}${Font}"
+  echo -e " ${Blue}当前使用源码${Font}：${Green}${matrixtarget}${Font}"
+  echo -e " ${Blue}编译成功机型${Font}：${Green}${CG_PROFILE}${Font}"
+  echo -e " ${Blue}OP_DIY配置文件机型${Font}：${Green}${TARGET_PROFILE}${Font}"
   echo
   echo
   echo -e " 1${Green}.${Font}${Yellow}删除旧源码,使用[${matrixtarget}]源码全新编译${Font}(推荐)"
