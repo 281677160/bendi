@@ -459,6 +459,9 @@ function op_amlogic() {
   cd ${GITHUB_WORKSPACE}
   if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c "tar.gz"` == '0' ]]; then
     mkdir -p "${HOME_PATH}/bin/targets/armvirt/64"
+    clear
+    echo
+    echo
     echo
     ECHOR "没发现您的 openwrt/bin/targets/armvirt/64 文件夹里存在.tar.gz固件，已为你创建了文件夹"
     ECHORR "请先将\"openwrt-armvirt-64-default-rootfs.tar.gz\"固件"
