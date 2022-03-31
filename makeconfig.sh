@@ -122,36 +122,9 @@ cd ${GITHUB_WORKSPACE}
   sudo apt-get update -y
   sudo apt-get full-upgrade -y
   sudo -E apt-get -qq install -y git subversion git-core wget curl grep
-  judge "部署编译环境"
+  judge "部署Ubuntu环境"
   sudo apt-get autoremove -y --purge > /dev/null 2>&1
   sudo apt-get clean -y > /dev/null 2>&1
-}
-
-function op_kongjian() {
-  cd ${GITHUB_WORKSPACE}
-  export Ubunkj="$(df -h|grep -v tmpfs |grep "/dev/.*" |awk '{print $4}' |awk 'NR==1')"
-  export FINAL=`echo ${Ubunkj: -1}`
-  if [[ "${FINAL}" =~ (M|K) ]]; then
-    print_error "敬告：可用空间小于[ 1G ]退出编译,建议可用空间大于20G"
-    sleep 1
-    exit 1
-  fi
-  export Ubuntu_kj="$(df -h|grep -v tmpfs |grep "/dev/.*" |awk '{print $4}' |awk 'NR==1' |sed 's/.$//g')"
-  if [[ "${Ubuntu_kj}" -lt "20" ]];then
-    ECHOY "您当前系统可用空间为${Ubuntu_kj}G"
-    print_error "敬告：可用空间小于[ 20G ]编译容易出错,建议可用空间大于20G,是否继续?"
-    read -p " 直接回车退出编译，按[Y/y]回车则继续编译： " YN
-    case ${YN} in
-    [Yy]) 
-      ECHOG  "可用空间太小严重影响编译,请满天神佛保佑您成功吧！"
-    ;;
-    *)
-      ECHOY  "您已取消编译,请清理Ubuntu空间或增加硬盘容量..."
-      sleep 1
-      exit 0
-    ;;
-    esac
-  fi
 }
 
 function op_diywenjian() {
@@ -388,7 +361,6 @@ function op_again() {
   op_diywenjian
   op_jiaoben
   openwrt_gitpull
-  op_kongjian
   op_menuconfig
   make_defconfig
 }
@@ -397,7 +369,6 @@ function openwrt_new() {
   openwrt_qx
   op_busuhuanjing
   op_firmware
-  op_kongjian
   op_diywenjian
   bianyi_xuanxiang
   op_repo_branch
