@@ -457,12 +457,14 @@ function op_upgrade3() {
 
 function op_amlogic() {
   cd ${GITHUB_WORKSPACE}
-  if [[ `ls -a ${HOME_PATH}/bin/targets/armvirt/* | grep -c "tar.gz"` == '0' ]]; then
-    mkdir -p ${HOME_PATH}/bin/targets/armvirt/64
-    ECHOY "请先将openwrt-armvirt-64-default-rootfs.tar.gz固件存入"
-    ECHOYY "openwrt/bin/targets/armvirt/64文件夹内，再进行打包"
-    [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
+  if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c "tar.gz"` == '0' ]]; then
+    mkdir -p "${HOME_PATH}/bin/targets/armvirt/64"
     echo
+    ECHOR "没发现您的 openwrt/bin/targets/armvirt/64 文件夹里存在.tar.gz固件，已为你创建了文件夹"
+    ECHORR "请先将\"openwrt-armvirt-64-default-rootfs.tar.gz\"固件"
+    ECHOR "存入 openwrt/bin/targets/armvirt/64 文件夹里面，再使用命令进行打包"
+    echo
+    [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
     exit 1
   fi
   if [[ ! -d "/home/dan/amlogic" ]]; then
