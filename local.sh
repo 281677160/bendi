@@ -418,7 +418,6 @@ function op_make() {
 
 function op_upgrade3() {
   cd ${HOME_PATH}
-  echo "${TARGET_BSGET}" > $HOME_PATH/123
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     [[ -d "${HOME_PATH}/bin/Firmware" ]] && rm -fr ${HOME_PATH}/bin/Firmware/*
     [[ -d "${HOME_PATH}/upgrade" ]] && rm -rf ${HOME_PATH}/upgrade
