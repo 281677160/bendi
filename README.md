@@ -18,8 +18,8 @@ sudo apt-get update && sudo apt-get install -y curl
 bash <(curl -fsSL git.io/local.sh)
 ```
 ---
-- <img src="https://github.com/281677160/bendi/tree/main/doc/1.png" />
-- <img src="https://github.com/281677160/bendi/tree/main/doc/2.png" />
+- <img src="https://github.com/281677160/bendi/blob/main/doc/1.png" />
+- <img src="https://github.com/281677160/bendi/blob/main/doc/1.png" />
 - <img src="https://github.com/281677160/bendi/tree/main/doc/3.png" />
 - <img src="https://github.com/281677160/bendi/tree/main/doc/4.png" />
 - <img src="https://github.com/281677160/bendi/tree/main/doc/5.png" />
