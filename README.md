@@ -7,6 +7,7 @@
 - 推荐使用 Ubuntu 20.04 LTS （支持windons子系统ubuntu和普通ubuntu）
 - 使用非root用户登录您的ubuntu系统,执行以下代码即可:
 
+---
 - 为防止个别系统没安装curl，使用一键编译命令之前选执行一次安装curl命令:
 ```sh
 sudo apt-get update && sudo apt-get install -y curl
