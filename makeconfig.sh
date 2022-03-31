@@ -272,6 +272,8 @@ function make_defconfig() {
 function op_end() {
   cd ${HOME_PATH}
   print_ok "配置文件制作完成，已经覆盖进[CONFIG_DIY/${matrixtarget}/${CONFIG_FILE}]文件中"
+  [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
+  echo
 }
 
 function tixing_op_config() {
