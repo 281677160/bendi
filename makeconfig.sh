@@ -399,6 +399,10 @@ function menu() {
   clear
   clear
   echo
+  echo
+  ECHOG "  欢迎使用本脚本,本脚本制作的配置文件只针对我云编译脚本使用,感谢!"
+  echo
+  echo
   ECHOB "  请选择制作配置文件的源码"
   ECHOY " 1. Lede_${ledenh}内核,LUCI 18.06版本(Lede_source)"
   ECHOYY " 2. Lienol_${lienolnh}内核,LUCI Master版本(Lienol_source)"
@@ -406,7 +410,7 @@ function menu() {
   ECHOYY " 3. Immortalwrt_${tianlingnh}内核,LUCI 18.06版本(Tianling_source)"
   ECHOY " 4. Immortalwrt_${mortalnh}内核,LUCI 21.02版本(Mortal_source)"
   ECHOYY " 5. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
-  ECHOYY " 6. 退出编译程序"
+  ECHOY " 6. 退出编译程序"
   echo
   XUANZHEOP="请输入数字"
   while :; do
