@@ -268,10 +268,9 @@ function make_defconfig() {
   ./scripts/diffconfig.sh > "${GITHUB_WORKSPACE}/CONFIG_DIY/${matrixtarget}/${CONFIG_FILE}"
 }
 
-function op_upgrade3() {
+function op_end() {
   cd ${HOME_PATH}
   print_ok "配置文件制作完成，已经覆盖进[CONFIG_DIY/${matrixtarget}/${CONFIG_FILE}]文件中"
-  exit 0
 }
 
 function tixing_op_config() {
@@ -364,6 +363,7 @@ function op_again() {
   openwrt_gitpull
   op_menuconfig
   make_defconfig
+  op_end
 }
 
 function openwrt_new() {
@@ -378,6 +378,7 @@ function openwrt_new() {
   op_diy_ip
   op_menuconfig
   make_defconfig
+  op_end
 }
 
 function menu() {
