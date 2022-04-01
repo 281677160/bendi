@@ -770,6 +770,7 @@ function menu() {
     ;;
     7)
       ECHOR "您选择了退出编译程序"
+      echo
       exit 0
     break
     ;;
@@ -831,6 +832,7 @@ function menuop() {
   break
   ;;   
   5)
+    echo
     exit 0
     break
   ;;
