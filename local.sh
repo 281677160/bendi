@@ -279,8 +279,9 @@ function op_menuconfig() {
     make menuconfig
     if [[ $? -ne 0 ]]; then
       ECHOG "窗口分辨率太小，请调整窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
+      XUANMA="请输入您的选择"
       while :; do
-      read -p "" Make
+      read -p " ${XUANZHE}" Make
       case $Make in
       [Yy])
 	break
@@ -288,6 +289,9 @@ function op_menuconfig() {
       [Nn])
 	exit 1
 	break
+      ;;
+      *)
+        XUANMA="请输入[Y/n]"
       ;;
       esac
       done
