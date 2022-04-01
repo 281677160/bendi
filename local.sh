@@ -215,7 +215,9 @@ function bianyi_xuanxiang() {
   ;;
   esac
   echo
-  sleep 2
+  echo
+  ECHOG "3秒后为您执行编译程序,请稍后..."
+  sleep 3
 }
 
 function op_repo_branch() {
