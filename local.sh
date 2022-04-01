@@ -282,7 +282,7 @@ function op_menuconfig() {
       ECHOG "请调整窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
       XUANMA="请输入您的选择："
       while :; do
-      read -p " ${XUANZHE}" Make
+      read -p " ${XUANMA}" Make
       case $Make in
       [Yy])
 	op_menuconfig
@@ -831,9 +831,9 @@ function menuop() {
   echo -e " 5${Green}.${Font}${Yellow}退出${Font}"
   echo
   echo
-  XUANZHE="请输入数字"
+  XUANZop="请输入数字"
   while :; do
-  read -p " ${XUANZHE}：" menu_num
+  read -p " ${XUANZop}：" menu_num
   case $menu_num in
   1)
     openwrt_new
@@ -858,7 +858,7 @@ function menuop() {
     break
   ;;
   *)
-    XUANZHE="请输入正确的数字编号!"
+    XUANZop="请输入正确的数字编号!"
   ;;
   esac
   done
