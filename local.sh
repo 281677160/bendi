@@ -565,7 +565,17 @@ function op_end() {
   else
     ECHOR "提示：再次输入编译命令可进行二次编译"
   fi
-  [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
+  if [[ "${WSL_ubuntu}" == "YES" ]]; then
+    if [[ "${REGULAR_UPDATE}" == "true" ]]; then
+      cd bin/Firmware
+      explorer.exe .
+      cd ${HOME_PATH}
+    else
+      cd ${TARGET_BSGET}
+      explorer.exe .
+      cd ${HOME_PATH}
+    fi
+  fi
   ECHOY "编译日期：$(date +'%Y年%m月%d号')"
   export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   START_SECONDS=$(date --date="$START_TIME" +%s)
