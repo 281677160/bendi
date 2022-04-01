@@ -277,6 +277,18 @@ function op_menuconfig() {
   cd ${HOME_PATH}
   if [[ "${Menuconfig}" == "true" ]]; then
     make menuconfig
+    if [[ $? -ne 0 ]]; then
+      read -t 30 -p " 窗口太小： " Make
+      case $Make in
+      [Yy])
+        sleep 1
+        exit 1
+      ;;
+      *)
+        ECHOG "继续编译中...！"
+      ;;
+      esac
+    fi
   fi
 }
 
