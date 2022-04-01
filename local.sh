@@ -293,7 +293,7 @@ function op_menuconfig() {
 	break
       ;;
       *)
-        XUANMA="请输入[Y/n]"
+        XUANMA="输入错误,请输入[Y/n]"
       ;;
       esac
       done
