@@ -539,7 +539,11 @@ function op_amlogic() {
   sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
-    [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
+    if [[ "${WSL_ubuntu}" == "YES" ]]; then
+      cd ${GITHUB_WORKSPACE}/amlogic/out
+      explorer.exe .
+      cd amlogic
+    fi
   else
     print_error "打包失败，请再次尝试!"
   fi
