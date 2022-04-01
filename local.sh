@@ -685,6 +685,7 @@ function op_upgrade1() {
 }
 
 function op_again() {
+  export Tishi="1"
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
@@ -840,7 +841,6 @@ function menuop() {
   break
   ;;
   2)
-    Tishi="1"
     op_again
   break
   ;;
