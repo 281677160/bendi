@@ -217,6 +217,7 @@ function bianyi_xuanxiang() {
   echo
   echo
   ECHOG "3秒后为您执行编译程序,请稍后..."
+  echo
   sleep 3
 }
 
