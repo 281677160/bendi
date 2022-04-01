@@ -276,7 +276,7 @@ function op_diy_ip() {
 function op_menuconfig() {
   cd ${HOME_PATH}
   if [[ "${Menuconfig}" == "true" ]]; then
-    make menuconfig
+    make menuconfig > /dev/null 2>&1
     if [[ $? -ne 0 ]]; then
       ECHOY "窗口分辨率太小，无法弹出设置更机型或插件的窗口"
       ECHOG "请调整窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
