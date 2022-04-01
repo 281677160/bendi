@@ -278,12 +278,14 @@ function op_menuconfig() {
   if [[ "${Menuconfig}" == "true" ]]; then
     make menuconfig
     if [[ $? -ne 0 ]]; then
-      ECHOG "窗口分辨率太小，请调整窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
-      XUANMA="请输入您的选择"
+      ECHOY "窗口分辨率太小，无法弹出设置更机型或插件的窗口"
+      ECHOG "请调整窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
+      XUANMA="请输入您的选择："
       while :; do
       read -p " ${XUANZHE}" Make
       case $Make in
       [Yy])
+	op_menuconfig
 	break
       ;;
       [Nn])
