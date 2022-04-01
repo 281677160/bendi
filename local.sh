@@ -278,16 +278,19 @@ function op_menuconfig() {
   if [[ "${Menuconfig}" == "true" ]]; then
     make menuconfig
     if [[ $? -ne 0 ]]; then
-      read -t 30 -p " 窗口太小： " Make
+      ECHOG "窗口分辨率太小，请调整窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
+      while :; do
+      read -p "" Make
       case $Make in
       [Yy])
-        sleep 1
-        exit 1
+	break
       ;;
-      *)
-        ECHOG "继续编译中...！"
+      [Nn])
+	exit 1
+	break
       ;;
       esac
+      done
     fi
   fi
 }
