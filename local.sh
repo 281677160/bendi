@@ -126,6 +126,12 @@ cd ${GITHUB_WORKSPACE}
   judge "部署编译环境"
   sudo apt-get autoremove -y --purge > /dev/null 2>&1
   sudo apt-get clean -y > /dev/null 2>&1
+  if [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
+    sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
+    sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
+    sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
+    sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
+  fi
 }
 
 function op_kongjian() {
