@@ -131,6 +131,7 @@ cd ${GITHUB_WORKSPACE}
     sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
     sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
     sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
+    sudo service ssh restart
   fi
 }
 
