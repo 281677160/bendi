@@ -11,7 +11,7 @@
 ---
 - 为防止系统没安装curl，使用一键编译命令之前选执行一次安装curl命令:
 ```sh
-sudo apt-get update && sudo apt-get install -y curl wget
+sudo apt-get update && sudo apt-get install -y curl
 ```
 ---
 - WSL Ubuntu、服务器版Ubuntu、桌面版Ubuntu 通用一键编译openwrt命令
