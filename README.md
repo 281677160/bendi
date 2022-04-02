@@ -20,7 +20,7 @@ bash <(curl -fsSL git.io/local.sh)
 ```
 
 ---
-- wget下载运行脚本，跟上面的curl是一样的，随便您喜欢，想用啥就用啥
+- wget下载脚本运行，跟上面的curl是一样的，随便您喜欢，想用啥就用啥
 ```sh
 wget -q -O local.sh https://github.com/281677160/bendi/raw/main/local.sh && bash local.sh
 ```
