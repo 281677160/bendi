@@ -26,6 +26,7 @@ export LOCAL_Build="${HOME_PATH}/build"
 export BASE_PATH="${HOME_PATH}/package/base-files/files"
 export NETIP="${HOME_PATH}/package/base-files/files/etc/networkip"
 export DELETE="${HOME_PATH}/package/base-files/files/etc/deletefile"
+export Author="$(grep "syslog" "/etc/group"|awk 'NR==1' |cut -d "," -f2)"
 export date1="$(date +'%m-%d')"
 export bendi_script="1"
 
@@ -270,6 +271,7 @@ function op_diy_ip() {
   echo
   ECHOY "您的后台IP地址为：$IP"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
+    export Author=""
     export Github=${Github}
     export Warehouse="${Github##*com/}"
     export Author="$(echo "${Github}" |cut -d "/" -f4)"
