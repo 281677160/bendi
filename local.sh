@@ -468,6 +468,7 @@ function op_make() {
     echo "chenggong" >${LOCAL_Build}/chenggong
     rm -rf ${HOME_PATH}/build.log
     ./scripts/diffconfig.sh > ${BUILD_PATH}/.config
+    export GUJIAN_TIME=`date +'%Y-%m-%d-%H'`
   fi
 }
 
@@ -492,7 +493,7 @@ function op_upgrade3() {
     chmod +x Clear.sh && source Clear.sh
     rm -rf Clear.sh
   fi
-  rename -v "s/^openwrt/${SOURCE}/" * > /dev/null 2>&1
+  rename -v "s/^openwrt/${SOURCE}-${GUJIAN_TIME}/" * > /dev/null 2>&1
   cd ${HOME_PATH}
 }
 
