@@ -197,8 +197,8 @@ function gengxin_opdiy() {
     rm -rf commn && git clone https://github.com/281677160/common commn
     if [[ -d ${GITHUB_WORKSPACE}/commn ]]; then
        rm -rf ${GITHUB_WORKSPACE}/commn/OP_DIY/*/config
-       cp -Rf ${GITHUB_WORKSPACE}/commn/OP_DIY/* ${GITHUB_WORKSPACE}/bendi/
-       mv -f ${GITHUB_WORKSPACE}/bendi/* ${GITHUB_WORKSPACE}/OP_DIY/
+       cp -Rf ${GITHUB_WORKSPACE}/commn/OP_DIY/* ${GITHUB_WORKSPACE}/bendi/build/
+       mv -f ${GITHUB_WORKSPACE}/bendi/build/* ${GITHUB_WORKSPACE}/OP_DIY/
     else
       print_error "OP_DIY文件下载失败,同步失败,请检查网络"
       rm -rf ${GITHUB_WORKSPACE}/{bendi,commn}
