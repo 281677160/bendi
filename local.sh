@@ -186,7 +186,7 @@ function gengxin_opdiy() {
   cd ${GITHUB_WORKSPACE}
   rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
   if [[ -d ${GITHUB_WORKSPACE}/bendi ]]; then
-    rm rf ${GITHUB_WORKSPACE}/OP_DIY
+    rm -rf ${GITHUB_WORKSPACE}/OP_DIY
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
     rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/start-up
     rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/.config
