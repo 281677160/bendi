@@ -289,8 +289,8 @@ function op_diy_zdy() {
   source "${BUILD_PATH}/settings.ini"
   source "${BUILD_PATH}/common.sh" && Diy_menu
   if [[ -d "${HOME_PATH}/feeds/danshui.tmp" ]]; then
-    if [[ ! -f "${BUILD_PATH}/chenggong" ]] || [[ ! -f "${BUILD_PATH}/shibai" ]]; then
-      echo "weiwan" > "${BUILD_PATH}/weiwan"
+    if [[ ! -f "${LOCAL_Build}/chenggong" ]] || [[ ! -f "${LOCAL_Build}/shibai" ]]; then
+      echo "weiwan" > "${LOCAL_Build}/weiwan"
     fi
   fi
 }
