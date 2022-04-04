@@ -926,7 +926,7 @@ function mecuowu() {
   if [[ ${weiwancheng} == "1" ]]; then
     echo -e " ${Yellow}您上回使用[${matrixtarget}]源码未完成编译，请作如下选择${Font}"
   else
-    echo -e " ${Yellow}您上回使用[${matrixtarget}]源码编译出现错误，请作如下选择${Font}"
+    echo -e " ${Red}您上回使用[${matrixtarget}]源码编译出现错误，请作如下选择${Font}"
   fi
   echo
   echo
