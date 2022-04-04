@@ -182,6 +182,31 @@ function op_diywenjian() {
   fi
 }
 
+function gengxin_opdiy() {
+  cd ${GITHUB_WORKSPACE}
+  rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
+  if [[ -d ${GITHUB_WORKSPACE}/bendi ]]; then
+    rm rf ${GITHUB_WORKSPACE}/OP_DIY
+    mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
+    rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/start-up
+    rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/.config
+  else
+    print_error "OP_DIY文件下载失败,同步失败,请检查网络"
+    exit 1
+  fi
+  if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
+    rm -rf bendi && git clone https://github.com/281677160/common bendi
+    if [[ -d ${GITHUB_WORKSPACE}/bendi ]]; then
+      rm -rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/config
+      cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/OP_DIY/
+    else
+      print_error "OP_DIY文件下载失败,同步失败,请检查网络"
+      exit 1
+    fi
+  fi
+  rm -rf ${GITHUB_WORKSPACE}/bendi
+}
+
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
@@ -839,7 +864,7 @@ function menuop() {
   echo -e " ${Blue}OP_DIY配置文件机型${Font}：${Green}${TARGET_PROFILE}${Font}"
   echo
   echo
-  echo -e " 1${Green}.${Font}${Yellow}删除旧源码,重新下载[${matrixtarget}]源码编译${Font}(推荐)"
+  echo -e " 1${Green}.${Font}${Yellow}删除[${matrixtarget}]源码,重新下载[${matrixtarget}]源码编译${Font}(推荐)"
   echo
   echo -e " 2${Green}.${Font}${Yellow}保留缓存同步上游仓库源码,再次编译${Font}"
   echo
@@ -847,7 +872,9 @@ function menuop() {
   echo
   echo -e " 4${Green}.${Font}${Yellow}打包N1和晶晨系列CPU固件${Font}"
   echo
-  echo -e " 5${Green}.${Font}${Yellow}退出${Font}"
+  echo -e " 5${Green}.${Font}${Yellow}同步上游OP_DIY文件(不会覆盖config配置文件,其他文件全覆盖)${Font}"
+  echo
+  echo -e " 6${Green}.${Font}${Yellow}退出${Font}"
   echo
   echo
   XUANZop="请输入数字"
@@ -869,8 +896,12 @@ function menuop() {
   4)
     op_amlogic
   break
-  ;;   
+  ;;
   5)
+    gengxin_opdiy
+  break
+  ;;
+  6)
     echo
     exit 0
     break
@@ -890,9 +921,9 @@ function mecuowu() {
   echo -e " ${Yellow}您上回使用[${matrixtarget}]源码编译出现错误，请作如下选择${Font}"
   echo
   echo
-  echo -e " 1${Red}.${Font}${Blue}删除旧源码,继续使用[${matrixtarget}]源码全新编译${Font}"
+  echo -e " 1${Red}.${Font}${Blue}删除[${matrixtarget}]源码,重新下载[${matrixtarget}]源码编译${Font}"
   echo
-  echo -e " 2${Red}.${Font}${Blue}使用旧源码继续编译(菜单)${Font}"
+  echo -e " 2${Red}.${Font}${Blue}继续使用旧的[${matrixtarget}]源码编译(菜单)${Font}"
   echo
   echo -e " 3${Red}.${Font}${Blue}更换其他作者源码(菜单)${Font}"
   echo
