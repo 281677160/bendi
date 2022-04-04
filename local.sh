@@ -269,7 +269,7 @@ function op_repo_branch() {
 }
 
 function op_jiaoben() {
-  if [[ ! -d ${HOME_PATH}/build ]]; then
+  if [[ ! -d "${HOME_PATH}/build" ]]; then
     cp -Rf ${GITHUB_WORKSPACE}/OP_DIY ${HOME_PATH}/build
   else
     cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${HOME_PATH}/build/
@@ -288,7 +288,11 @@ function op_diy_zdy() {
   cd ${HOME_PATH}
   source "${BUILD_PATH}/settings.ini"
   source "${BUILD_PATH}/common.sh" && Diy_menu
-  echo "weiwan" > "${BUILD_PATH}/weiwan"
+  if [[ -d "${HOME_PATH}/feeds/danshui.tmp" ]]; then
+    if [[ ! -f "${BUILD_PATH}/chenggong" ]] || [[ ! -f "${BUILD_PATH}/shibai" ]]; then
+      echo "weiwan" > "${BUILD_PATH}/weiwan"
+    fi
+  fi
 }
 
 function op_diy_ip() {
