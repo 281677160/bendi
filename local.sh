@@ -202,11 +202,12 @@ function gengxin_opdiy() {
        cp -Rf ${GITHUB_WORKSPACE}/commn/OP_DIY/* ${GITHUB_WORKSPACE}/OP_DIY/
     else
       print_error "OP_DIY文件下载失败,同步失败,请检查网络"
-      rm -rf ${GITHUB_WORKSPACE}/${bendi,commn}
+      rm -rf ${GITHUB_WORKSPACE}/{bendi,commn}
       exit 1
     fi
   fi
-  rm -rf ${GITHUB_WORKSPACE}/${bendi,commn}
+  rm -rf ${GITHUB_WORKSPACE}/{bendi,commn}
+  print_ok "同步上游OP_DIY文件完成!"
 }
 
 function bianyi_xuanxiang() {
