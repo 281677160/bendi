@@ -288,6 +288,7 @@ function op_diy_zdy() {
   cd ${HOME_PATH}
   source "${BUILD_PATH}/settings.ini"
   source "${BUILD_PATH}/common.sh" && Diy_menu
+  echo "weiwan" > "${BUILD_PATH}/weiwan"
 }
 
 function op_diy_ip() {
@@ -494,6 +495,7 @@ function op_make() {
   fi
   if [[ `ls -a ${TARGET_BSGET} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
     rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
+    rm -rf ${LOCAL_Build}/weiwan > /dev/null 2>&1
     echo "shibai" >${LOCAL_Build}/shibai
     print_error "编译失败~~!"
     print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
@@ -501,6 +503,7 @@ function op_make() {
     exit 1
   else
     rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
+    rm -rf ${LOCAL_Build}/weiwan > /dev/null 2>&1
     echo "chenggong" >${LOCAL_Build}/chenggong
     rm -rf ${HOME_PATH}/build.log
     ./scripts/diffconfig.sh > ${BUILD_PATH}/.config
@@ -920,7 +923,11 @@ function mecuowu() {
   clear
   echo
   echo
-  echo -e " ${Yellow}您上回使用[${matrixtarget}]源码编译出现错误，请作如下选择${Font}"
+  if [[ ${weiwancheng} == "1" ]]; then
+    echo -e " ${Yellow}您上回使用[${matrixtarget}]源码未完成编译，请作如下选择${Font}"
+  else
+    echo -e " ${Yellow}您上回使用[${matrixtarget}]源码编译出现错误，请作如下选择${Font}"
+  fi
   echo
   echo
   echo -e " 1${Red}.${Font}${Blue}删除[${matrixtarget}]源码,重新下载[${matrixtarget}]源码编译${Font}"
@@ -955,7 +962,11 @@ function mecuowu() {
   done
 }
 
-if [[ -f "${LOCAL_Build}/shibai" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
+
+if [[ -f "${LOCAL_Build}/weiwan" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
+	mecuowu "$@"
+	weiwancheng="1"
+elif [[ -f "${LOCAL_Build}/shibai" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
 	mecuowu "$@"
 elif [[ -d "${HOME_PATH}/package" && -d "${HOME_PATH}/target" && -d "${HOME_PATH}/toolchain" && -f "${LOCAL_Build}/chenggong" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
 	menuop "$@"
