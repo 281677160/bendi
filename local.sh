@@ -872,7 +872,7 @@ function menuop() {
   echo
   echo -e " 4${Green}.${Font}${Yellow}打包N1和晶晨系列CPU固件${Font}"
   echo
-  echo -e " 5${Green}.${Font}${Yellow}同步上游OP_DIY文件(不会覆盖config配置文件,其他文件全覆盖)${Font}"
+  echo -e " 5${Green}.${Font}${Yellow}同步上游OP_DIY文件(不覆盖config配置文件)${Font}"
   echo
   echo -e " 6${Green}.${Font}${Yellow}退出${Font}"
   echo
