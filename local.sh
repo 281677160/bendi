@@ -186,25 +186,27 @@ function gengxin_opdiy() {
   cd ${GITHUB_WORKSPACE}
   rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
   if [[ -d ${GITHUB_WORKSPACE}/bendi ]]; then
-    rm -rf ${GITHUB_WORKSPACE}/OP_DIY
-    mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
-    rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/start-up
-    rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/.config
+    rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
+    rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/.config
   else
     print_error "OP_DIY文件下载失败,同步失败,请检查网络"
+    rm -rf ${GITHUB_WORKSPACE}/bendi
     exit 1
   fi
-  if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
-    rm -rf bendi && git clone https://github.com/281677160/common bendi
-    if [[ -d ${GITHUB_WORKSPACE}/bendi ]]; then
-      rm -rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/config
-      cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/OP_DIY/
+  if [[ -d ${GITHUB_WORKSPACE}/bendi ]]; then
+    rm -rf commn && git clone https://github.com/281677160/common commn
+    if [[ -d ${GITHUB_WORKSPACE}/commn ]]; then
+       rm -rf ${GITHUB_WORKSPACE}/OP_DIY
+       mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
+       rm -rf ${GITHUB_WORKSPACE}/commn/OP_DIY/*/config
+       cp -Rf ${GITHUB_WORKSPACE}/commn/OP_DIY/* ${GITHUB_WORKSPACE}/OP_DIY/
     else
       print_error "OP_DIY文件下载失败,同步失败,请检查网络"
+      rm -rf ${GITHUB_WORKSPACE}/${bendi,commn}
       exit 1
     fi
   fi
-  rm -rf ${GITHUB_WORKSPACE}/bendi
+  rm -rf ${GITHUB_WORKSPACE}/${bendi,commn}
 }
 
 function bianyi_xuanxiang() {
