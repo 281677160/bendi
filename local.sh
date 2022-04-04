@@ -964,12 +964,15 @@ function mecuowu() {
 
 
 if [[ -f "${LOCAL_Build}/weiwan" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
+	export weiwancheng="1"
 	mecuowu "$@"
-	weiwancheng="1"
 elif [[ -f "${LOCAL_Build}/shibai" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
+	export weiwancheng=""
 	mecuowu "$@"
 elif [[ -d "${HOME_PATH}/package" && -d "${HOME_PATH}/target" && -d "${HOME_PATH}/toolchain" && -f "${LOCAL_Build}/chenggong" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
+	export weiwancheng=""
 	menuop "$@"
 else
+	export weiwancheng=""
 	menu "$@"
 fi
