@@ -301,14 +301,14 @@ function op_diy_ip() {
   [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Mark_Core}" > ${HOME_PATH}/${Mark_Core}
   echo
-  ECHOY "您的后台IP地址为：$IP"
+  ECHOYY "您的后台IP地址为：$IP"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     export Author=""
     export Github=${Github}
     export Warehouse="${Github##*com/}"
     export Author="$(echo "${Github}" |cut -d "/" -f4)"
     export Library="$(echo "${Github}" |cut -d "/" -f5)"
-    ECHOYY "您的Github地址为：$Github"
+    ECHOY "您的Github地址为：$Github"
     echo
   fi
   sleep 2
