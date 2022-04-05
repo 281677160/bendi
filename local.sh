@@ -215,7 +215,7 @@ function bianyi_xuanxiang() {
   source $GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     ECHOY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
-    ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
+    ZDYSZ="设置完毕后，按[W/w]回车继续编译"
     if [[ "${WSL_ubuntu}" == "YES" ]]; then
       cd ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}
       explorer.exe .
@@ -224,7 +224,7 @@ function bianyi_xuanxiang() {
     while :; do
       read -p " ${ZDYSZ}： " ZDYSZU
       case $ZDYSZU in
-      [Yy])
+      [Ww])
         echo
       break
       ;;
