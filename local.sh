@@ -229,7 +229,7 @@ function bianyi_xuanxiang() {
       break
       ;;
       *)
-        ZDYSZ="确认设置完毕后，请按[Y/y]回车继续编译"
+        ZDYSZ="确认设置完毕后，请按[W/w]回车继续编译"
       ;;
       esac
     done
