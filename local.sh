@@ -113,13 +113,16 @@ function op_busuhuanjing() {
 cd ${GITHUB_WORKSPACE}
   clear
   echo
-  ECHORR "|*******************************************|"
-  ECHOGG "|                                           |"
-  ECHOYY "|    首次编译,请输入Ubuntu密码继续下一步    |"
-  ECHOGG "|                                           |"
-  ECHOYY "|              编译环境部署                 |"
-  ECHORR "|                                           |"
-  ECHOGG "|*******************************************|"
+  if [[ `grep -c "NOPASSWD:ALL" /etc/sudoers` == '0' ]]; then
+    ECHORR "|*******************************************|"
+    ECHOGG "|                                           |"
+    ECHOYY "|    首次编译,请输入Ubuntu密码继续下一步    |"
+    ECHOGG "|                                           |"
+    ECHOYY "|              编译环境部署                 |"
+    ECHORR "|                                           |"
+    ECHOGG "|*******************************************|"
+    sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
+  fi
   echo
   sudo apt-get update -y
   sudo apt-get full-upgrade -y
@@ -127,7 +130,6 @@ cd ${GITHUB_WORKSPACE}
   judge "部署编译环境"
   sudo apt-get autoremove -y --purge > /dev/null 2>&1
   sudo apt-get clean -y > /dev/null 2>&1
-  sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
   if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
     sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
     sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
