@@ -283,6 +283,7 @@ function op_jiaoben() {
   rm -rf ${HOME_PATH}/build/common/OP_DIY
   mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
   chmod -R +x ${BUILD_PATH}
+  source "${BUILD_PATH}/common.sh" && Diy_settings
   source "${BUILD_PATH}/common.sh" && Bendi_variable
 }
 
