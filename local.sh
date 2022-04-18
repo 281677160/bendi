@@ -112,7 +112,7 @@ else
   export WSL_ubuntu="NO"
 fi
 
-function op_busuhuanjing() {
+function op_common_sh() {
   cd ${GITHUB_WORKSPACE}
   clear
   echo
@@ -134,12 +134,6 @@ function op_busuhuanjing() {
     sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
     sudo service ssh restart
   fi
-}
-
-function op_common_sh() {
-  cd ${GITHUB_WORKSPACE}
-  clear
-  ECHOY "正在部署编译环境，请耐心等会，若网络不佳可能需要很长时间"
   if [[ -f ${COMMON_SH} ]]; then
     source ${COMMON_SH} && Diy_update
   else
@@ -151,7 +145,7 @@ function op_common_sh() {
       source common.sh && Diy_update
       rm -fr common.sh
     else
-      ECHOR "common文件下载失败，请检测网络再用一键命令试试!"
+      ECHOR "common文件下载失败，请检测网络后再用一键命令试试!"
     fi
   fi
 }
