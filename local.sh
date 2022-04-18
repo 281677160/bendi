@@ -326,15 +326,14 @@ function op_diy_ip() {
   IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Mark_Core}" > ${HOME_PATH}/${Mark_Core}
-  echo
-  ECHOYY "您的后台IP地址为：$IP"
+  ECHOY "您的后台IP地址为：$IP"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     export Author=""
     export Github=${Github}
     export Warehouse="${Github##*com/}"
     export Author="$(echo "${Github}" |cut -d "/" -f4)"
     export Library="$(echo "${Github}" |cut -d "/" -f5)"
-    ECHOY "您的Github地址为：$Github"
+    ECHOYY "您的Github地址为：$Github"
     echo
   fi
   sleep 2
