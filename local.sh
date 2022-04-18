@@ -127,6 +127,7 @@ function op_common_sh() {
   if [[ `sudo grep -c "NOPASSWD:ALL" /etc/sudoers` == '0' ]]; then
     sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
   fi
+  clear
   if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
     sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
     sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
