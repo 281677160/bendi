@@ -119,7 +119,7 @@ function op_common_sh() {
     source ${COMMON_SH} && Diy_update
   else
     clear
-    curl -fsSL https://github.com/281677160/common/main/common.sh > common.sh
+    curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
     if [[ -f common.sh ]]; then
       echo
       ECHORR "|*******************************************|"
