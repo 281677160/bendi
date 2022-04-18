@@ -303,7 +303,7 @@ function op_jiaoben() {
   rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展文件下载"
   rm -rf ${HOME_PATH}/build/common/OP_DIY
-  mv -f ${LOCAL_Build}/common/*.sh ${BUILD_PATH}
+  cp -Rf ${LOCAL_Build}/common/*.sh ${BUILD_PATH}/
   chmod -R +x ${BUILD_PATH}
   source "${BUILD_PATH}/common.sh" && Diy_settings
   source "${BUILD_PATH}/common.sh" && Bendi_variable
