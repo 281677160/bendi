@@ -23,6 +23,7 @@ export GITHUB_WORKSPACE="$PWD"
 export OP_DIY="${GITHUB_WORKSPACE}/OP_DIY"
 export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
 export LOCAL_Build="${HOME_PATH}/build"
+export COMMON_SH="${HOME_PATH}/build/common/common.sh"
 export BASE_PATH="${HOME_PATH}/package/base-files/files"
 export NETIP="${HOME_PATH}/package/base-files/files/etc/networkip"
 export DELETE="${HOME_PATH}/package/base-files/files/etc/deletefile"
@@ -110,33 +111,36 @@ else
   export WSL_ubuntu="NO"
 fi
 
+function op_common_sh() {
+  cd ${GITHUB_WORKSPACE}
+  if [[ -f ${COMMON_SH} ]]; then
+    source ${COMMON_SH} && Diy_update
+  else
+    clear
+    echo
+    ECHORR "|*******************************************|"
+    ECHOGG "|                                           |"
+    ECHOYY "|    首次编译,请输入Ubuntu密码继续下一步    |"
+    ECHOGG "|                                           |"
+    ECHOYY "|              编译环境部署                 |"
+    ECHORR "|                                           |"
+    ECHOGG "|*******************************************|"
+    echo
+    sudo apt-get update -y
+    sudo apt-get install -y git
+    rm -rf common && git clone https://github.com/281677160/common common
+    if [[ -f common/common.sh ]]; then
+      source common/common.sh && Diy_update
+    else
+      ECHOR "common文件下载失败，请检测网络再用一键命令试试!"
+    fi
+  fi
+}
+
 function op_busuhuanjing() {
 cd ${GITHUB_WORKSPACE}
-  clear
-  echo
-  ECHORR "|*******************************************|"
-  ECHOGG "|                                           |"
-  ECHOYY "|    首次编译,请输入Ubuntu密码继续下一步    |"
-  ECHOGG "|                                           |"
-  ECHOYY "|              编译环境部署                 |"
-  ECHORR "|                                           |"
-  ECHOGG "|*******************************************|"
-  echo
-  sudo apt-get update -y
-  sudo apt-get full-upgrade -y
-  sudo apt-get install -y systemd build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch python3 python2.7 unzip zlib1g-dev lib32gcc1 libc6-dev-i386 lib32stdc++6 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler g++-multilib antlr3 gperf wget curl rename libpcap0.8-dev swig rsync
-  judge "部署编译环境"
-  sudo apt-get autoremove -y --purge > /dev/null 2>&1
-  sudo apt-get clean -y > /dev/null 2>&1
   if [[ `sudo grep -c "NOPASSWD:ALL" /etc/sudoers` == '0' ]]; then
     sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
-  fi
-  if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
-    sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
-    sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
-    sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
-    sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
-    sudo service ssh restart
   fi
 }
 
@@ -175,9 +179,14 @@ function op_diywenjian() {
     rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/start-up
     rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/.config
     if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
-      rm -rf bendi && git clone https://github.com/281677160/common bendi
-      judge  "OP_DIY文件下载"
-      cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/OP_DIY/
+      if [[ -d ${GITHUB_WORKSPACE}/common ]]; then
+        cp -Rf ${GITHUB_WORKSPACE}/common/* ${GITHUB_WORKSPACE}/OP_DIY/
+	rm -rf cp -Rf ${GITHUB_WORKSPACE}/common
+      else
+        rm -rf bendi && git clone https://github.com/281677160/common bendi
+        judge  "OP_DIY文件下载"
+        cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/OP_DIY/
+      fi
     else
       print_error "OP_DIY文件下载失败"
       exit 1
@@ -762,6 +771,7 @@ function op_again() {
 
 function openwrt_new() {
   openwrt_qx
+  op_common_sh
   op_busuhuanjing
   op_firmware
   op_kongjian
