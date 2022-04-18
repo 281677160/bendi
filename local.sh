@@ -763,6 +763,7 @@ function op_again() {
   export Tishi="1"
   cd ${HOME_PATH}
   op_firmware
+  op_common_sh
   bianyi_xuanxiang
   op_diy_ip
   op_diywenjian
