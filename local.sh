@@ -119,8 +119,11 @@ function op_common_sh() {
     source ${COMMON_SH} && Diy_update
   else
     clear
-    curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
-    if [[ -f common.sh ]]; then
+    curl -fsSL https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
+    if [[ $? -ne 0 ]];then
+      curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
+    fi
+    if [[ $? == 0 ]];then
       echo
       ECHORR "|*******************************************|"
       ECHOGG "|                                           |"
