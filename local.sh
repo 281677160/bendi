@@ -113,9 +113,7 @@ fi
 
 function op_busuhuanjing() {
   cd ${GITHUB_WORKSPACE}
-  if [[ `sudo grep -c "NOPASSWD:ALL" /etc/sudoers` == '0' ]]; then
-    sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
-  fi
+  sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
   if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
     sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
     sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
