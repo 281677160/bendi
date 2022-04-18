@@ -861,7 +861,7 @@ function menu() {
     6)
       ECHOG "您选择了单独打包晶晨系列固件"
       export matrixtarget="openwrt_amlogic"
-      op_busuhuanjing
+      op_common_sh
       op_amlogic
     break
     ;;
