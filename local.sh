@@ -113,6 +113,34 @@ else
   export WSL_ubuntu="NO"
 fi
 
+function op_busuhuanjing() {
+cd ${GITHUB_WORKSPACE}
+  if [[ `sudo grep -c "NOPASSWD:ALL" /etc/sudoers` == '0' ]]; then
+    echo
+    ECHORR "|*******************************************|"
+    ECHOGG "|                                           |"
+    ECHOYY "|    首次编译,请输入Ubuntu密码继续下一步    |"
+    ECHOGG "|                                           |"
+    ECHOYY "|              编译环境部署                 |"
+    ECHORR "|                                           |"
+    ECHOGG "|*******************************************|"
+    echo
+    sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
+  fi
+  if [[ ${WSL_ubuntu} == "YES" ]] && [[ `dpkg -l | grep -c "daemonize"` == '0' ]]; then
+    sudo apt-get install daemonize
+    sudo daemonize /usr/bin/unshare --fork --pid --mount-proc /lib/systemd/systemd --system-unit=basic.target
+    exec sudo nsenter -t $(pidof systemd) -a su - $LOGNAME
+  fi
+  if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
+    sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
+    sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
+    sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
+    sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
+    sudo service ssh restart
+  fi
+}
+
 function op_common_sh() {
   cd ${GITHUB_WORKSPACE}
   if [[ -f ${COMMON_SH} ]]; then
@@ -125,39 +153,11 @@ function op_common_sh() {
       curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
     fi
     if [[ $? -eq 0 ]];then
-      echo
-      ECHORR "|*******************************************|"
-      ECHOGG "|                                           |"
-      ECHOYY "|    首次编译,请输入Ubuntu密码继续下一步    |"
-      ECHOGG "|                                           |"
-      ECHOYY "|              编译环境部署                 |"
-      ECHORR "|                                           |"
-      ECHOGG "|*******************************************|"
-      echo
-      if [[ ${WSL_ubuntu} == "YES" ]] && [[ `dpkg -l | grep -c "daemonize"` == '0' ]]; then
-        sudo apt-get install daemonize
-        sudo daemonize /usr/bin/unshare --fork --pid --mount-proc /lib/systemd/systemd --system-unit=basic.target
-        exec sudo nsenter -t $(pidof systemd) -a su - $LOGNAME
-      fi
       source common.sh && Diy_update
       rm -fr common.sh
     else
       ECHOR "common文件下载失败，请检测网络再用一键命令试试!"
     fi
-  fi
-}
-
-function op_busuhuanjing() {
-cd ${GITHUB_WORKSPACE}
-  if [[ `sudo grep -c "NOPASSWD:ALL" /etc/sudoers` == '0' ]]; then
-    sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
-  fi
-  if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
-    sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
-    sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
-    sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
-    sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
-    sudo service ssh restart
   fi
 }
 
@@ -764,8 +764,8 @@ function op_again() {
   export Tishi="1"
   cd ${HOME_PATH}
   op_firmware
-  op_common_sh
   bianyi_xuanxiang
+  op_common_sh
   op_diy_ip
   op_diywenjian
   op_jiaoben
@@ -781,8 +781,8 @@ function op_again() {
 }
 
 function openwrt_new() {
-  op_common_sh
   op_busuhuanjing
+  op_common_sh
   openwrt_qx
   op_firmware
   op_kongjian
