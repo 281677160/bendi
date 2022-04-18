@@ -27,6 +27,7 @@ export BASE_PATH="${HOME_PATH}/package/base-files/files"
 export NETIP="${HOME_PATH}/package/base-files/files/etc/networkip"
 export DELETE="${HOME_PATH}/package/base-files/files/etc/deletefile"
 export Author="$(grep "syslog" "/etc/group"|awk 'NR==1' |cut -d "," -f2)"
+export REPO_TOKEN="REPO_TOKEN"
 export date1="$(date +'%m-%d')"
 export bendi_script="1"
 
