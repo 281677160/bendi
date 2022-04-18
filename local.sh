@@ -123,7 +123,7 @@ function op_common_sh() {
     if [[ $? -ne 0 ]];then
       curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
     fi
-    if [[ $? == 0 ]];then
+    if [[ $? -eq 0 ]];then
       echo
       ECHORR "|*******************************************|"
       ECHOGG "|                                           |"
