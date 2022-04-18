@@ -142,9 +142,9 @@ function op_common_sh() {
   if [[ -f ${COMMON_SH} ]]; then
     source ${COMMON_SH} && Diy_update
   else
-    curl -fsSL https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
+    curl -L https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
     if [[ $? -ne 0 ]];then
-      curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
+      curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
     fi
     if [[ $? -eq 0 ]];then
       source common.sh && Diy_update
