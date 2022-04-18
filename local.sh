@@ -228,7 +228,12 @@ function gengxin_opdiy() {
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
   [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
-  source $GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini
+  if [ -z "$(ls -A "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini" 2>/dev/null)" ]; then
+    ECHOR "错误提示：编译脚本缺少[settings.ini]名称的配置文件,请在[OP_DIY/${matrixtarget}]文件夹内补齐"
+    exit 1
+  else
+    source "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini"
+  fi
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     clear
     echo
