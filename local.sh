@@ -143,8 +143,8 @@ cd ${GITHUB_WORKSPACE}
 
 function op_common_sh() {
   cd ${GITHUB_WORKSPACE}
+  ECHOY "正在部署编译环境，请稍后"
   if [[ -f ${COMMON_SH} ]]; then
-    ECHOY "正在部署编译环境，请稍后"
     source ${COMMON_SH} && Diy_update
   else
     clear
