@@ -134,6 +134,11 @@ function op_common_sh() {
       ECHORR "|                                           |"
       ECHOGG "|*******************************************|"
       echo
+      if [[ ${WSL_ubuntu} == "YES" ]] && [[ `dpkg -l | grep -c "daemonize"` == '0' ]]; then
+        sudo apt-get install daemonize
+        sudo daemonize /usr/bin/unshare --fork --pid --mount-proc /lib/systemd/systemd --system-unit=basic.target
+        exec sudo nsenter -t $(pidof systemd) -a su - $LOGNAME
+      fi
       source common.sh && Diy_update
       rm -fr common.sh
     else
@@ -146,11 +151,6 @@ function op_busuhuanjing() {
 cd ${GITHUB_WORKSPACE}
   if [[ `sudo grep -c "NOPASSWD:ALL" /etc/sudoers` == '0' ]]; then
     sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
-  fi
-  if [[ ${WSL_ubuntu} == "YES" ]] && [[ `dpkg -l | grep -c "daemonize"` == '0' ]]; then
-    sudo apt-get install daemonize
-    sudo daemonize /usr/bin/unshare --fork --pid --mount-proc /lib/systemd/systemd --system-unit=basic.target
-    exec sudo nsenter -t $(pidof systemd) -a su - $LOGNAME
   fi
   if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
     sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
