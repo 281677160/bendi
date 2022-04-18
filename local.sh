@@ -30,6 +30,7 @@ export DELETE="${HOME_PATH}/package/base-files/files/etc/deletefile"
 export Author="$(grep "syslog" "/etc/group"|awk 'NR==1' |cut -d "," -f2)"
 export REPO_TOKEN="REPO_TOKEN"
 export date1="$(date +'%m-%d')"
+export TZ="Asia/Shanghai"
 export bendi_script="1"
 
 function print_ok() {
