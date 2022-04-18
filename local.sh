@@ -146,6 +146,7 @@ function op_common_sh() {
       rm -fr common.sh
     else
       ECHOR "common文件下载失败，请检测网络后再用一键命令试试!"
+      exit 1
     fi
   fi
 }
