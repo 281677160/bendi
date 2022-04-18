@@ -782,8 +782,8 @@ function op_again() {
 
 function openwrt_new() {
   op_common_sh
-  openwrt_qx
   op_busuhuanjing
+  openwrt_qx
   op_firmware
   op_kongjian
   op_diywenjian
