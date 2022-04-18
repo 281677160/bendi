@@ -119,7 +119,7 @@ function op_busuhuanjing() {
   ECHOGG "|                                           |"
   ECHOYY "|  首次编译,可能要输入Ubuntu密码继续下一步    |"
   ECHOGG "|                                           |"
-  ECHOYY "|              编译环境部署                 |"
+  ECHOYY "|              部署编译环境                 |"
   ECHORR "|                                           |"
   ECHOGG "|*******************************************|"
   echo
