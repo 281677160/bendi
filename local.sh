@@ -23,14 +23,12 @@ export GITHUB_WORKSPACE="$PWD"
 export OP_DIY="${GITHUB_WORKSPACE}/OP_DIY"
 export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
 export LOCAL_Build="${HOME_PATH}/build"
-export COMMON_SH="${HOME_PATH}/build/common/common.sh"
 export BASE_PATH="${HOME_PATH}/package/base-files/files"
 export NETIP="${HOME_PATH}/package/base-files/files/etc/networkip"
 export DELETE="${HOME_PATH}/package/base-files/files/etc/deletefile"
 export Author="$(grep "syslog" "/etc/group"|awk 'NR==1' |cut -d "," -f2)"
 export REPO_TOKEN="REPO_TOKEN"
 export date1="$(date +'%m-%d')"
-export TZ="Asia/Shanghai"
 export bendi_script="1"
 
 function print_ok() {
@@ -138,11 +136,11 @@ cd ${GITHUB_WORKSPACE}
 
 function op_common_sh() {
   cd ${GITHUB_WORKSPACE}
+  clear
   ECHOY "正在部署编译环境，请耐心等会，若网络不佳可能需要很长时间"
   if [[ -f ${COMMON_SH} ]]; then
     source ${COMMON_SH} && Diy_update
   else
-    clear
     curl -fsSL https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
     if [[ $? -ne 0 ]];then
       curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
