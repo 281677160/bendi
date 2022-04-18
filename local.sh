@@ -116,6 +116,7 @@ fi
 function op_common_sh() {
   cd ${GITHUB_WORKSPACE}
   if [[ -f ${COMMON_SH} ]]; then
+    ECHOY "正在部署编译环境，请稍后"
     source ${COMMON_SH} && Diy_update
   else
     clear
@@ -780,8 +781,8 @@ function op_again() {
 }
 
 function openwrt_new() {
-  openwrt_qx
   op_common_sh
+  openwrt_qx
   op_busuhuanjing
   op_firmware
   op_kongjian
