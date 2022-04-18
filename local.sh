@@ -108,6 +108,7 @@ if [[ "$(echo ${GITHUB_WORKSPACE} |grep -c 'openwrt')" -ge '1' ]]; then
 fi
 if [[ `ls -1 /mnt/* | grep -c "Windows"` -ge '1' ]] || [[ `ls -1 /mnt | grep -c "wsl"` -ge '1' ]]; then
   export WSL_ubuntu="YES"
+  export PATH=$PATH:'/mnt/c/windows'
 else
   export WSL_ubuntu="NO"
 fi
@@ -506,17 +507,15 @@ function op_make() {
   rm -rf ${HOME_PATH}/{README,README.md,README_EN.md} > /dev/null 2>&1
   ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
   if [[ "${WSL_ubuntu}" == "YES" ]]; then
-    if [[ "$(nproc)" -ge "16" ]];then
-      PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
-    else
-      PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
-    fi
+    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  fi
+  if [[ "$(nproc)" -ge "16" ]];then
+    make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
   else
-    if [[ "$(nproc)" -ge "16" ]];then
-      make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
-    else
-      make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
-    fi
+    make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
+  fi
+  if [[ "${WSL_ubuntu}" == "YES" ]]; then
+    export PATH=$PATH:'/mnt/c/windows'
   fi
   if [[ `ls -a ${TARGET_BSGET} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
     rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
