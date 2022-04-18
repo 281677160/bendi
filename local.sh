@@ -129,7 +129,7 @@ function op_common_sh() {
       ECHORR "|                                           |"
       ECHOGG "|*******************************************|"
       echo
-      source common/common.sh && Diy_update
+      source common.sh && Diy_update
       rm -fr common.sh
     else
       ECHOR "common文件下载失败，请检测网络再用一键命令试试!"
