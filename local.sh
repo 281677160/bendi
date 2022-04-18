@@ -118,20 +118,19 @@ function op_common_sh() {
     source ${COMMON_SH} && Diy_update
   else
     clear
-    echo
-    ECHORR "|*******************************************|"
-    ECHOGG "|                                           |"
-    ECHOYY "|    首次编译,请输入Ubuntu密码继续下一步    |"
-    ECHOGG "|                                           |"
-    ECHOYY "|              编译环境部署                 |"
-    ECHORR "|                                           |"
-    ECHOGG "|*******************************************|"
-    echo
-    sudo apt-get update -y
-    sudo apt-get install -y git
-    rm -rf common && git clone https://github.com/281677160/common common
-    if [[ -f common/common.sh ]]; then
+    curl -fsSL https://github.com/281677160/common/main/common.sh > common.sh
+    if [[ -f common.sh ]]; then
+      echo
+      ECHORR "|*******************************************|"
+      ECHOGG "|                                           |"
+      ECHOYY "|    首次编译,请输入Ubuntu密码继续下一步    |"
+      ECHOGG "|                                           |"
+      ECHOYY "|              编译环境部署                 |"
+      ECHORR "|                                           |"
+      ECHOGG "|*******************************************|"
+      echo
       source common/common.sh && Diy_update
+      rm -fr common.sh
     else
       ECHOR "common文件下载失败，请检测网络再用一键命令试试!"
     fi
@@ -192,14 +191,9 @@ function op_diywenjian() {
     rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/start-up
     rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/.config
     if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
-      if [[ -d ${GITHUB_WORKSPACE}/common ]]; then
-        cp -Rf ${GITHUB_WORKSPACE}/common/* ${GITHUB_WORKSPACE}/OP_DIY/
-	rm -rf cp -Rf ${GITHUB_WORKSPACE}/common
-      else
-        rm -rf bendi && git clone https://github.com/281677160/common bendi
-        judge  "OP_DIY文件下载"
-        cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/OP_DIY/
-      fi
+      rm -rf bendi && git clone https://github.com/281677160/common bendi
+      judge  "OP_DIY文件下载"
+      cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/OP_DIY/
     else
       print_error "OP_DIY文件下载失败"
       exit 1
