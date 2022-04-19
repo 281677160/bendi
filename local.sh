@@ -263,6 +263,8 @@ function bianyi_xuanxiang() {
   echo
   source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
   tixing_op_config > /dev/null 2>&1
+  clear
+  echo
   echo
   echo -e "${Red} 提示${Font}：${Blue}您当前OP_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
   echo
