@@ -437,6 +437,9 @@ function op_upgrade2() {
 }
 
 function op_download() {
+  if [[ "${WSL_ubuntu}" == "YES" ]]; then
+    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  fi
   cd ${HOME_PATH}
   ECHOG "下载DL文件，请耐心等候..."
   rm -rf ${HOME_PATH}/build.log
@@ -513,9 +516,6 @@ function op_make() {
   [[ -d "${TARGET_BSGET}" ]] && rm -fr ${TARGET_BSGET}/*
   rm -rf ${HOME_PATH}/{README,README.md,README_EN.md} > /dev/null 2>&1
   ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
-  if [[ "${WSL_ubuntu}" == "YES" ]]; then
-    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-  fi
   if [[ "$(nproc)" -ge "16" ]];then
     make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
   else
