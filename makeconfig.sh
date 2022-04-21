@@ -132,9 +132,9 @@ function op_diywenjian() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]]; then
     rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
+    for X in $(find ./bendi -name ".config" |sed 's/.config//g'); do mv "${X}".config "${X}"config; done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/CONFIG_DIY
     rm -rf ${GITHUB_WORKSPACE}/CONFIG_DIY/*/start-up
-    rm -rf ${GITHUB_WORKSPACE}/CONFIG_DIY/*/.config
     if [[ -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]]; then
       rm -rf bendi && git clone https://github.com/281677160/common bendi
       judge  "CONFIG_DIY文件下载"
@@ -149,31 +149,45 @@ function op_diywenjian() {
 
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
-  [[ ! -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]] && op_diywenjian
-  source $GITHUB_WORKSPACE/CONFIG_DIY/${matrixtarget}/settings.ini
+  [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
+  if [ -z "$(ls -A "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini" 2>/dev/null)" ]; then
+    ECHOR "错误提示：编译脚本缺少[settings.ini]名称的配置文件,请在[OP_DIY/${matrixtarget}]文件夹内补齐"
+    exit 1
+  else
+    source "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini"
+  fi
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
-    ECHOY "请在 CONFIG_DIY/${matrixtarget} 里面设置好自定义文件，主要是您要增加的插件，需要跟您的云端同步增加"
-    ZDYSZ="设置完毕后，按[Y/y]回车继续编译"
-    [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
+    clear
+    echo
+    echo
+    ECHOYY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
+    ECHOY "设置完毕后，按[W/w]回车继续编译"
+    ZDYSZ="请输入您的选择"
+    if [[ "${WSL_ubuntu}" == "YES" ]]; then
+      cd ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}
+      explorer.exe .
+      cd ${GITHUB_WORKSPACE}
+    fi
     while :; do
       read -p " ${ZDYSZ}： " ZDYSZU
       case $ZDYSZU in
-      [Yy])
+      [Ww])
         echo
       break
       ;;
       *)
-        ZDYSZ="确认设置完毕后，请按[Y/y]回车继续编译"
+        ZDYSZ="提醒：确认设置完毕后，请按[W/w]回车继续编译"
       ;;
       esac
     done
   fi
   echo
   echo
-  source ${GITHUB_WORKSPACE}/CONFIG_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
   tixing_op_config > /dev/null 2>&1
+  clear
   echo
-  echo -e "${Red} 提示${Font}：${Blue}您当前CONFIG_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
+  echo
+  echo -e "${Red} 提示${Font}：${Blue}您当前OP_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
   echo
   ECHOGG "是否需要选择机型和增删插件?"
   read -t 20 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,20秒自动跳过)： " MENUu
@@ -188,7 +202,21 @@ function bianyi_xuanxiang() {
   ;;
   esac
   echo
+  echo
+  ECHOG "3秒后为您执行编译程序,请稍后..."
   sleep 2
+  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
+  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
+  if [[ $? -ne 0 ]];then
+    curl -fsSL https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
+  fi
+  if [[ $? -eq 0 ]];then
+    source common.sh && Diy_repo_url
+    rm -fr common.sh
+  else
+    ECHOR "common文件下载失败，请检测网络后再用一键命令试试!"
+    exit 1
+  fi
 }
 
 function op_repo_branch() {
@@ -221,28 +249,29 @@ function op_diy_zdy() {
   source "${BUILD_PATH}/common.sh" && Diy_menu
 }
 
-function op_diy_ip() {
-  cd ${HOME_PATH}
-  IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
-  [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
-  echo "${Mark_Core}" > ${HOME_PATH}/${Mark_Core}
-  echo
-  ECHOY "您的后台IP地址为：$IP"
-  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    export Github=${Github}
-    export Warehouse="${Github##*com/}"
-    export Author="$(echo "${Github}" |cut -d "/" -f4)"
-    export Library="$(echo "${Github}" |cut -d "/" -f5)"
-    ECHOYY "您的Github地址为：$Github"
-    echo
-  fi
-  sleep 2
-}
-
 function op_menuconfig() {
   cd ${HOME_PATH}
-  if [[ "${Menuconfig}" == "true" ]]; then
-    make menuconfig
+  make menuconfig
+  if [[ $? -ne 0 ]]; then
+    ECHOY "窗口分辨率太小，无法弹出设置更机型或插件的窗口"
+    ECHOG "请调整窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
+    XUANMA="请输入您的选择"
+    while :; do
+    read -p " ${XUANMA}：" Make
+    case $Make in
+    [Yy])
+       op_menuconfig
+       break
+      ;;
+      [Nn])
+       exit 1
+      break
+    ;;
+    *)
+      XUANMA="输入错误,请输入[Y/n]"
+    ;;
+    esac
+    done
   fi
 }
 
@@ -359,7 +388,6 @@ function op_again() {
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
-  op_diy_ip
   op_diywenjian
   op_jiaoben
   openwrt_gitpull
@@ -377,7 +405,6 @@ function openwrt_new() {
   op_repo_branch
   op_jiaoben
   op_diy_zdy
-  op_diy_ip
   op_menuconfig
   make_defconfig
   op_end
