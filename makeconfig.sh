@@ -164,6 +164,12 @@ function op_diywenjian() {
     done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/CONFIG_DIY
   fi
+  if [[ ! -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]]; then
+    ECHOR "CONFIG_DIY文件下载失败，请检查网络网络再尝试"
+    exit 1
+  else
+    print_ok "CONFIG_DIY文件下载 完成"
+  fi
 }
 
 function bianyi_xuanxiang() {
