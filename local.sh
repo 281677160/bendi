@@ -232,17 +232,6 @@ function bianyi_xuanxiang() {
     exit 1
   else
     source "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini"
-    curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
-    if [[ $? -ne 0 ]];then
-      curl -fsSL https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
-    fi
-    if [[ $? -eq 0 ]];then
-      source common.sh && Diy_repo_url
-      rm -fr common.sh
-    else
-      ECHOR "common文件下载失败，请检测网络后再用一键命令试试!"
-      exit 1
-    fi
   fi
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     clear
@@ -272,6 +261,17 @@ function bianyi_xuanxiang() {
   echo
   echo
   source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
+  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
+  if [[ $? -ne 0 ]];then
+    curl -fsSL https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
+  fi
+  if [[ $? -eq 0 ]];then
+    source common.sh && Diy_repo_url
+    rm -fr common.sh
+  else
+    ECHOR "common文件下载失败，请检测网络后再用一键命令试试!"
+    exit 1
+  fi
   tixing_op_config > /dev/null 2>&1
   clear
   echo
@@ -324,7 +324,6 @@ function op_jiaoben() {
 function op_diy_zdy() {
   ECHOG "正在下载插件包和更新feeds,请耐心等候~~~"
   cd ${HOME_PATH}
-  source "${BUILD_PATH}/settings.ini"
   source "${BUILD_PATH}/common.sh" && Diy_menu
   if [[ -d "${HOME_PATH}/feeds/danshui.tmp" ]]; then
     if [[ ! -f "${LOCAL_Build}/chenggong" ]] || [[ ! -f "${LOCAL_Build}/shibai" ]]; then
