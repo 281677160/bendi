@@ -212,16 +212,16 @@ function gengxin_opdiy() {
   if [[ -d ${GITHUB_WORKSPACE}/bendi ]]; then
     rm -rf commn && git clone https://github.com/281677160/common commn
     if [[ -d ${GITHUB_WORKSPACE}/commn ]]; then
-       cp -Rf ${GITHUB_WORKSPACE}/commn/OP_DIY/* ${GITHUB_WORKSPACE}/bendi/build/
-       cp -Rf ${GITHUB_WORKSPACE}/bendi/build/* ${GITHUB_WORKSPACE}/OP_DIY/
-    else
-      print_error "OP_DIY文件下载失败,同步失败,请检查网络"
+      cp -Rf ${GITHUB_WORKSPACE}/commn/OP_DIY/* ${GITHUB_WORKSPACE}/bendi/build/
+      cp -Rf ${GITHUB_WORKSPACE}/bendi/build/* ${GITHUB_WORKSPACE}/OP_DIY/
       rm -rf ${GITHUB_WORKSPACE}/{bendi,commn}
+      print_ok "同步上游OP_DIY文件完成!"
+    else
+      rm -rf ${GITHUB_WORKSPACE}/{bendi,commn}
+      print_error "OP_DIY文件下载失败,同步失败,请检查网络"
       exit 1
     fi
   fi
-  rm -rf ${GITHUB_WORKSPACE}/{bendi,commn}
-  print_ok "同步上游OP_DIY文件完成!"
 }
 
 function bianyi_xuanxiang() {
