@@ -160,6 +160,7 @@ function op_diywenjian() {
       sed -i '/REGULAR_UPDATE/d' "${X}"
       sed -i '/BY_INFORMATION/d' "${X}"
       echo -e "\nEVERY_INQUIRY="true"                                    # 是否每次都询问您要不要去设置自定义文件（true=开启）（false=关闭）" >> "${X}"
+      sed -i 's/.config/config/g' "${X}"
       sed -i '/^$/d' "${X}"
     done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/CONFIG_DIY
