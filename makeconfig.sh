@@ -143,7 +143,9 @@ function op_diywenjian() {
     if [[ -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]]; then
       rm -rf bendi && git clone https://github.com/281677160/common bendi
       judge  "CONFIG_DIY文件下载"
-      cp -Rf ${GITHUB_WORKSPACE}/bendi/CONFIG_DIY/* ${GITHUB_WORKSPACE}/CONFIG_DIY/
+      for X in $(find ./bendi -name "settings.ini"); do sed -i '/REGULAR_UPDATE/d' "${X}"; done
+      for X in $(find ./bendi -name "settings.ini"); do sed -i '/Github/d' "${X}"; done
+      cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/CONFIG_DIY/
       rm -rf ${GITHUB_WORKSPACE}/bendi
     else
       rm -rf ${GITHUB_WORKSPACE}/bendi
