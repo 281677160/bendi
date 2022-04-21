@@ -294,7 +294,6 @@ function bianyi_xuanxiang() {
     ECHOR "common文件下载失败，请检测网络后再用一键命令试试!"
     exit 1
   fi
-  echo
 }
 
 function op_repo_branch() {
