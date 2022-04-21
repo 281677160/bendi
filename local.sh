@@ -215,7 +215,7 @@ function gengxin_opdiy() {
   git clone https://github.com/281677160/build-actions bendi
   judge "OP_DIY文件下载"
   rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
-  for X in $(find ./bendi -name ".config" |sed 's/.config//g'); do mv "${X}".config "${X}"config; done
+  rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/.config
   for X in $(find ./bendi -name "settings.ini"); do
     sed -i 's/.config/config/g' "${X}"
     sed -i '/SSH_ACTIONS/d' "${X}"
@@ -235,13 +235,14 @@ function gengxin_opdiy() {
     sed -i 's/^[ ]*//g' "${X}"
     sed -i '/^$/d' "${X}"
   done
-  rm -rf ${GITHUB_WORKSPACE}/OP_DIY
-  mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
-  rm -rf ${GITHUB_WORKSPACE}/bendi
-  if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
+  if [[ -d ${GITHUB_WORKSPACE}/bendi/build ]]; then
+    cp -Rf ${GITHUB_WORKSPACE}/bendi/build/* ${GITHUB_WORKSPACE}/OP_DIY/
+    rm -rf ${GITHUB_WORKSPACE}/bendi
     print_ok "同步OP_DIY完成!"
   else
-    print_ok "同步OP_DIY失败!"
+    rm -rf ${GITHUB_WORKSPACE}/bendi
+    print_error "同步OP_DIY失败!"
+    exit 1
   fi
 }
 
