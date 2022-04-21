@@ -936,7 +936,7 @@ function menuop() {
   read -p " ${XUANZop}：" menu_num
   case $menu_num in
   1)
-    openwrt_new
+    openwrt_tow
   break
   ;;
   2)
@@ -993,7 +993,7 @@ function mecuowu() {
   1)
     ECHOG "开始以${matrixtarget}最新源码重新编译"
     export matrixtarget="${matrixtarget}"
-    openwrt_new
+    openwrt_tow
   break
   ;;
   2)
