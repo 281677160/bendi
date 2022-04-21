@@ -146,8 +146,10 @@ function op_diywenjian() {
     # 记住要跟云脚本同步才可以，如果你这里增加了插件源码，云端没增加，是编译不出来的
     " > "${X}"
     done
-    for X in $(find ./bendi -name "diy-part.sh"); do sed -i 's/^[ ]*//g' "${X}"; done
-    for X in $(find ./bendi -name "diy-part.sh"); do sed -i '/^$/d' "${X}"; done
+    for X in $(find ./bendi -name "diy-part.sh"); do
+      sed -i 's/^[ ]*//g' "${X}"
+      sed -i '/^$/d' "${X}"
+    done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/CONFIG_DIY
     rm -rf ${GITHUB_WORKSPACE}/CONFIG_DIY/*/start-up
     if [[ -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]]; then
