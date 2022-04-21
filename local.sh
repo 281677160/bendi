@@ -114,6 +114,7 @@ else
   export WSL_ubuntu="NO"
 fi
 
+
 function op_common_sh() {
   cd ${GITHUB_WORKSPACE}
   clear
@@ -231,6 +232,17 @@ function bianyi_xuanxiang() {
     exit 1
   else
     source "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini"
+    curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
+    if [[ $? -ne 0 ]];then
+      curl -fsSL https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
+    fi
+    if [[ $? -eq 0 ]];then
+      source common.sh && Diy_repo_url
+      rm -fr common.sh
+    else
+      ECHOR "common文件下载失败，请检测网络后再用一键命令试试!"
+      exit 1
+    fi
   fi
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     clear
