@@ -955,7 +955,7 @@ function menuop() {
   echo -e " ${Blue}OP_DIY配置文件机型${Font}：${Green}${TARGET_PROFILE}${Font}"
   echo
   echo
-  echo -e " 1${Green}.${Font}${Yellow}删除[${matrixtarget}]源码,重新下载[${matrixtarget}]源码编译${Font}(推荐)"
+  echo -e " 1${Green}.${Font}${Yellow}删除[${matrixtarget}]源码,重新下载[${matrixtarget}]源码编译${Font}"
   echo
   echo -e " 2${Green}.${Font}${Yellow}保留缓存同步上游仓库源码,再次编译${Font}"
   echo
