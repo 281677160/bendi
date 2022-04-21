@@ -202,7 +202,7 @@ function gengxin_opdiy() {
   rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
   if [[ -d ${GITHUB_WORKSPACE}/bendi ]]; then
     rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
-    for X in $(find ./bendi -name ".config" |sed 's/.config//g'); do mv "${X}".config "${X}"config; done
+    rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/.config
   else
     print_error "OP_DIY文件下载失败,同步失败,请检查网络"
     rm -rf ${GITHUB_WORKSPACE}/bendi
