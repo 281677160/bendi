@@ -137,33 +137,32 @@ function op_diywenjian() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]]; then
     rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
+    rm -rf ${GITHUB_WORKSPACE}/CONFIG_DIY/*/start-up
     for X in $(find ./bendi -name ".config" |sed 's/.config//g'); do mv "${X}".config "${X}"config; done
     for X in $(find ./bendi -name "diy-part.sh"); do
-    echo "
-    #!/bin/bash
-    # Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
-    # 在此处增加插件
-    # 记住要跟云脚本同步才可以，如果你这里增加了插件源码，云端没增加，是编译不出来的
-    " > "${X}"
-    done
-    for X in $(find ./bendi -name "diy-part.sh"); do
+      echo "
+      #!/bin/bash
+      # Copyright (c) 2019-2020 P3TERX <https://p3terx.com>
+      # 在此处增加插件
+      # 记住要跟云脚本同步才可以，如果你这里增加了插件源码，云端没增加，是编译不出来的
+      " > "${X}"
       sed -i 's/^[ ]*//g' "${X}"
       sed -i '/^$/d' "${X}"
     done
+    for X in $(find ./bendi -name "settings.ini"); do
+      sed -i '/SSH_ACTIONS/d' "${X}"
+      sed -i '/UPLOAD_CONFIG/d' "${X}"
+      sed -i '/UPLOAD_FIRMWARE/d' "${X}"
+      sed -i '/UPLOAD_WETRANSFER/d' "${X}"
+      sed -i '/UPLOAD_RELEASE/d' "${X}"
+      sed -i '/SERVERCHAN_SCKEY/d' "${X}"
+      sed -i '/USE_CACHEWRTBUILD/d' "${X}"
+      sed -i '/REGULAR_UPDATE/d' "${X}"
+      sed -i '/BY_INFORMATION/d' "${X}"
+      echo -e "\nEVERY_INQUIRY="true"                                    # 是否每次都询问您要不要去设置自定义文件（true=开启）（false=关闭）" >> "${X}"
+      sed -i '/^$/d' "${X}"
+    done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/CONFIG_DIY
-    rm -rf ${GITHUB_WORKSPACE}/CONFIG_DIY/*/start-up
-    if [[ -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]]; then
-      rm -rf bendi && git clone https://github.com/281677160/common bendi
-      judge  "CONFIG_DIY文件下载"
-      for X in $(find ./bendi -name "settings.ini"); do sed -i '/REGULAR_UPDATE/d' "${X}"; done
-      for X in $(find ./bendi -name "settings.ini"); do sed -i '/Github/d' "${X}"; done
-      cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/CONFIG_DIY/
-      rm -rf ${GITHUB_WORKSPACE}/bendi
-    else
-      rm -rf ${GITHUB_WORKSPACE}/bendi
-      print_error "CONFIG_DIY文件下载失败"
-      exit 1
-    fi
   fi
 }
 
