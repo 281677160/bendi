@@ -137,9 +137,9 @@ function op_common_sh() {
     sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
     sudo service ssh restart
   fi
-  curl -L https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
+  curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
   if [[ $? -ne 0 ]];then
-    curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
+    curl -L https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
   fi
   if [[ $? -eq 0 ]];then
     source common.sh && Diy_update
