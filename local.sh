@@ -189,11 +189,12 @@ function op_diywenjian() {
       rm -rf bendi && git clone https://github.com/281677160/common bendi
       judge  "OP_DIY文件下载"
       cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/OP_DIY/
+      rm -rf ${GITHUB_WORKSPACE}/bendi
     else
       print_error "OP_DIY文件下载失败"
+      rm -rf ${GITHUB_WORKSPACE}/bendi
       exit 1
     fi
-    rm -rf ${GITHUB_WORKSPACE}/bendi
   fi
 }
 
