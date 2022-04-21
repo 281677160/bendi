@@ -20,7 +20,7 @@ ERROR="${Red}[ERROR]${Font}"
 
 # 变量
 export GITHUB_WORKSPACE="$PWD"
-export OP_DIY="${GITHUB_WORKSPACE}/OP_DIY"
+export OP_DIY="${GITHUB_WORKSPACE}/CONFIG_DIY"
 export HOME_PATH="${GITHUB_WORKSPACE}/op_config"
 export LOCAL_Build="${HOME_PATH}/build"
 export COMMON_SH="${HOME_PATH}/build/common/common.sh"
