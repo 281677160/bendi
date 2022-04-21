@@ -181,46 +181,67 @@ function op_kongjian() {
 function op_diywenjian() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
-    rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
+    rm -rf bendi
+    git clone https://github.com/281677160/build-actions bendi
+    judge "OP_DIY文件下载"
+    rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
     for X in $(find ./bendi -name ".config" |sed 's/.config//g'); do mv "${X}".config "${X}"config; done
+    for X in $(find ./bendi -name "settings.ini"); do
+      sed -i 's/.config/config/g' "${X}"
+      sed -i '/SSH_ACTIONS/d' "${X}"
+      sed -i '/UPLOAD_CONFIG/d' "${X}"
+      sed -i '/UPLOAD_FIRMWARE/d' "${X}"
+      sed -i '/UPLOAD_WETRANSFER/d' "${X}"
+      sed -i '/UPLOAD_RELEASE/d' "${X}"
+      sed -i '/SERVERCHAN_SCKEY/d' "${X}"
+      sed -i '/USE_CACHEWRTBUILD/d' "${X}"
+      sed -i '/REGULAR_UPDATE/d' "${X}"
+      sed -i '/BY_INFORMATION/d' "${X}"
+      echo '
+        EVERY_INQUIRY="true"                                    # 是否每次都询问您要不要去设置自定义文件（true=开启）（false=关闭）
+        REGULAR_UPDATE="false"                                  # 把自动在线更新的插件编译进固件（在本地就是玩票性质）（true=开启）（false=关闭）
+        Github="https://github.com/281677160/build-actions"     # 如果开启了‘把自动在线更新的插件编译进固件’，请设置好您的github地址
+      ' > "${X}"
+      sed -i 's/^[ ]*//g' "${X}"
+      sed -i '/^$/d' "${X}"
+    done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
-    rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/start-up
-    if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
-      rm -rf bendi && git clone https://github.com/281677160/common bendi
-      judge  "OP_DIY文件下载"
-      cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/OP_DIY/
-      rm -rf ${GITHUB_WORKSPACE}/bendi
-    else
-      print_error "OP_DIY文件下载失败"
-      rm -rf ${GITHUB_WORKSPACE}/bendi
-      exit 1
-    fi
   fi
 }
 
 function gengxin_opdiy() {
   cd ${GITHUB_WORKSPACE}
-  rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
-  if [[ -d ${GITHUB_WORKSPACE}/bendi ]]; then
-    rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
-    rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/.config
+  rm -rf ${GITHUB_WORKSPACE}/bendi
+  git clone https://github.com/281677160/build-actions bendi
+  judge "OP_DIY文件下载"
+  rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
+  for X in $(find ./bendi -name ".config" |sed 's/.config//g'); do mv "${X}".config "${X}"config; done
+  for X in $(find ./bendi -name "settings.ini"); do
+    sed -i 's/.config/config/g' "${X}"
+    sed -i '/SSH_ACTIONS/d' "${X}"
+    sed -i '/UPLOAD_CONFIG/d' "${X}"
+    sed -i '/UPLOAD_FIRMWARE/d' "${X}"
+    sed -i '/UPLOAD_WETRANSFER/d' "${X}"
+    sed -i '/UPLOAD_RELEASE/d' "${X}"
+    sed -i '/SERVERCHAN_SCKEY/d' "${X}"
+    sed -i '/USE_CACHEWRTBUILD/d' "${X}"
+    sed -i '/REGULAR_UPDATE/d' "${X}"
+    sed -i '/BY_INFORMATION/d' "${X}"
+    echo '
+      EVERY_INQUIRY="true"                                    # 是否每次都询问您要不要去设置自定义文件（true=开启）（false=关闭）
+      REGULAR_UPDATE="false"                                  # 把自动在线更新的插件编译进固件（在本地就是玩票性质）（true=开启）（false=关闭）
+      Github="https://github.com/281677160/build-actions"     # 如果开启了‘把自动在线更新的插件编译进固件’，请设置好您的github地址
+    ' > "${X}"
+    sed -i 's/^[ ]*//g' "${X}"
+    sed -i '/^$/d' "${X}"
+  done
+  rm -rf ${GITHUB_WORKSPACE}/OP_DIY
+  mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
+  rm -rf ${GITHUB_WORKSPACE}/bendi
+  if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
+    print_ok "同步OP_DIY完成!"
   else
-    print_error "OP_DIY文件下载失败,同步失败,请检查网络"
-    rm -rf ${GITHUB_WORKSPACE}/bendi
-    exit 1
-  fi
-  if [[ -d ${GITHUB_WORKSPACE}/bendi ]]; then
-    rm -rf commn && git clone https://github.com/281677160/common commn
-    if [[ -d ${GITHUB_WORKSPACE}/commn ]]; then
-      cp -Rf ${GITHUB_WORKSPACE}/commn/OP_DIY/* ${GITHUB_WORKSPACE}/bendi/build/
-      cp -Rf ${GITHUB_WORKSPACE}/bendi/build/* ${GITHUB_WORKSPACE}/OP_DIY/
-      rm -rf ${GITHUB_WORKSPACE}/{bendi,commn}
-      print_ok "同步上游OP_DIY文件完成!"
-    else
-      rm -rf ${GITHUB_WORKSPACE}/{bendi,commn}
-      print_error "OP_DIY文件下载失败,同步失败,请检查网络"
-      exit 1
-    fi
+    print_ok "同步OP_DIY失败!"
   fi
 }
 
