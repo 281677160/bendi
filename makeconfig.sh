@@ -150,6 +150,7 @@ function op_diywenjian() {
       sed -i '/^$/d' "${X}"
     done
     for X in $(find ./bendi -name "settings.ini"); do
+      sed -i 's/.config/config/g' "${X}"
       sed -i '/SSH_ACTIONS/d' "${X}"
       sed -i '/UPLOAD_CONFIG/d' "${X}"
       sed -i '/UPLOAD_FIRMWARE/d' "${X}"
@@ -161,7 +162,6 @@ function op_diywenjian() {
       sed -i '/BY_INFORMATION/d' "${X}"
       echo -e "\nEVERY_INQUIRY="true"                                    # 是否每次都询问您要不要去设置自定义文件（true=开启）（false=关闭）" >> "${X}"
       sed -i '/^$/d' "${X}"
-      sed -i 's/.config/config/g' "${X}"
     done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/CONFIG_DIY
   fi
