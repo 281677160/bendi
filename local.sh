@@ -779,6 +779,27 @@ function op_again() {
   op_end
 }
 
+function openwrt_tow() {
+  bianyi_xuanxiang
+  op_common_sh
+  openwrt_qx
+  op_firmware
+  op_kongjian
+  op_diywenjian
+  op_repo_branch
+  op_jiaoben
+  op_diy_zdy
+  op_diy_ip
+  op_menuconfig
+  make_defconfig
+  op_upgrade2
+  op_download
+  op_cpuxinghao
+  op_make
+  op_upgrade3
+  op_end
+}
+
 function openwrt_new() {
   op_common_sh
   openwrt_qx
