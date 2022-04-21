@@ -21,14 +21,14 @@ ERROR="${Red}[ERROR]${Font}"
 # 变量
 export GITHUB_WORKSPACE="$PWD"
 export OP_DIY="${GITHUB_WORKSPACE}/OP_DIY"
-export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
+export HOME_PATH="${GITHUB_WORKSPACE}/op_config"
 export LOCAL_Build="${HOME_PATH}/build"
 export COMMON_SH="${HOME_PATH}/build/common/common.sh"
 export BASE_PATH="${HOME_PATH}/package/base-files/files"
 export NETIP="${HOME_PATH}/package/base-files/files/etc/networkip"
 export DELETE="${HOME_PATH}/package/base-files/files/etc/deletefile"
-export FIN_PATH="${GITHUB_WORKSPACE}/openwrt/package/base-files/files/etc/FinishIng.sh"
-export KEEPD="${GITHUB_WORKSPACE}/openwrt/package/base-files/files/lib/upgrade/keep.d/base-files-essential"
+export FIN_PATH="${HOME_PATH}/package/base-files/files/etc/FinishIng.sh"
+export KEEPD="${HOME_PATH}/package/base-files/files/lib/upgrade/keep.d/base-files-essential"
 export Author="$(grep "syslog" "/etc/group"|awk 'NR==1' |cut -d "," -f2)"
 export REPO_TOKEN="REPO_TOKEN"
 export date1="$(date +'%m-%d')"
@@ -143,12 +143,13 @@ function op_diywenjian() {
     if [[ -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]]; then
       rm -rf bendi && git clone https://github.com/281677160/common bendi
       judge  "CONFIG_DIY文件下载"
-      cp -Rf ${GITHUB_WORKSPACE}/bendi/OP_DIY/* ${GITHUB_WORKSPACE}/CONFIG_DIY/
+      cp -Rf ${GITHUB_WORKSPACE}/bendi/CONFIG_DIY/* ${GITHUB_WORKSPACE}/CONFIG_DIY/
+      rm -rf ${GITHUB_WORKSPACE}/bendi
     else
+      rm -rf ${GITHUB_WORKSPACE}/bendi
       print_error "CONFIG_DIY文件下载失败"
       exit 1
     fi
-    rm -rf ${GITHUB_WORKSPACE}/bendi
   fi
 }
 
@@ -186,15 +187,6 @@ function bianyi_xuanxiang() {
       esac
     done
   fi
-  tixing_op_config > /dev/null 2>&1
-  clear
-  echo
-  echo
-  echo -e "${Red} 提示${Font}：${Blue}您当前CONFIG_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
-  echo
-  echo
-  ECHOG "3秒后为您执行编译程序,请稍后..."
-  sleep 2
   source ${GITHUB_WORKSPACE}/CONFIG_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
   curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
   if [[ $? -ne 0 ]];then
