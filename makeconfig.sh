@@ -154,22 +154,22 @@ function op_diywenjian() {
 
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
-  [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
-  if [ -z "$(ls -A "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini" 2>/dev/null)" ]; then
-    ECHOR "错误提示：编译脚本缺少[settings.ini]名称的配置文件,请在[OP_DIY/${matrixtarget}]文件夹内补齐"
+  [[ ! -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]] && op_diywenjian
+  if [ -z "$(ls -A "$GITHUB_WORKSPACE/CONFIG_DIY/${matrixtarget}/settings.ini" 2>/dev/null)" ]; then
+    ECHOR "错误提示：编译脚本缺少[settings.ini]名称的配置文件,请在[CONFIG_DIY/${matrixtarget}]文件夹内补齐"
     exit 1
   else
-    source "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini"
+    source "$GITHUB_WORKSPACE/CONFIG_DIY/${matrixtarget}/settings.ini"
   fi
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     clear
     echo
     echo
-    ECHOYY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
+    ECHOYY "如果您有额外增加插件，请在 CONFIG_DIY/${matrixtarget} 里面设置好自定义文件，记住要跟云编译脚本同步"
     ECHOY "设置完毕后，按[W/w]回车继续编译"
     ZDYSZ="请输入您的选择"
     if [[ "${WSL_ubuntu}" == "YES" ]]; then
-      cd ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}
+      cd ${GITHUB_WORKSPACE}/CONFIG_DIY/${matrixtarget}
       explorer.exe .
       cd ${GITHUB_WORKSPACE}
     fi
@@ -186,31 +186,16 @@ function bianyi_xuanxiang() {
       esac
     done
   fi
-  echo
-  echo
   tixing_op_config > /dev/null 2>&1
   clear
   echo
   echo
-  echo -e "${Red} 提示${Font}：${Blue}您当前OP_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
-  echo
-  ECHOGG "是否需要选择机型和增删插件?"
-  read -t 20 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,20秒自动跳过)： " MENUu
-  case $MENUu in
-  [Yy])
-    export Menuconfig="true"
-    ECHOYY "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
-  ;;
-  *)
-    export Menuconfig="false"
-    ECHORR "您已关闭选择机型和增删插件设置！"
-  ;;
-  esac
+  echo -e "${Red} 提示${Font}：${Blue}您当前CONFIG_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
   echo
   echo
   ECHOG "3秒后为您执行编译程序,请稍后..."
   sleep 2
-  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
+  source ${GITHUB_WORKSPACE}/CONFIG_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
   curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
   if [[ $? -ne 0 ]];then
     curl -fsSL https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
