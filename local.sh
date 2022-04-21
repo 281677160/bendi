@@ -182,9 +182,9 @@ function op_diywenjian() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
     rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
+    for X in $(find ./bendi -name ".config" |sed 's/.config//g'); do mv "${X}".config "${X}"config; done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
     rm -rf ${GITHUB_WORKSPACE}/OP_DIY/*/start-up
-    for X in $(find ./bendi -name ".config" |sed 's/.config//g'); do mv "${X}".config "${X}"config; done
     if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
       rm -rf bendi && git clone https://github.com/281677160/common bendi
       judge  "OP_DIY文件下载"
