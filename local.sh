@@ -779,6 +779,7 @@ function op_again() {
   op_diywenjian
   op_jiaoben
   openwrt_gitpull
+  op_kongjian
   op_menuconfig
   make_defconfig
   op_upgrade2
@@ -793,6 +794,7 @@ function openwrt_tow() {
   op_common_sh
   openwrt_qx
   op_firmware
+  op_kongjian
   op_diywenjian
   op_repo_branch
   op_jiaoben
@@ -812,6 +814,7 @@ function openwrt_new() {
   op_common_sh
   openwrt_qx
   op_firmware
+  op_kongjian
   op_kongjian
   op_diywenjian
   bianyi_xuanxiang
