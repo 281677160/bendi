@@ -137,7 +137,7 @@ function op_diywenjian() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d ${GITHUB_WORKSPACE}/CONFIG_DIY ]]; then
     rm -rf bendi && git clone https://github.com/281677160/build-actions bendi
-    rm -rf ${GITHUB_WORKSPACE}/CONFIG_DIY/*/start-up
+    rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
     for X in $(find ./bendi -name ".config" |sed 's/.config//g'); do mv "${X}".config "${X}"config; done
     for X in $(find ./bendi -name "diy-part.sh"); do
       echo "
