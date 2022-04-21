@@ -198,12 +198,14 @@ function op_diywenjian() {
       sed -i '/REGULAR_UPDATE/d' "${X}"
       sed -i '/BY_INFORMATION/d' "${X}"
       echo '
-        EVERY_INQUIRY="true"                                    # 是否每次都询问您要不要去设置自定义文件（true=开启）（false=关闭）
-        REGULAR_UPDATE="false"                                  # 把自动在线更新的插件编译进固件（在本地就是玩票性质）（true=开启）（false=关闭）
+        EVERY_INQUIRY="true"            # 是否每次都询问您要不要去设置自定义文件（true=开启）（false=关闭）
+        REGULAR_UPDATE="false"            # 把自动在线更新的插件编译进固件（在本地就是玩票性质）（true=开启）（false=关闭）
         Github="https://github.com/281677160/build-actions"     # 如果开启了‘把自动在线更新的插件编译进固件’，请设置好您的github地址
       ' >> "${X}"
       sed -i 's/^[ ]*//g' "${X}"
       sed -i '/^$/d' "${X}"
+      sed -i '/REGULAR_UPDATE/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
+      sed -i '/Github/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
     done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
   fi
@@ -234,6 +236,8 @@ function gengxin_opdiy() {
     ' >> "${X}"
     sed -i 's/^[ ]*//g' "${X}"
     sed -i '/^$/d' "${X}"
+    sed -i '/REGULAR_UPDATE/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
+    sed -i '/Github/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
   done
   if [[ -d ${GITHUB_WORKSPACE}/bendi/build ]]; then
     cp -Rf ${GITHUB_WORKSPACE}/bendi/build/* ${GITHUB_WORKSPACE}/OP_DIY/
