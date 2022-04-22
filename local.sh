@@ -545,9 +545,9 @@ function op_make() {
     export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   fi
   if [[ "$(nproc)" -ge "16" ]];then
-    make -j$(($(nproc) + 1)) V=s 2>&1 |tee ${HOME_PATH}/build.log
+    make -j$(nproc) 2>&1 |tee ${HOME_PATH}/build.log
   else
-    make -j16 V=s 2>&1 |tee ${HOME_PATH}/build.log
+    make -j16 2>&1 |tee ${HOME_PATH}/build.log
   fi
   if [[ "${WSL_ubuntu}" == "YES" ]]; then
     export PATH=$PATH:'/mnt/c/windows'
