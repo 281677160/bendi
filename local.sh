@@ -252,7 +252,6 @@ function gengxin_opdiy() {
 
 function bianyi_xuanxiang() {
   cd ${GITHUB_WORKSPACE}
-  [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]] && op_diywenjian
   if [ -z "$(ls -A "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini" 2>/dev/null)" ]; then
     ECHOR "错误提示：编译脚本缺少[settings.ini]名称的配置文件,请在[OP_DIY/${matrixtarget}]文件夹内补齐"
     exit 1
@@ -309,9 +308,9 @@ function bianyi_xuanxiang() {
   ECHOG "3秒后为您执行编译程序,请稍后..."
   sleep 2
   source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
-  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
+  curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
   if [[ $? -ne 0 ]];then
-    curl -fsSL https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
+    wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
   fi
   if [[ $? -eq 0 ]];then
     source common.sh && Diy_repo_url
