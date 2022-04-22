@@ -543,9 +543,9 @@ function op_make() {
     export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   fi
   if [[ "$(nproc)" -ge "16" ]];then
-    make -j$(nproc) 2>&1 |tee ${HOME_PATH}/build.log
+    make -j$(nproc)
   else
-    make -j16 2>&1 |tee ${HOME_PATH}/build.log
+    make -j16
   fi
   if [[ "${WSL_ubuntu}" == "YES" ]]; then
     export PATH=$PATH:'/mnt/c/windows'
@@ -555,15 +555,13 @@ function op_make() {
     rm -rf ${LOCAL_Build}/weiwan > /dev/null 2>&1
     echo "shibai" >${LOCAL_Build}/shibai
     rm -rf ${HOME_PATH}/dl
-    print_error "编译失败~~!"
-    print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
+    print_error "编译失败，请再次尝试编译试试~~!"
     sleep 1
     exit 1
   else
     rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
     rm -rf ${LOCAL_Build}/weiwan > /dev/null 2>&1
     echo "chenggong" >${LOCAL_Build}/chenggong
-    rm -rf ${HOME_PATH}/build.log
     ./scripts/diffconfig.sh > ${BUILD_PATH}/.config
     export GUJIAN_TIME=`date +'%Y%m%d%H%M'`
   fi
