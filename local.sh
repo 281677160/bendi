@@ -308,9 +308,9 @@ function bianyi_xuanxiang() {
   ECHOG "3秒后为您执行编译程序,请稍后..."
   sleep 2
   source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
-  curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
+  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
   if [[ $? -ne 0 ]];then
-    wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
+    wget -q -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
   fi
   if [[ $? -eq 0 ]];then
     source common.sh && Diy_repo_url
