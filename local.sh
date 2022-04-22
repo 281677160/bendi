@@ -343,17 +343,15 @@ function op_jiaoben() {
   chmod -R +x ${BUILD_PATH}
   source "${BUILD_PATH}/common.sh" && Diy_settings
   source "${BUILD_PATH}/common.sh" && Bendi_variable
+  rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
+  rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
+  echo "weiwan" > "${LOCAL_Build}/weiwan"
 }
 
 function op_diy_zdy() {
   ECHOG "正在下载插件包和更新feeds,请耐心等候~~~"
   cd ${HOME_PATH}
   source "${BUILD_PATH}/common.sh" && Diy_menu
-  if [[ -d "${HOME_PATH}/feeds/danshui.tmp" ]]; then
-    if [[ ! -f "${LOCAL_Build}/chenggong" ]] || [[ ! -f "${LOCAL_Build}/shibai" ]]; then
-      echo "weiwan" > "${LOCAL_Build}/weiwan"
-    fi
-  fi
 }
 
 function op_diy_ip() {
@@ -934,6 +932,15 @@ function Menu_requirements() {
   source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
   tixing_op_config > /dev/null 2>&1
   chenggong_op_config > /dev/null 2>&1
+  if [[ -f ${LOCAL_Build}/shibai ]] ; then
+    SHANGCIZHUANGTAI="失败"
+  elif [[ -f ${LOCAL_Build}/weiwan ]] ; then
+    SHANGCIZHUANGTAI="未完成"
+  elif [[ -f ${LOCAL_Build}/chenggong ]] ; then
+    SHANGCIZHUANGTAI="成功"
+  else
+    SHANGCIZHUANGTAI="未知"
+  fi
   cd ${GITHUB_WORKSPACE}
 }
 
@@ -943,21 +950,22 @@ function menuop() {
   echo
   echo
   echo -e " ${Blue}当前使用源码${Font}：${Green}${matrixtarget}${Font}"
-  echo -e " ${Blue}当前成功编译机型${Font}：${Green}${CG_PROFILE}${Font}"
+  echo -e " ${Blue}成功编译过的机型${Font}：${Green}${CG_PROFILE}${Font}"
   echo -e " ${Blue}OP_DIY配置文件机型${Font}：${Green}${TARGET_PROFILE}${Font}"
+  echo -e " ${Blue}上回编译操作${Font}：${Green}${SHANGCIZHUANGTAI}${Font}"
   echo
   echo
-  echo -e " 1${Green}.${Font}${Yellow}删除[${matrixtarget}]源码,重新下载[${matrixtarget}]源码编译${Font}"
+  echo -e " 1${Red}.${Font}${Green}保留缓存同步上游仓库源码,再次编译${Font}"
   echo
-  echo -e " 2${Green}.${Font}${Yellow}保留缓存同步上游仓库源码,再次编译${Font}"
+  echo -e " 2${Red}.${Font}${Green}删除现有源码,重新下载[${matrixtarget}]源码再编译${Font}"
   echo
-  echo -e " 3${Green}.${Font}${Yellow}更换其他作者源码编译${Font}"
+  echo -e " 3${Red}.${Font}${Green}同步上游OP_DIY文件(不覆盖config配置文件)${Font}"
   echo
-  echo -e " 4${Green}.${Font}${Yellow}打包N1和晶晨系列CPU固件${Font}"
+  echo -e " 4${Red}.${Font}${Green}打包N1和晶晨系列CPU固件${Font}"
   echo
-  echo -e " 5${Green}.${Font}${Yellow}同步上游OP_DIY文件(不覆盖config配置文件)${Font}"
+  echo -e " 5${Red}.${Font}${Green}更换其他作者源码编译${Font}"
   echo
-  echo -e " 6${Green}.${Font}${Yellow}退出${Font}"
+  echo -e " 6${Red}.${Font}${Green}退出${Font}"
   echo
   echo
   XUANZop="请输入数字"
@@ -965,15 +973,15 @@ function menuop() {
   read -p " ${XUANZop}：" menu_num
   case $menu_num in
   1)
-    openwrt_tow
-  break
-  ;;
-  2)
     op_again
   break
   ;;
+  2)
+    openwrt_tow
+  break
+  ;;
   3)
-    menu
+    gengxin_opdiy
   break
   ;;
   4)
@@ -981,7 +989,7 @@ function menuop() {
   break
   ;;
   5)
-    gengxin_opdiy
+    menu
   break
   ;;
   6)
@@ -996,61 +1004,8 @@ function menuop() {
   done
 }
 
-function mecuowu() {
-  Menu_requirements
-  clear
-  echo
-  echo
-  if [[ ${weiwancheng} == "1" ]]; then
-    echo -e " ${Yellow}您上回使用[${matrixtarget}]源码未完成编译，请作如下选择${Font}"
-  else
-    echo -e " ${Red}您上回使用[${matrixtarget}]源码编译出现错误，请作如下选择${Font}"
-  fi
-  echo
-  echo
-  echo -e " 1${Red}.${Font}${Blue}删除[${matrixtarget}]源码,重新下载[${matrixtarget}]源码编译${Font}"
-  echo
-  echo -e " 2${Red}.${Font}${Blue}继续使用旧的[${matrixtarget}]源码编译(菜单)${Font}"
-  echo
-  echo -e " 3${Red}.${Font}${Blue}更换其他作者源码(菜单)${Font}"
-  echo
-  echo
-  XUANZHE="请输入数字"
-  while :; do
-  read -p " ${XUANZHE}：" menu_cuowu
-  case $menu_cuowu in
-  1)
-    ECHOG "开始以${matrixtarget}最新源码重新编译"
-    export matrixtarget="${matrixtarget}"
-    openwrt_tow
-  break
-  ;;
-  2)
-    menuop
-  break
-  ;;
-  3)
-    menu
-    break
-  ;;
-  *)
-    XUANZHE="请输入正确的数字编号!"
-  ;;
-  esac
-  done
-}
-
-
-if [[ -f "${LOCAL_Build}/weiwan" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
-	export weiwancheng="1"
-	mecuowu "$@"
-elif [[ -f "${LOCAL_Build}/shibai" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
-	export weiwancheng=""
-	mecuowu "$@"
-elif [[ -d "${HOME_PATH}/package" && -d "${HOME_PATH}/target" && -d "${HOME_PATH}/toolchain" && -f "${LOCAL_Build}/chenggong" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
-	export weiwancheng=""
+if [[ -d "${HOME_PATH}/package" && -d "${HOME_PATH}/target" && -d "${HOME_PATH}/toolchain" && -d "${HOME_PATH}/build" && -d "${GITHUB_WORKSPACE}/OP_DIY" ]]; then
 	menuop "$@"
 else
-	export weiwancheng=""
 	menu "$@"
 fi
