@@ -949,10 +949,10 @@ function menuop() {
   clear
   echo
   echo
-  echo -e " ${Blue}当前使用源码${Font}：${Green}${matrixtarget}${Font}"
-  echo -e " ${Blue}成功编译过的机型${Font}：${Green}${CG_PROFILE}${Font}"
-  echo -e " ${Blue}OP_DIY配置文件机型${Font}：${Green}${TARGET_PROFILE}${Font}"
-  echo -e " ${Blue}上回编译操作${Font}：${Green}${SHANGCIZHUANGTAI}${Font}"
+  echo -e " ${Blue}当前使用源码${Font}：${Yellow}${matrixtarget}${Font}"
+  echo -e " ${Blue}成功编译过的机型${Font}：${Yellow}${CG_PROFILE}${Font}"
+  echo -e " ${Blue}OP_DIY配置文件机型${Font}：${Yellow}${TARGET_PROFILE}${Font}"
+  echo -e " ${Blue}上回编译操作${Font}：${Yellow}${SHANGCIZHUANGTAI}${Font}"
   echo
   echo
   echo -e " 1${Red}.${Font}${Green}保留缓存同步上游仓库源码,再次编译${Font}"
