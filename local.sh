@@ -140,7 +140,7 @@ function op_common_sh() {
   fi
   curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
   if [[ $? -ne 0 ]];then
-    curl -L https://raw.iqiq.io/281677160/common/main/common.sh > common.sh
+    wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
   fi
   if [[ $? -eq 0 ]];then
     source common.sh && Diy_update
@@ -767,8 +767,8 @@ function op_firmware() {
 
 function openwrt_qx() {
     cd ${GITHUB_WORKSPACE}
-    if [[ -d ${GITHUB_WORKSPACE}/openwrt ]]; then
-      ECHOGG "正在删除已存在的openwrt文件夹"
+    if [[ -d ${HOME_PATH} ]]; then
+      ECHOG "正在删除已存在的openwrt文件夹,请稍后..."
       rm -rf ${HOME_PATH}
     fi
 }
@@ -779,10 +779,6 @@ function openwrt_gitpull() {
   git reset --hard
   if [[ `grep -c "webweb.sh" ${ZZZ_PATH}` -ge '1' ]]; then
     git reset --hard
-  fi
-  if [[ `grep -c "webweb.sh" ${ZZZ_PATH}` -ge '1' ]]; then
-    print_error "同步上游源码失败,请检查网络"
-    exit 1
   fi
   git pull
   ECHOG "同步上游源码完毕,开始编译固件"
@@ -840,7 +836,6 @@ function openwrt_new() {
   op_common_sh
   openwrt_qx
   op_firmware
-  op_kongjian
   op_kongjian
   op_diywenjian
   bianyi_xuanxiang
