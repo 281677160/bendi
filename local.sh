@@ -483,7 +483,6 @@ function op_download() {
       read -p " [${QLMEUN}]： " XZDLE
       case $XZDLE in
       [Yy])
-        rm -rf ${HOME_PATH}/dl
         op_download
       break
       ;;
