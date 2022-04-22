@@ -556,6 +556,7 @@ function op_make() {
     rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
     rm -rf ${LOCAL_Build}/weiwan > /dev/null 2>&1
     echo "shibai" >${LOCAL_Build}/shibai
+    rm -rf ${HOME_PATH}/dl
     print_error "编译失败~~!"
     print_error "请用工具把openwrt文件夹里面的[build.log]日志文件拖至电脑，然后查找失败原因"
     sleep 1
