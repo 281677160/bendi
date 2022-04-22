@@ -478,7 +478,7 @@ function op_download() {
   fi
   find dl -size -1024c -exec ls -l {} \;
   find dl -size -1024c -exec rm -f {} \;
-  if [[ `grep -c "make with -j1 V=s or V=sc" ${HOME_PATH}/build.log` == '0' ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build.log` == '0' ]]; then
+  if [[ `grep -c "make with -j1 V=s or V=sc" ${HOME_PATH}/build.log` == '0' ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build.log` == '0' ]] || [[ `grep -c "error" ${HOME_PATH}/build.log` == '0' ]]; then
     print_ok "DL文件下载成功"
   else
     clear
@@ -489,6 +489,7 @@ function op_download() {
       read -p " [${QLMEUN}]： " XZDLE
       case $XZDLE in
       [Yy])
+        rm -rf ${HOME_PATH}/dl
         op_download
       break
       ;;
