@@ -466,6 +466,8 @@ function op_upgrade2() {
 
 function op_download() {
   cd ${HOME_PATH}
+  wget https://github.com/coolsnowwolf/lede/pull/6526.patch
+  git apply 6526.patch
   ECHOG "下载DL文件，请耐心等候..."
   rm -rf ${HOME_PATH}/build.log
   make -j8 download |tee ${HOME_PATH}/build.log
