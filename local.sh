@@ -767,6 +767,10 @@ function openwrt_qx() {
 function openwrt_gitpull() {
   cd ${HOME_PATH}
   ECHOG "git pull上游源码"
+  if [[ ! -d ${HOME_PATH}/feeds ]]; then
+    ./scripts/feeds update -a
+  fi
+  
   git reset --hard
   if [[ `grep -c "webweb.sh" ${ZZZ_PATH}` -ge '1' ]]; then
     git reset --hard
