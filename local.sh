@@ -655,7 +655,12 @@ function op_amlogic() {
   sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
   sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
   sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx/amlogic-kernel/*
-  cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
+  if [[ `ls -1 "/home/dan/openwrt/bin/targets/armvirt/64" | grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
+    cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/.*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
+  else
+    armvirtargz="$(ls -1 "/home/dan/openwrt/bin/targets/armvirt/64"  |awk 'END {print}')"
+    cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/${armvirtargz} ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
+  fi
   if [[ `ls -a amlogic/openwrt-armvirt | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
     print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     print_error "请检查${HOME_PATH}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
