@@ -658,7 +658,7 @@ function op_amlogic() {
   if [[ `ls -1 "/home/dan/openwrt/bin/targets/armvirt/64" | grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
     cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/.*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
   else
-    armvirtargz="$(ls -1 "/home/dan/openwrt/bin/targets/armvirt/64"  |awk 'END {print}')"
+    armvirtargz="$(ls -1 "/home/dan/openwrt/bin/targets/armvirt/64" |grep ".*tar.gz" |awk 'END {print}')"
     cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/${armvirtargz} ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
   fi
   if [[ `ls -a amlogic/openwrt-armvirt | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
