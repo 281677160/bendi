@@ -327,6 +327,7 @@ function op_repo_branch() {
   ECHOG "正在下载源码中,请耐心等候~~~"
   rm -rf openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
   judge "${matrixtarget}源码下载"
+  echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
 }
 
 function op_jiaoben() {
