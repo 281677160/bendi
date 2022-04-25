@@ -622,10 +622,10 @@ function op_amlogic() {
   ECHOY "正在下载打包所需的程序,请耐心等候~~~"
   git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
   judge "内核文件-1下载"
-  svn co https://github.com/ophub/amlogic-s9xxx-armbian/trunk/build-armbian amlogic/build-armbian
+  git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-armbian ${GITHUB_WORKSPACE}/armbian
   judge "内核文件-2下载"
-  svn co https://github.com/ophub/amlogic-s9xxx-armbian/trunk/compile-kernel amlogic/compile-kernel
-  judge "内核文件-3下载"
+  cp -Rf ${GITHUB_WORKSPACE}/armbian/build-armbian ${GITHUB_WORKSPACE}/amlogic/build-armbian
+  cp -Rf ${GITHUB_WORKSPACE}/armbian/compile-kernel ${GITHUB_WORKSPACE}/amlogic/compile-kernel
   rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   mkdir -p ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
