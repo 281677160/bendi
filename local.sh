@@ -649,8 +649,8 @@ function op_amlogic() {
   echo
   ECHOGG "设置打包的内核版本[直接回车则默认自动检测最新内核]"
   read -p " 请输入您要设置的内核：" amlogic_kernel
-  export amlogic_kernel=${amlogic_kernel:-"5.10.100_5.4.180 -a true"}
-  if [[ "${amlogic_kernel}" == "5.10.100_5.4.180 -a true" ]]; then
+  export amlogic_kernel=${amlogic_kernel:-"5.15.25_5.10.100"}
+  if [[ "${amlogic_kernel}" == "5.15.25_5.10.100" ]]; then
     ECHOYY "您设置的内核版本为：自动检测最新版内核打包"
   else
     ECHOYY "您设置的内核版本为：${amlogic_kernel}"
