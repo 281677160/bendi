@@ -631,29 +631,6 @@ function op_amlogic() {
   rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   mkdir -p ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
-  ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型 ]"
-  export root_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make" |cut -d "=" -f2 |sed 's/\"//g' )"
-  read -p " 请输入您要设置的机型：" amlogic_model
-  export amlogic_model=${amlogic_model:-"s905x3_s905x2_s905x_s905w_s905d_s922x_s912"}
-  ECHOYY "您设置的机型为：${amlogic_model}"
-  echo
-  ECHOGG "设置打包的内核版本[直接回车则默认自动检测最新内核]"
-  read -p " 请输入您要设置的内核：" amlogic_kernel
-  export amlogic_kernel=${amlogic_kernel:-"5.15.25_5.10.100"}
-  if [[ "${amlogic_kernel}" == "5.15.25_5.10.100" ]]; then
-    ECHOYY "您设置的内核版本为：自动检测最新版内核打包"
-  else
-    ECHOYY "您设置的内核版本为：${amlogic_kernel}"
-  fi
-  echo
-  ECHOGG "设置ROOTFS分区大小[ 直接回车则默认：${root_size} ]"
-  read -p " 请输入ROOTFS分区大小：" rootfs_size
-  export rootfs_size=${rootfs_size:-"${root_size}"}
-  ECHOYY "您设置的ROOTFS分区大小为：${rootfs_size}"
-  export make_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make")"
-  export zhiding_size="ROOT_MB=\"${rootfs_size}\""
-  sed -i "s?${make_size}?${zhiding_size}?g" "$GITHUB_WORKSPACE/amlogic/make"
-  echo
   if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
     cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
   else
@@ -664,20 +641,6 @@ function op_amlogic() {
     print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     print_error "请检查${HOME_PATH}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     exit 1
-  fi
-  cd amlogic
-  sudo chmod +x make
-  sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
-  if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
-    print_ok "打包完成，固件存放在[amlogic/out]文件夹"
-    if [[ "${WSL_ubuntu}" == "YES" ]]; then
-      export PATH=$PATH:'/mnt/c/windows'
-      cd ${GITHUB_WORKSPACE}/amlogic/out
-      explorer.exe .
-      cd amlogic
-    fi
-  else
-    print_error "打包失败，请再次尝试!"
   fi
 }
 
