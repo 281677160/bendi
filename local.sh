@@ -327,6 +327,7 @@ function op_repo_branch() {
   ECHOG "正在下载源码中,请耐心等候~~~"
   rm -rf openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
   judge "${matrixtarget}源码下载"
+  rm -rf ${HOME_PATH}/README.* > /dev/null 2>&1
   echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
 }
 
@@ -433,13 +434,11 @@ function tixing_op_config() {
     export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE})"
   fi
   export TARGET_BSGET="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
-  if [[ -z "${TARGET_PROFILE}" ]]; then
-    if [[ -f ${BUILD_PATH}/.config ]]; then
-      cp -Rf ${BUILD_PATH}/.config ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
-      tixing_op_config
-    else
-      TARGET_PROFILE="OP_DIY/${matrixtarget}没有${CONFIG_FILE}文件,或者${CONFIG_FILE}文件内容为空"
-    fi
+  if [[ -z "${TARGET_PROFILE}" ]] && [[ -f ${BUILD_PATH}/.config ]]; then
+    cp -Rf ${BUILD_PATH}/.config ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
+    tixing_op_config
+  else
+    TARGET_PROFILE="OP_DIY/${matrixtarget}没有${CONFIG_FILE}文件,或者${CONFIG_FILE}文件内容为空"
   fi
 }
 
@@ -535,7 +534,6 @@ function op_make() {
   export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   ECHOG "正在编译固件，请耐心等待..."
   [[ -d "${TARGET_BSGET}" ]] && rm -fr ${TARGET_BSGET}/*
-  rm -rf ${HOME_PATH}/{README,README.md,README_EN.md} > /dev/null 2>&1
   ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
   if [[ "${WSL_ubuntu}" == "YES" ]]; then
     export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
