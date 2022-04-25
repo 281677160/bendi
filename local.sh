@@ -970,7 +970,7 @@ function menuop() {
   echo -e " ${Blue}上回编译操作${Font}：${Yellow}${SHANGCIZHUANGTAI}${Font}"
   echo
   echo
-  echo -e " 1${Red}.${Font}${Green}保留缓存同步上游仓库源码,再次编译${Font}"
+  echo -e " 1${Red}.${Font}${Green}保留现有源码同步上游仓库,再次编译${Font}"
   echo
   echo -e " 2${Red}.${Font}${Green}删除现有源码,重新下载[${matrixtarget}]源码再编译${Font}"
   echo
