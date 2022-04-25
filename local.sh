@@ -1028,7 +1028,7 @@ function menuop() {
   done
 }
 
-if [[ -d "${HOME_PATH}/package" && -d "${HOME_PATH}/target" && -d "${HOME_PATH}/toolchain" && -d "${HOME_PATH}/build" && -d "${GITHUB_WORKSPACE}/OP_DIY" && -f "${HOME_PATH}/..*_core" ]]; then
+if [[ -d "${HOME_PATH}/package" && -d "${HOME_PATH}/target" && -d "${HOME_PATH}/toolchain" && -d "${HOME_PATH}/build" && -d "${GITHUB_WORKSPACE}/OP_DIY" && -f "${HOME_PATH}/.[a-zA-Z]_core" ]]; then
 	menuop "$@"
 else
 	menu "$@"
