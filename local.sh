@@ -599,6 +599,9 @@ function op_upgrade3() {
 
 function op_amlogic() {
   cd ${GITHUB_WORKSPACE}
+  if [[ "${WSL_ubuntu}" == "YES" ]]; then
+    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  fi  
   if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c "tar.gz"` == '0' ]]; then
     mkdir -p "${HOME_PATH}/bin/targets/armvirt/64"
     clear
@@ -678,6 +681,7 @@ function op_amlogic() {
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
     if [[ "${WSL_ubuntu}" == "YES" ]]; then
+      export PATH=$PATH:'/mnt/c/windows'
       cd ${GITHUB_WORKSPACE}/amlogic/out
       explorer.exe .
       cd amlogic
@@ -685,7 +689,6 @@ function op_amlogic() {
   else
     print_error "打包失败，请再次尝试!"
   fi
-  [[ -d ${HOME_PATH} ]] && cd ${HOME_PATH}
 }
 
 function op_end() {
