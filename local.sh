@@ -988,6 +988,11 @@ function menuop() {
   read -p " ${XUANZop}：" menu_num
   case $menu_num in
   1)
+    export Tishi="1"
+    op_again
+  break
+  ;;
+  2)
     ECHOGG "是否删除现有源码,重新下载[${matrixtarget}]源码再编译?"
     read -p " [输入[ N/n ]退出，直接回车则默认为是]： " MATR
     case $MATR in
@@ -995,15 +1000,10 @@ function menuop() {
       menuop
     ;;
     *)
-      export Tishi="1"
-      op_again
+      export Tishi="0"
+      openwrt_tow
     ;;
     esac
-  break
-  ;;
-  2)
-    export Tishi="0"
-    openwrt_tow
   break
   ;;
   3)
