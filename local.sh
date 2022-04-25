@@ -617,17 +617,11 @@ function op_amlogic() {
   fi
   if [[ ! -d "/home/dan/amlogic" ]]; then
     ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-    
-    rm -fr ${GITHUB_WORKSPACE}/amlogic && svn co https://github.com/ophub/amlogic-s9xxx-armbian/trunk/build-armbian ${GITHUB_WORKSPACE}/amlogic
+    svn co https://github.com/ophub/amlogic-s9xxx-openwrt/trunk/amlogic-s9xxx amlogic
     judge "内核文件-1下载"
-    svn co https://github.com/ophub/amlogic-s9xxx-armbian/trunk/compile-kernel ${GITHUB_WORKSPACE}/amlogic/compile-kernel
+    svn co https://github.com/ophub/amlogic-s9xxx-armbian/trunk/build-armbian
     judge "内核文件-2下载"
-    rm -fr ${GITHUB_WORKSPACE}/amlogic-s9xxx && svn co https://github.com/ophub/amlogic-s9xxx-openwrt/trunk/amlogic-s9xxx
-    judge "内核文件-3下载"
-    cp -Rf /home/dan/amlogic-s9xxx/* ${GITHUB_WORKSPACE}/amlogic
-    rm -rf amlogic-s9xxx
-    curl -fsSL https://raw.githubusercontent.com/ophub/amlogic-s9xxx-openwrt/main/make > ${GITHUB_WORKSPACE}/amlogic/make
-    judge "内核文件-4下载"
+    cp -Rf /home/dan/build-armbian/* amlogic
     rm -rf ${GITHUB_WORKSPACE}/amlogic/{LICENSE,README.cn.md,README.md,.github,.git}
   elif [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[  ! -f "${GITHUB_WORKSPACE}/amlogic/make" ]]; then
     ECHOGG "发现已存在的打包程序缺少文件，请输入ubuntu密码删除打包程序重新下载"
