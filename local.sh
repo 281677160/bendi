@@ -993,7 +993,7 @@ function menuop() {
   break
   ;;
   2)
-    ECHOGG "是否删除现有源码,重新下载[${matrixtarget}]源码再编译?"
+    ECHOR "是否删除现有源码,重新下载[${matrixtarget}]源码再编译?"
     read -p " [输入[ N/n ]退出，直接回车则默认为是]： " MATR
     case $MATR in
     [Nn])
