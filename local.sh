@@ -552,10 +552,16 @@ function op_make() {
     rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
     rm -rf ${LOCAL_Build}/weiwan > /dev/null 2>&1
     echo "shibai" >${LOCAL_Build}/shibai
-    rm -rf ${HOME_PATH}/dl
-    print_error "编译失败，请再次尝试编译试试~~!"
-    sleep 1
-    exit 1
+    if [[ ${Tishi} == "1" ]]; then
+      rm -rf ${HOME_PATH}/dl
+      print_error "编译失败，因是二次编译，已为您删除了DL文件，请再次尝试编译试试~~!"
+      sleep 1
+      exit 1
+    else
+      print_error "编译失败~~!"
+      sleep 1
+      exit 1
+    fi
   else
     rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
     rm -rf ${LOCAL_Build}/weiwan > /dev/null 2>&1
@@ -792,7 +798,6 @@ function op_upgrade1() {
 }
 
 function op_again() {
-  export Tishi="1"
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
@@ -883,32 +888,37 @@ function menu() {
   read -p " ${XUANZHEOP}： " CHOOSE
   case $CHOOSE in
     1)
+      export Tishi="0"
       export matrixtarget="Lede_source"
       ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
       openwrt_new
     break
     ;;
     2)
+      export Tishi="0"
       export matrixtarget="Lienol_source"
       ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI 22.03版本"
       openwrt_new
     break
     ;;
     3)
+      export Tishi="0"
       export matrixtarget="Tianling_source"
       ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
       openwrt_new
     break
     ;;
     4)
+      export Tishi="0"
       export matrixtarget="Mortal_source"
       ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
       openwrt_new
     break
     ;;
     5)
+      export Tishi="0"
       export matrixtarget="openwrt_amlogic"
-      ECHOG "您选择了：N1和晶晨系列CPU盒子专用"
+      ECHOG "您选择了：编译N1和晶晨系列CPU盒子专用固件"
       openwrt_new
     break
     ;;
@@ -978,10 +988,12 @@ function menuop() {
   read -p " ${XUANZop}：" menu_num
   case $menu_num in
   1)
+    export Tishi="1"
     op_again
   break
   ;;
   2)
+    export Tishi="0"
     openwrt_tow
   break
   ;;
