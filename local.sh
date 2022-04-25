@@ -628,7 +628,6 @@ function op_amlogic() {
   cp -Rf ${GITHUB_WORKSPACE}/armbian/build-armbian ${GITHUB_WORKSPACE}/amlogic/build-armbian
   cp -Rf ${GITHUB_WORKSPACE}/armbian/compile-kernel ${GITHUB_WORKSPACE}/amlogic/compile-kernel
   rm -rf ${GITHUB_WORKSPACE}/armbian
-  rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   mkdir -p ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
   if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
@@ -642,6 +641,7 @@ function op_amlogic() {
     print_error "请检查${HOME_PATH}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     exit 1
   fi
+  cd amlogic && sudo chmod +x make
 }
 
 function op_end() {
