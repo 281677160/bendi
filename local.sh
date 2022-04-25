@@ -360,7 +360,6 @@ function op_diy_ip() {
   echo "${Mark_Core}" > ${HOME_PATH}/${Mark_Core}
   ECHOY "您的后台IP地址为：$IP"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    export Author=""
     export Github=${Github}
     export Warehouse="${Github##*com/}"
     export Author="$(echo "${Github}" |cut -d "/" -f4)"
