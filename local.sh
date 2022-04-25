@@ -599,9 +599,6 @@ function op_upgrade3() {
 
 function op_amlogic() {
   cd ${GITHUB_WORKSPACE}
-  if [[ "${WSL_ubuntu}" == "YES" ]]; then
-    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-  fi  
   if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c "tar.gz"` == '0' ]]; then
     mkdir -p "${HOME_PATH}/bin/targets/armvirt/64"
     clear
