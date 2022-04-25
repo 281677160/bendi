@@ -617,8 +617,9 @@ function op_amlogic() {
   fi
   if [[ ! -d "/home/dan/amlogic" ]]; then
     ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-    svn co https://github.com/ophub/amlogic-s9xxx-openwrt/trunk/amlogic-s9xxx amlogic
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
     judge "内核文件-1下载"
+    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
     svn co https://github.com/ophub/amlogic-s9xxx-armbian/trunk/build-armbian
     judge "内核文件-2下载"
     cp -Rf /home/dan/build-armbian/* amlogic
