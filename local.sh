@@ -681,7 +681,7 @@ function op_amlogic() {
   fi
   cd amlogic
   sudo chmod +x make
-  sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
+  sudo ./make -d -b s905x3 -k 5.15.25_5.10.100
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
     if [[ "${WSL_ubuntu}" == "YES" ]]; then
