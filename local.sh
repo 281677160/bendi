@@ -615,15 +615,18 @@ function op_amlogic() {
     [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
     exit 1
   fi
+  if [[ -d ${GITHUB_WORKSPACE}/amlogic ]]; then
+    ECHOGG "请输入ubuntu密码进行固件打包程序"
+    sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
+  fi
   ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-  sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
-  git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
+  git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
   judge "内核文件-1下载"
   svn co https://github.com/ophub/amlogic-s9xxx-armbian/trunk/build-armbian
   judge "内核文件-2下载"
-  cp -Rf /home/dan/build-armbian/* amlogic
+  cp -Rf /home/dan/build-armbian/* ${GITHUB_WORKSPACE}/amlogic
   rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-  [ -d amlogic/openwrt-armvirt ] || mkdir -p amlogic/openwrt-armvirt
+  mkdir -p ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型 ]"
   export root_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make" |cut -d "=" -f2 |sed 's/\"//g' )"
@@ -648,10 +651,6 @@ function op_amlogic() {
   export zhiding_size="ROOT_MB=\"${rootfs_size}\""
   sed -i "s?${make_size}?${zhiding_size}?g" "$GITHUB_WORKSPACE/amlogic/make"
   echo
-  ECHOGG "请输入ubuntu密码进行固件打包程序"
-  sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/out/*
-  sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/*
-  sudo rm -rf ${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx/amlogic-kernel/*
   if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
     cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
   else
