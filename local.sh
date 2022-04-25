@@ -615,30 +615,14 @@ function op_amlogic() {
     [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
     exit 1
   fi
-  if [[ ! -d "/home/dan/amlogic" ]]; then
-    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
-    judge "内核文件-1下载"
-    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-    svn co https://github.com/ophub/amlogic-s9xxx-armbian/trunk/build-armbian
-    judge "内核文件-2下载"
-    cp -Rf /home/dan/build-armbian/* amlogic
-    rm -rf ${GITHUB_WORKSPACE}/amlogic/{LICENSE,README.cn.md,README.md,.github,.git}
-  elif [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[  ! -f "${GITHUB_WORKSPACE}/amlogic/make" ]]; then
-    ECHOGG "发现已存在的打包程序缺少文件，请输入ubuntu密码删除打包程序重新下载"
-    sudo rm -rf "${GITHUB_WORKSPACE}/amlogic"
-    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
-    judge "内核运行文件下载"
-    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-  elif [[ -d "${GITHUB_WORKSPACE}/amlogic" ]] && [[  ! -d "${GITHUB_WORKSPACE}/amlogic/amlogic-s9xxx" ]]; then
-    ECHOGG "发现已存在的打包程序缺少文件，请输入ubuntu密码删除打包程序重新下载"
-    sudo rm -rf "${GITHUB_WORKSPACE}/amlogic"
-    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
-    judge "内核运行文件下载"
-    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-  fi
+  ECHOY "正在下载打包所需的程序,请耐心等候~~~"
+  sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
+  git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
+  judge "内核文件-1下载"
+  svn co https://github.com/ophub/amlogic-s9xxx-armbian/trunk/build-armbian
+  judge "内核文件-2下载"
+  cp -Rf /home/dan/build-armbian/* amlogic
+  rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   [ -d amlogic/openwrt-armvirt ] || mkdir -p amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型 ]"
@@ -681,7 +665,7 @@ function op_amlogic() {
   fi
   cd amlogic
   sudo chmod +x make
-  sudo ./make -d -b s905x3 -k 5.15.25_5.10.100
+  sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
   if [[ `ls -a ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
     if [[ "${WSL_ubuntu}" == "YES" ]]; then
