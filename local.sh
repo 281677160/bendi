@@ -434,11 +434,13 @@ function tixing_op_config() {
     export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE})"
   fi
   export TARGET_BSGET="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
-  if [[ -z "${TARGET_PROFILE}" ]] && [[ -f ${BUILD_PATH}/.config ]]; then
-    cp -Rf ${BUILD_PATH}/.config ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
-    tixing_op_config
-  else
-    TARGET_PROFILE="OP_DIY/${matrixtarget}没有${CONFIG_FILE}文件,或者${CONFIG_FILE}文件内容为空"
+  if [[ -z "${TARGET_PROFILE}" ]]; then
+    if [[ -f ${BUILD_PATH}/.config ]]; then
+      cp -Rf ${BUILD_PATH}/.config ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
+      tixing_op_config
+    else
+      TARGET_PROFILE="OP_DIY/${matrixtarget}没有${CONFIG_FILE}文件,或者${CONFIG_FILE}文件内容为空"
+    fi
   fi
 }
 
