@@ -95,7 +95,6 @@ if [[ "$(echo ${GITHUB_WORKSPACE} |grep -c 'openwrt')" -ge '1' ]]; then
 fi
 if [[ `ls -1 /mnt/* | grep -c "Windows"` -ge '1' ]] || [[ `ls -1 /mnt | grep -c "wsl"` -ge '1' ]]; then
   export WSL_ubuntu="YES"
-  export PATH=$PATH:'/mnt/c/windows'
 else
   export WSL_ubuntu="NO"
 fi
