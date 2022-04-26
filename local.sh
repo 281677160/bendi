@@ -620,6 +620,8 @@ function op_amlogic() {
   git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
   judge "内核文件-1下载"
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
+  cd ${GITHUB_WORKSPACE}/amlogic
+  mkdir -p openwrt-armvirt
   if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
     cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
   else
@@ -631,8 +633,6 @@ function op_amlogic() {
     print_error "请检查${HOME_PATH}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     exit 1
   fi
-  cd ${GITHUB_WORKSPACE}/amlogic
-  mkdir -p openwrt-armvirt
   sudo chmod +x make
   sudo ./make -d -b s905d -k 5.15.25_5.10.100
 }
