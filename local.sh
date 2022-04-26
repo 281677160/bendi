@@ -638,6 +638,86 @@ function op_end() {
   fi
 }
 
+function op_amlogic() {
+  cd ${GITHUB_WORKSPACE}
+  if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c "tar.gz"` == '0' ]]; then
+    mkdir -p "${HOME_PATH}/bin/targets/armvirt/64"
+    clear
+    echo
+    echo
+    ECHOR "没发现 openwrt/bin/targets/armvirt/64 文件夹里存在.tar.gz固件，已为你创建了文件夹"
+    ECHORR "请用WinSCP工具将\"openwrt-armvirt-64-default-rootfs.tar.gz\"固件存入文件夹中"
+    ECHOY "Windows的WSL系统的话，千万别直接打开文件夹来存放固件，很容易出错的，要用WinSCP工具或SSH工具自带的文件管理器"
+    echo
+    exit 1
+  fi
+  if [[ -d "${GITHUB_WORKSPACE}/amlogic" ]]; then
+    ECHOY "首次使用请输入ubuntu密码进行下载打包所需的程序!"
+    if [[ `sudo grep -c "NOPASSWD:ALL" /etc/sudoers` == '0' ]]; then
+      sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
+    fi
+    clear
+    echo
+    sudo rm -rf "${GITHUB_WORKSPACE}/amlogic"
+    if [[ -d "${GITHUB_WORKSPACE}/amlogic" ]]; then
+      ECHOR "已存在的amlogic文件夹无法删除，请重启系统再来尝试"
+      exit 1
+    fi
+    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
+    judge "内核运行文件下载"
+    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
+  else
+    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
+    judge "内核运行文件下载"
+    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
+  fi
+  [ ! -d ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt ] && mkdir -p ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt
+  ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
+  ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型 ]"
+  export root_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make" |cut -d "=" -f2 |sed 's/\"//g' )"
+  read -p " 请输入您要设置的机型：" amlogic_model
+  export amlogic_model=${amlogic_model:-"s905x3_s905x2_s905x_s905w_s905d_s922x_s912"}
+  ECHOYY "您设置的机型为：${amlogic_model}"
+  echo
+  ECHOGG "设置打包的内核版本[直接回车则默认自动检测最新内核]"
+  read -p " 请输入您要设置的内核：" amlogic_kernel
+  export amlogic_kernel=${amlogic_kernel:-"5.10.100_5.4.180 -a true"}
+  if [[ "${amlogic_kernel}" == "5.10.100_5.4.180 -a true" ]]; then
+    ECHOYY "您设置的内核版本为：自动检测最新版内核打包"
+  else
+    ECHOYY "您设置的内核版本为：${amlogic_kernel}"
+  fi
+  echo
+  ECHOGG "设置ROOTFS分区大小[ 直接回车则默认：${root_size} ]"
+  read -p " 请输入ROOTFS分区大小：" rootfs_size
+  export rootfs_size=${rootfs_size:-"${root_size}"}
+  ECHOYY "您设置的ROOTFS分区大小为：${rootfs_size}"
+  export make_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make")"
+  export zhiding_size="ROOT_MB=\"${rootfs_size}\""
+  sed -i "s?${make_size}?${zhiding_size}?g" "$GITHUB_WORKSPACE/amlogic/make"
+  cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
+  if [[ `ls -a amlogic/openwrt-armvirt | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
+    print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
+    print_error "请检查${HOME_PATH}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
+    exit 1
+  fi
+  cd ${GITHUB_WORKSPACE}/amlogic
+  sudo chmod +x make
+  sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel}
+  if [[ `ls -1 ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
+    print_ok "打包完成，固件存放在[amlogic/out]文件夹"
+    if [[ "${WSL_ubuntu}" == "YES" ]]; then
+      cd ${GITHUB_WORKSPACE}/amlogic/out
+      explorer.exe .
+      cd ${GITHUB_WORKSPACE}
+    fi
+  else
+    print_error "打包失败，请再次尝试!"
+  fi
+}
+
 function op_firmware() {
   if [[ "${matrixtarget}" == "Lede_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Lede_core" 2>/dev/null)" ]]; then
     export matrixtarget="Lede_source"
@@ -784,49 +864,52 @@ function menu() {
   echo
   ECHOYY " 3. Immortalwrt_${tianlingnh}内核,LUCI 18.06版本(Tianling_source)"
   ECHOY " 4. Immortalwrt_${mortalnh}内核,LUCI 21.02版本(Mortal_source)"
-  ECHOYY " 5. 编译N1和晶晨系列CPU盒子专用固件(openwrt_amlogic)"
-  ECHOYY " 6. 退出编译程序"
+  ECHOYY " 5. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
+  ECHOY " 6. 单独打包晶晨系列固件(前提是您要有armvirt的.tar.gz固件)"
+  ECHOYY " 7. 退出编译程序"
   echo
   XUANZHEOP="请输入数字"
   while :; do
   read -p " ${XUANZHEOP}： " CHOOSE
   case $CHOOSE in
     1)
-      export Tishi="0"
       export matrixtarget="Lede_source"
       ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
       openwrt_new
     break
     ;;
     2)
-      export Tishi="0"
       export matrixtarget="Lienol_source"
       ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI 22.03版本"
       openwrt_new
     break
     ;;
     3)
-      export Tishi="0"
       export matrixtarget="Tianling_source"
       ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
       openwrt_new
     break
     ;;
     4)
-      export Tishi="0"
       export matrixtarget="Mortal_source"
       ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
       openwrt_new
     break
     ;;
     5)
-      export Tishi="0"
       export matrixtarget="openwrt_amlogic"
-      ECHOG "您选择了：编译N1和晶晨系列CPU盒子专用固件"
+      ECHOG "您选择了：N1和晶晨系列CPU盒子专用"
       openwrt_new
     break
     ;;
     6)
+      ECHOG "您选择了单独打包晶晨系列固件"
+      export matrixtarget="openwrt_amlogic"
+      op_common_sh
+      op_amlogic
+    break
+    ;;
+    7)
       ECHOR "您选择了退出编译程序"
       echo
       exit 0
@@ -867,15 +950,17 @@ function menuop() {
   echo -e " ${Blue}上回编译操作${Font}：${Yellow}${SHANGCIZHUANGTAI}${Font}"
   echo
   echo
-  echo -e " 1${Red}.${Font}${Green}保留现有源码同步上游仓库,再次编译${Font}"
+  echo -e " 1${Red}.${Font}${Green}保留缓存同步上游仓库源码,再次编译${Font}"
   echo
   echo -e " 2${Red}.${Font}${Green}删除现有源码,重新下载[${matrixtarget}]源码再编译${Font}"
   echo
   echo -e " 3${Red}.${Font}${Green}同步上游OP_DIY文件(不覆盖config配置文件)${Font}"
   echo
-  echo -e " 4${Red}.${Font}${Green}更换其他作者源码编译${Font}"
+  echo -e " 4${Red}.${Font}${Green}打包N1和晶晨系列CPU固件${Font}"
   echo
-  echo -e " 5${Red}.${Font}${Green}退出${Font}"
+  echo -e " 5${Red}.${Font}${Green}更换其他作者源码编译${Font}"
+  echo
+  echo -e " 6${Red}.${Font}${Green}退出${Font}"
   echo
   echo
   XUANZop="请输入数字"
@@ -883,22 +968,11 @@ function menuop() {
   read -p " ${XUANZop}：" menu_num
   case $menu_num in
   1)
-    export Tishi="1"
     op_again
   break
   ;;
   2)
-    ECHOR "是否删除现有源码,重新下载[${matrixtarget}]源码再编译?"
-    read -p " [输入[ N/n ]退出，直接回车则默认为是]： " MATR
-    case $MATR in
-    [Nn])
-      menuop
-    ;;
-    *)
-      export Tishi="0"
-      openwrt_tow
-    ;;
-    esac
+    openwrt_tow
   break
   ;;
   3)
@@ -906,10 +980,14 @@ function menuop() {
   break
   ;;
   4)
-    menu
+    op_amlogic
   break
   ;;
   5)
+    menu
+  break
+  ;;
+  6)
     echo
     exit 0
     break
