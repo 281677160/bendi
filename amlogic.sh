@@ -138,15 +138,15 @@ fi
   [ ! -d amlogic/openwrt-armvirt ] && mkdir -p amlogic/openwrt-armvirt || sudo rm -rf amlogic/openwrt-armvirt/*
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型 ]"
-  export root_size="$(egrep -o ROOT_MB=\"[0-9]+\" "$GITHUB_WORKSPACE/amlogic/make" |cut -d "=" -f2 |sed 's/\"//g' )"
+  export root_size="$(egrep -o ROOT_MB=\"[0-9]+\" "amlogic/make" |cut -d "=" -f2 |sed 's/\"//g' )"
   read -p " 请输入您要设置的机型：" amlogic_model
   export amlogic_model=${amlogic_model:-"s905x3_s905x2_s905x_s905w_s905d_s922x_s912"}
   ECHOYY "您设置的机型为：${amlogic_model}"
   echo
   ECHOGG "设置打包的内核版本[直接回车则默认自动检测最新内核]"
   read -p " 请输入您要设置的内核：" amlogic_kernel
-  export amlogic_kernel=${amlogic_kernel:-"5.10.100_5.4.180 -a true"}
-  if [[ "${amlogic_kernel}" == "5.10.100_5.4.180 -a true" ]]; then
+  export amlogic_kernel=${amlogic_kernel:-"5.10.100_5.4.180"}
+  if [[ "${amlogic_kernel}" == "5.10.100_5.4.180" ]]; then
     ECHOYY "您设置的内核版本为：自动检测最新版内核打包"
   else
     ECHOYY "您设置的内核版本为：${amlogic_kernel}"
