@@ -115,19 +115,19 @@ fi
     [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
     exit 1
   fi
-  if [[ ! -d "amlogic" ]]; then
+  if [[ ! -d amlogic ]]; then
     ECHOY "正在下载打包所需的程序,请耐心等候~~~"
     git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
     judge "内核运行文件下载"
     rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-  elif [[ -d "amlogic" ]] && [[  ! -f "amlogic/make" ]]; then
+  elif [[ -d amlogic ]] && [[  ! -f amlogic/make ]]; then
     ECHOGG "发现已存在的打包程序缺少文件，请输入ubuntu密码删除打包程序重新下载"
     sudo rm -rf amlogic
     ECHOY "正在下载打包所需的程序,请耐心等候~~~"
     git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git amlogic
     judge "内核运行文件下载"
     rm -rf amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-  elif [[ -d "amlogic" ]] && [[  ! -d "amlogic/amlogic-s9xxx" ]]; then
+  elif [[ -d amlogic ]] && [[  ! -d amlogic/amlogic-s9xxx ]]; then
     ECHOGG "发现已存在的打包程序缺少文件，请输入ubuntu密码删除打包程序重新下载"
     sudo rm -rf amlogic
     ECHOY "正在下载打包所需的程序,请耐心等候~~~"
