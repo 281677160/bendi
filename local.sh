@@ -619,13 +619,6 @@ function op_amlogic() {
   ECHOY "正在下载打包所需的程序,请耐心等候~~~"
   git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
   judge "内核文件-1下载"
-  rm -rf ${GITHUB_WORKSPACE}/armbian
-  git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-armbian ${GITHUB_WORKSPACE}/armbian
-  judge "内核文件-2下载"
-  cp -Rf ${GITHUB_WORKSPACE}/armbian/build-armbian ${GITHUB_WORKSPACE}/amlogic/build-armbian
-  cp -Rf ${GITHUB_WORKSPACE}/armbian/compile-kernel ${GITHUB_WORKSPACE}/amlogic/compile-kernel
-  rm -rf ${GITHUB_WORKSPACE}/armbian
-  mkdir -p ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
   if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
     cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
@@ -638,7 +631,10 @@ function op_amlogic() {
     print_error "请检查${HOME_PATH}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     exit 1
   fi
-  cd amlogic && sudo chmod +x make
+  cd ${GITHUB_WORKSPACE}/amlogic
+  mkdir -p openwrt-armvirt
+  sudo chmod +x make
+  sudo ./make -d -b s905d -k 5.15.25_5.10.100
 }
 
 function op_end() {
