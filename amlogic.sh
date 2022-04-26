@@ -4,7 +4,7 @@ mkdir -p amlogic/openwrt-armvirt
 if [[ `ls -1 "openwrt/bin/targets/armvirt/64" | grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
   cp -Rf openwrt/bin/targets/armvirt/64/.*default-rootfs.tar.gz amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
 else
-  armvirtargz="$(ls -1 "${HOME_PATH}/bin/targets/armvirt/64" |grep ".*tar.gz" |awk 'END {print}')"
+  armvirtargz="$(ls -1 "openwrt/bin/targets/armvirt/64" |grep ".*tar.gz" |awk 'END {print}')"
   cp -Rf openwrt/bin/targets/armvirt/64/${armvirtargz} amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
 fi
 if [[ `ls -1 "amlogic/openwrt-armvirt" | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
