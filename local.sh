@@ -597,46 +597,6 @@ function op_upgrade3() {
   cd ${HOME_PATH}
 }
 
-function op_amlogic() {
-  cd ${GITHUB_WORKSPACE}
-  if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c "tar.gz"` == '0' ]]; then
-    mkdir -p "${HOME_PATH}/bin/targets/armvirt/64"
-    clear
-    echo
-    echo
-    echo
-    ECHOR "没发现您的 openwrt/bin/targets/armvirt/64 文件夹里存在.tar.gz固件，已为你创建了文件夹"
-    ECHORR "请先将\"openwrt-armvirt-64-default-rootfs.tar.gz\"固件"
-    ECHOR "存入 openwrt/bin/targets/armvirt/64 文件夹里面，再使用命令进行打包"
-    echo
-    [[ "${WSL_ubuntu}" == "YES" ]] && explorer.exe .
-    exit 1
-  fi
-  if [[ -d ${GITHUB_WORKSPACE}/amlogic ]]; then
-    ECHOGG "请输入ubuntu密码进行固件打包程序"
-    sudo rm -rf ${GITHUB_WORKSPACE}/amlogic
-  fi
-  ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-  git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
-  judge "内核文件-1下载"
-  ECHOY "全部可打包机型：s905x3_s905x2_s905x_s905w_s905d_s922x_s912"
-  cd ${GITHUB_WORKSPACE}/amlogic
-  mkdir -p openwrt-armvirt
-  if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
-    cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
-  else
-    armvirtargz="$(ls -1 "${HOME_PATH}/bin/targets/armvirt/64" |grep ".*tar.gz" |awk 'END {print}')"
-    cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/${armvirtargz} ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
-  fi
-  if [[ `ls -1 openwrt-armvirt | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
-    print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
-    print_error "请检查${HOME_PATH}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
-    exit 1
-  fi
-  sudo chmod +x make
-  sudo ./make -d -b s905d -k 5.15.25_5.10.100
-}
-
 function op_end() {
   clear
   echo
@@ -651,11 +611,7 @@ function op_end() {
   ECHOY "用户名: root"
   ECHOY "固件已经存入${TARGET_OPENWRT}文件夹中"
   [[ "${REGULAR_UPDATE}" == "true" ]] && ECHOY "${dsgx}"
-  if [[ "${matrixtarget}" == "openwrt_amlogic" ]]; then
-    ECHOR "提示：再次输入编译命令可选择二次编译或者打包N1和晶晨系列盒子专用固件"
-  else
-    ECHOR "提示：再次输入编译命令可进行二次编译"
-  fi
+  ECHOR "提示：再次输入编译命令可进行二次编译"
   if [[ "${WSL_ubuntu}" == "YES" ]]; then
     if [[ "${REGULAR_UPDATE}" == "true" ]]; then
       cd bin/Firmware
@@ -829,8 +785,7 @@ function menu() {
   ECHOYY " 3. Immortalwrt_${tianlingnh}内核,LUCI 18.06版本(Tianling_source)"
   ECHOY " 4. Immortalwrt_${mortalnh}内核,LUCI 21.02版本(Mortal_source)"
   ECHOYY " 5. 编译N1和晶晨系列CPU盒子专用固件(openwrt_amlogic)"
-  ECHOY " 6. 单独打包晶晨系列固件(前提是您要有armvirt的.tar.gz固件)"
-  ECHOYY " 7. 退出编译程序"
+  ECHOYY " 6. 退出编译程序"
   echo
   XUANZHEOP="请输入数字"
   while :; do
@@ -872,13 +827,6 @@ function menu() {
     break
     ;;
     6)
-      ECHOG "您选择了单独打包晶晨系列固件"
-      export matrixtarget="openwrt_amlogic"
-      op_common_sh
-      op_amlogic
-    break
-    ;;
-    7)
       ECHOR "您选择了退出编译程序"
       echo
       exit 0
@@ -925,11 +873,9 @@ function menuop() {
   echo
   echo -e " 3${Red}.${Font}${Green}同步上游OP_DIY文件(不覆盖config配置文件)${Font}"
   echo
-  echo -e " 4${Red}.${Font}${Green}打包N1和晶晨系列CPU固件${Font}"
+  echo -e " 4${Red}.${Font}${Green}更换其他作者源码编译${Font}"
   echo
-  echo -e " 5${Red}.${Font}${Green}更换其他作者源码编译${Font}"
-  echo
-  echo -e " 6${Red}.${Font}${Green}退出${Font}"
+  echo -e " 5${Red}.${Font}${Green}退出${Font}"
   echo
   echo
   XUANZop="请输入数字"
@@ -960,14 +906,10 @@ function menuop() {
   break
   ;;
   4)
-    op_amlogic
-  break
-  ;;
-  5)
     menu
   break
   ;;
-  6)
+  5)
     echo
     exit 0
     break
