@@ -217,6 +217,7 @@ function op_diywenjian() {
     done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
   else
+    echo "22222222222"
     A="$(grep "Version=" "$(find "${GITHUB_WORKSPACE}/OP_DIY" -name "NumBer" |awk 'END {print}' )" |sed 's/\"//g' |cut -d '=' -f2)"
     B="${Version}"
     if [[ "$A" < "$B" ]]; then
