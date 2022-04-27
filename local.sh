@@ -266,6 +266,7 @@ function version_opdiy() {
   cd ${GITHUB_WORKSPACE}
   if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
     A="$(grep "Version=" "$(find "${GITHUB_WORKSPACE}/OP_DIY" -name "NumBer" |awk 'END {print}' )" |sed 's/\"//g' |cut -d '=' -f2)"
+    [[ -z ${A} ]] && A="0.9"
     B="${Version}"
     if [[ "$A" < "$B" ]]; then
       ECHOY "上游OP_DIY文件有更新，是否同步更新OP_DIY文件?"
