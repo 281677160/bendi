@@ -823,7 +823,6 @@ function op_upgrade1() {
 
 function op_again() {
   version_opdiy
-  cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
   op_common_sh
