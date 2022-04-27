@@ -675,6 +675,7 @@ function op_amlogic() {
     judge "内核运行文件下载"
     rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   fi
+  export TARGET_BSGET="${HOME_PATH}/bin/targets/armvirt/64"
   [ ! -d ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt ] && mkdir -p ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s922x s922x-n2 s922x-reva a311d s905x3 s905x2 s905x2-km3 s905l3a s912 s912-m8s s905d s905d-ki s905x s905w s905"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型(all) ]"
@@ -695,8 +696,13 @@ function op_amlogic() {
   read -p " 请输入ROOTFS分区大小：" rootfs_size
   export rootfs_size=${rootfs_size:-"960"}
   ECHOYY "您设置的ROOTFS分区大小为：${rootfs_size}"
-  cp -Rf ${HOME_PATH}/bin/targets/armvirt/64/*.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
-  if [[ `ls -a amlogic/openwrt-armvirt | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
+  if [[ `ls -1 "${TARGET_BSGET}" |grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
+    cp -Rf ${TARGET_BSGET}/*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
+  else
+    armvirtargz="$(ls -1 "${TARGET_BSGET}" |grep ".*tar.gz" |awk 'END {print}')"
+    cp -Rf ${TARGET_BSGET}/${armvirtargz} ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
+  fi
+  if [[ `ls -1 "${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt" | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
     print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     print_error "请检查${HOME_PATH}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     exit 1
