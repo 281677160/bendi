@@ -7,7 +7,7 @@
 #	github: https://github.com/281677160
 #====================================================
 
-Version=1.0
+Version="1.0"
 
 # 字体颜色配置
 Green="\033[32m"
@@ -192,7 +192,7 @@ function op_diywenjian() {
     for X in $(find ./bendi -name ".config" |sed 's/\/.config//g'); do 
       mv "${X}/.config" "${X}/config"
       mkdir -p "${X}/version"
-      echo "Version=${Version}" > "${X}/version/version"
+      echo "Version=${Version}" > "${X}/version/NumBer"
     done
     for X in $(find ./bendi -name "settings.ini"); do
       sed -i 's/.config/config/g' "${X}"
@@ -216,6 +216,22 @@ function op_diywenjian() {
       sed -i '/Github/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
     done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
+  else
+    A="$(grep "Version=" "$(find "${GITHUB_WORKSPACE}/OP_DIY" -name "NumBer" |awk 'END {print}' )" |sed 's/\"//g' |cut -d '=' -f2)"
+    B="${Version}"
+    if [[ "$A" < "$B" ]]; then
+      ECHOY "上游OP_DIY文件有更新，是否同步更新OP_DIY文件?"
+      read -p " 按[Y/y]回车同步文件，直接回车则跳过更新： " TB
+      case ${TB} in
+      [Yy]) 
+        ECHO "正在同步OP_DIY文件，请稍后..."
+	gengxin_opdiy
+      ;;
+      *)
+        ECHO "您已跳过更新OP_DIY文件"
+    ;;
+    esac
+    fi
   fi
 }
 
