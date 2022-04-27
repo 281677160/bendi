@@ -257,6 +257,8 @@ function gengxin_opdiy() {
   if [[ -d ${GITHUB_WORKSPACE}/bendi/build ]]; then
     cp -Rf ${GITHUB_WORKSPACE}/bendi/build/* ${GITHUB_WORKSPACE}/OP_DIY/
     rm -rf ${GITHUB_WORKSPACE}/bendi
+    [[ -f ${GITHUB_WORKSPACE}/Clear ]] && rm -rf ${GITHUB_WORKSPACE}/Clear
+    [[ -f ${GITHUB_WORKSPACE}/amlogic_openwrt ]] && rm -rf ${GITHUB_WORKSPACE}/amlogic_openwrt
     print_ok "同步OP_DIY完成!"
   else
     rm -rf ${GITHUB_WORKSPACE}/bendi
