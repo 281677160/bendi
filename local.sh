@@ -272,11 +272,11 @@ function version_opdiy() {
       read -p " 按[Y/y]回车同步文件，直接回车则跳过更新： " TB
       case ${TB} in
       [Yy]) 
-        ECHO "正在同步OP_DIY文件，请稍后..."
+        ECHOGG "正在同步OP_DIY文件，请稍后..."
 	gengxin_opdiy
       ;;
       *)
-        ECHO "您已跳过更新OP_DIY文件"
+        ECHOR "您已跳过更新OP_DIY文件"
     ;;
     esac
     fi
