@@ -193,7 +193,7 @@ function op_diywenjian() {
       mv "${X}/.config" "${X}/config"
       mkdir -p "${X}/version"
       echo "Version=${Version}" > "${X}/version/NumBer"
-      echo "NumBer文件为检测版本用,请勿修改" > "${X}/version/README.md"
+      echo "NumBer文件为检测版本用,请勿修改和删除" > "${X}/version/README.md"
     done
     for X in $(find ./bendi -name "settings.ini"); do
       sed -i 's/.config/config/g' "${X}"
@@ -230,7 +230,7 @@ function gengxin_opdiy() {
   for X in $(find ./bendi -name "settings.ini" |sed 's/\/settings.ini//g'); do
     mkdir -p "${X}/version"
     echo "Version=${Version}" > "${X}/version/NumBer"
-    echo "NumBer文件为检测版本用,请勿修改" > "${X}/version/README.md"
+    echo "NumBer文件为检测版本用,请勿修改和删除" > "${X}/version/README.md"
   done
   for X in $(find ./bendi -name "settings.ini"); do
     sed -i 's/.config/config/g' "${X}"
