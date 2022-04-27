@@ -216,23 +216,6 @@ function op_diywenjian() {
       sed -i '/Github/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
     done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
-  else
-    echo "22222222222"
-    A="$(grep "Version=" "$(find "${GITHUB_WORKSPACE}/OP_DIY" -name "NumBer" |awk 'END {print}' )" |sed 's/\"//g' |cut -d '=' -f2)"
-    B="${Version}"
-    if [[ "$A" < "$B" ]]; then
-      ECHOY "上游OP_DIY文件有更新，是否同步更新OP_DIY文件?"
-      read -p " 按[Y/y]回车同步文件，直接回车则跳过更新： " TB
-      case ${TB} in
-      [Yy]) 
-        ECHO "正在同步OP_DIY文件，请稍后..."
-	gengxin_opdiy
-      ;;
-      *)
-        ECHO "您已跳过更新OP_DIY文件"
-    ;;
-    esac
-    fi
   fi
 }
 
@@ -272,6 +255,27 @@ function gengxin_opdiy() {
     rm -rf ${GITHUB_WORKSPACE}/bendi
     print_error "同步OP_DIY失败!"
     exit 1
+  fi
+}
+
+function version_opdiy() {
+  cd ${GITHUB_WORKSPACE}
+  if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
+    A="$(grep "Version=" "$(find "${GITHUB_WORKSPACE}/OP_DIY" -name "NumBer" |awk 'END {print}' )" |sed 's/\"//g' |cut -d '=' -f2)"
+    B="${Version}"
+    if [[ "$A" < "$B" ]]; then
+      ECHOY "上游OP_DIY文件有更新，是否同步更新OP_DIY文件?"
+      read -p " 按[Y/y]回车同步文件，直接回车则跳过更新： " TB
+      case ${TB} in
+      [Yy]) 
+        ECHO "正在同步OP_DIY文件，请稍后..."
+	gengxin_opdiy
+      ;;
+      *)
+        ECHO "您已跳过更新OP_DIY文件"
+    ;;
+    esac
+    fi
   fi
 }
 
@@ -813,6 +817,7 @@ function op_upgrade1() {
 }
 
 function op_again() {
+  version_opdiy
   cd ${HOME_PATH}
   op_firmware
   bianyi_xuanxiang
@@ -832,6 +837,7 @@ function op_again() {
 }
 
 function openwrt_tow() {
+  version_opdiy
   bianyi_xuanxiang
   op_common_sh
   openwrt_qx
@@ -857,6 +863,7 @@ function openwrt_new() {
   openwrt_qx
   op_firmware
   op_kongjian
+  version_opdiy
   op_diywenjian
   bianyi_xuanxiang
   op_repo_branch
