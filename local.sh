@@ -7,6 +7,8 @@
 #	github: https://github.com/281677160
 #====================================================
 
+Version=1.0
+
 # 字体颜色配置
 Green="\033[32m"
 Red="\033[31m"
@@ -190,7 +192,7 @@ function op_diywenjian() {
     for X in $(find ./bendi -name ".config" |sed 's/\/.config//g'); do 
       mv "${X}/.config" "${X}/config"
       mkdir -p "${X}/version"
-      echo "11111" > "${X}/version/version"
+      echo "Version=${Version}" > "${X}/version/version"
     done
     for X in $(find ./bendi -name "settings.ini"); do
       sed -i 's/.config/config/g' "${X}"
