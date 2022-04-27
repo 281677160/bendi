@@ -588,12 +588,15 @@ function op_upgrade3() {
     export dsgx="加入‘定时升级固件插件’的固件失败，您的机型或者不支持定时更新!"
   fi
   cd ${TARGET_BSGET}
-  rename -v "s/^immortalwrt/openwrt/" * > /dev/null 2>&1
-  if [[ -f ${GITHUB_WORKSPACE}/Clear ]]; then
-    cp -Rf ${GITHUB_WORKSPACE}/Clear ${TARGET_BSGET}/Clear.sh
-    chmod +x Clear.sh && source Clear.sh
-    rm -rf Clear.sh
+  mkdir -p ipk
+  cp -rf $(find $HOME_PATH/bin/packages/ -type f -name "*.ipk") ipk/ && sync
+  sudo tar -czf ipk.tar.gz ipk && sudo rm -rf ipk && sync
+  if [[ `ls -1 | grep -c "immortalwrt"` -ge '1' ]]; then
+    rename -v "s/^immortalwrt/openwrt/" *
   fi
+  for X in $(cat "${CLEAR_PATH}" |cut -d '-' -f4- |sed '/^$/d' |sed 's/ //g' |sed 's/^/*/g' |sed 's/$/*/g'); do
+    rm -rf "${X}"
+  done
   rename -v "s/^openwrt/${SOURCE}-${GUJIAN_TIME}/" * > /dev/null 2>&1
   rename -v "s/sha256sums/${SOURCE}-${GUJIAN_TIME}-sha256sums/" * > /dev/null 2>&1
   cd ${HOME_PATH}
