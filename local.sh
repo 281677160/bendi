@@ -37,7 +37,7 @@ export Author="$(grep "syslog" "/etc/group"|awk 'NR==1' |cut -d "," -f2)"
 export REPO_TOKEN="REPO_TOKEN"
 export date1="$(date +'%m-%d')"
 export bendi_script="1"
-export VerSion_opdiy=""
+export VerSion_opdiy="0"
 
 function print_ok() {
   echo
