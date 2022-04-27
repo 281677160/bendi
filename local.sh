@@ -187,10 +187,10 @@ function op_diywenjian() {
     git clone https://github.com/281677160/build-actions bendi
     judge "OP_DIY文件下载"
     rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
-    for X in $(find ./bendi -name ".config" |sed 's/.config//g'); do 
-      mv "${X}".config "${X}"config
-      mkdir -p version
-      echo "11111" > version/version
+    for X in $(find ./bendi -name ".config" |sed 's/\/.config//g'); do 
+      mv "${X}/.config" "${X}/config"
+      mkdir -p "${X}/version"
+      echo "11111" > "${X}/version/version"
     done
     for X in $(find ./bendi -name "settings.ini"); do
       sed -i 's/.config/config/g' "${X}"
