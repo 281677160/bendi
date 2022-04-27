@@ -7,7 +7,7 @@
 #	github: https://github.com/281677160
 #====================================================
 
-Version="1.0"
+Version="1.1"
 
 # 字体颜色配置
 Green="\033[32m"
@@ -37,6 +37,7 @@ export Author="$(grep "syslog" "/etc/group"|awk 'NR==1' |cut -d "," -f2)"
 export REPO_TOKEN="REPO_TOKEN"
 export date1="$(date +'%m-%d')"
 export bendi_script="1"
+export VerSion_opdiy=""
 
 function print_ok() {
   echo
@@ -276,6 +277,7 @@ function version_opdiy() {
       case ${TB} in
       [Yy]) 
         ECHOGG "正在同步OP_DIY文件，请稍后..."
+	export VerSion_opdiy="1"
 	gengxin_opdiy
       ;;
       *)
@@ -293,6 +295,7 @@ function bianyi_xuanxiang() {
     exit 1
   else
     source "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini"
+    [[ ${VerSion_opdiy} == "1" ]] && EVERY_INQUIRY="true"
   fi
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     clear
