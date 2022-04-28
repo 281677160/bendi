@@ -7,8 +7,6 @@
 #	github: https://github.com/281677160
 #====================================================
 
-Version="1.0"
-
 # 字体颜色配置
 Green="\033[32m"
 Red="\033[31m"
@@ -21,6 +19,7 @@ OK="${Green}[OK]${Font}"
 ERROR="${Red}[ERROR]${Font}"
 
 # 变量
+export Version="1.0"
 export GITHUB_WORKSPACE="$PWD"
 export OP_DIY="${GITHUB_WORKSPACE}/OP_DIY"
 export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
