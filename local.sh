@@ -353,10 +353,11 @@ function bianyi_xuanxiang() {
     wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
   fi
   if [[ $? -eq 0 ]];then
+    print_ok "common.sh执行文件下载 完成"
     source common.sh && Diy_repo_url
     rm -fr common.sh
   else
-    ECHOR "common文件下载失败，请检测网络后再用一键命令试试!"
+    print_error "common.sh文件下载失败，请检测网络后再用一键命令试试!"
     exit 1
   fi
 }
