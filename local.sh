@@ -146,7 +146,9 @@ function op_common_sh() {
     wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
   fi
   if [[ $? -eq 0 ]];then
+    chmod +x common.sh
     source common.sh && Diy_update
+    rm -rf common.sh
   else
     ECHOR "common.sh下载失败，请检测网络后再用一键命令试试!"
     exit 1
@@ -346,22 +348,18 @@ function bianyi_xuanxiang() {
   echo
   ECHOG "正在下载common.sh执行文件,请稍后..."
   source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
-  if [[ -f ${GITHUB_WORKSPACE}/common.sh ]]; then
+  curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
+  if [[ $? -ne 0 ]];then
+    wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
+  fi
+  if [[ $? -eq 0 ]];then
+    print_ok "common.sh执行文件下载 完成"
+    chmod +x common.sh
     source common.sh && Diy_repo_url
     rm -fr common.sh
   else
-    curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
-    if [[ $? -ne 0 ]];then
-      wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
-    fi
-    if [[ $? -eq 0 ]];then
-      print_ok "common.sh执行文件下载 完成"
-      source common.sh && Diy_repo_url
-      rm -fr common.sh
-    else
-      print_error "common.sh文件下载失败，请检测网络后再用一键命令试试!"
-      exit 1
-    fi
+    print_error "common.sh文件下载失败，请检测网络后再用一键命令试试!"
+    exit 1
   fi
 }
 
