@@ -398,8 +398,8 @@ function op_diy_zdy() {
 
 function op_diy_ip() {
   cd ${HOME_PATH}
-  IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
-  [[ -z "${IP}" ]] && IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
+  export IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
+  [[ -z "${IP}" ]] && export IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
   echo "${Mark_Core}" > ${HOME_PATH}/${Mark_Core}
   ECHOY "您的后台IP地址为：$IP"
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
@@ -418,8 +418,8 @@ function op_menuconfig() {
   if [[ "${Menuconfig}" == "true" ]]; then
     make menuconfig
     if [[ $? -ne 0 ]]; then
-      ECHOY "窗口分辨率太小，无法弹出设置更机型或插件的窗口"
-      ECHOG "请调整窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
+      ECHOY "SSH工具窗口分辨率太小，无法弹出设置机型或插件的窗口"
+      ECHOG "请调整SSH工具窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
       XUANMA="请输入您的选择"
       while :; do
       read -p " ${XUANMA}：" Make
@@ -513,7 +513,7 @@ function op_download() {
   make -j8 download |tee ${HOME_PATH}/build.log
   find dl -size -1024c -exec ls -l {} \;
   find dl -size -1024c -exec rm -f {} \;
-  if [[ `grep -c "make with -j1 V=s or V=sc" ${HOME_PATH}/build.log` == '0' ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build.log` == '0' ]] || [[ `grep -c "error" ${HOME_PATH}/build.log` == '0' ]]; then
+  if [[ `grep -c "make with -j1 V=s or V=sc" ${HOME_PATH}/build.log` == '0' ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build.log` == '0' ]]; then
     print_ok "DL文件下载成功"
   else
     clear
@@ -559,13 +559,13 @@ function op_cpuxinghao() {
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[3.5]小时左右,请耐心等待..."
   elif [[ "$(nproc)" =~ (2|3) ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[3]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ "4" ]]; then
+  elif [[ "$(nproc)" =~ (4|5) ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[2.5]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ "6" ]]; then
+  elif [[ "$(nproc)" =~ (6|7) ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[2]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ "8" ]]; then
+  elif [[ "$(nproc)" =~ (8|9) ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[1.5]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ "12" ]]; then
+  elif [[ "$(nproc)" =~ (10|11|12|13|14|15) ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[1]小时左右,请耐心等待..."
   else
     ECHOY "您的CPU线程数为16线程或超过16线程，强制使用16线程编译，您在Ubuntu内分配的内存最好是6G或以上的"
@@ -719,7 +719,7 @@ function op_amlogic() {
     judge "内核运行文件下载"
     rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   fi
-  export TARGET_BSGET="${HOME_PATH}/bin/targets/armvirt/64"
+  [[ -z "${TARGET_BSGET}" ]] && export TARGET_BSGET="${HOME_PATH}/bin/targets/armvirt/64"
   [ ! -d ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt ] && mkdir -p ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s922x s922x-n2 s922x-reva a311d s905x3 s905x2 s905x2-km3 s905l3a s912 s912-m8s s905d s905d-ki s905x s905w s905"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型(all) ]"
@@ -814,7 +814,6 @@ function openwrt_gitpull() {
   if [[ ! -d ${HOME_PATH}/feeds ]]; then
     ./scripts/feeds update -a
   fi
-  
   git reset --hard
   if [[ `grep -c "webweb.sh" ${ZZZ_PATH}` -ge '1' ]]; then
     git reset --hard
