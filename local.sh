@@ -150,7 +150,7 @@ function op_common_sh() {
     source common.sh && Diy_update
     rm -fr common.sh
   else
-    ECHOR "common文件下载失败，请检测网络后再用一键命令试试!"
+    ECHOR "common.sh下载失败，请检测网络后再用一键命令试试!"
     exit 1
   fi
 }
@@ -185,6 +185,7 @@ function op_kongjian() {
 function op_diywenjian() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
+    ECHOG "正在下载OP_DIY文件，请稍后..."
     rm -rf bendi
     git clone https://github.com/281677160/build-actions bendi
     judge "OP_DIY文件下载"
@@ -222,6 +223,7 @@ function op_diywenjian() {
 
 function gengxin_opdiy() {
   cd ${GITHUB_WORKSPACE}
+  ECHOG "正在下载上游OP_DIY文件源码，请稍后..."
   rm -rf ${GITHUB_WORKSPACE}/bendi
   git clone https://github.com/281677160/build-actions bendi
   judge "OP_DIY文件下载"
@@ -344,7 +346,7 @@ function bianyi_xuanxiang() {
   esac
   echo
   echo
-  ECHOG "正在下载common.sh程序,请稍后..."
+  ECHOG "正在下载common.sh执行文件,请稍后..."
   source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
   curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
   if [[ $? -ne 0 ]];then
@@ -362,7 +364,7 @@ function bianyi_xuanxiang() {
 function op_repo_branch() {
   cd ${GITHUB_WORKSPACE}
   echo
-  ECHOG "正在下载源码中,请耐心等候~~~"
+  ECHOG "正在下载openwrt源码中,请耐心等候~~~"
   rm -rf openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
   judge "${matrixtarget}源码下载"
   rm -rf ${HOME_PATH}/README.* > /dev/null 2>&1
@@ -370,6 +372,7 @@ function op_repo_branch() {
 }
 
 function op_jiaoben() {
+  ECHOG "正在下载额外扩展文件，请稍后..."
   if [[ ! -d "${HOME_PATH}/build" ]]; then
     cp -Rf ${GITHUB_WORKSPACE}/OP_DIY ${HOME_PATH}/build
   else
@@ -544,8 +547,9 @@ function op_cpuxinghao() {
   Model_Name="$(cat /proc/cpuinfo |grep 'model name' |awk 'END {print}' |cut -f2 -d: |sed 's/^[ ]*//g')"
   Cpu_Cores="$(cat /proc/cpuinfo | grep 'cpu cores' |awk 'END {print}' | cut -f2 -d: | sed 's/^[ ]*//g')"
   clear
-  ECHOG "您的CPU型号为[ ${Model_Name} ]"
-  ECHOG "在Ubuntu使用核心数为[ ${Cpu_Cores} ],线程数为[ $(nproc) ]"
+  ECHOY "您的CPU型号为[ ${Model_Name} ]"
+  ECHOY "在Ubuntu使用核心数为[ ${Cpu_Cores} ],线程数为[ $(nproc) ]"
+  ECHOY "使用线程数越大，就适当的多分配大一点内存给Ubuntu使用，16线程或以上的最好分配6G或以上内存"
   if [[ ${matrixtarget} == "openwrt_amlogic" ]]; then
     ECHOG "使用[ ${matrixtarget} ]文件夹，编译[ N1和晶晨系列盒子专用固件 ]"
   else
@@ -555,17 +559,18 @@ function op_cpuxinghao() {
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[3.5]小时左右,请耐心等待..."
   elif [[ "$(nproc)" =~ (2|3) ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[3]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ (4|5) ]]; then
+  elif [[ "$(nproc)" =~ "4" ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[2.5]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ (6|7) ]]; then
+  elif [[ "$(nproc)" =~ "6" ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[2]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ (8|9) ]]; then
+  elif [[ "$(nproc)" =~ "8" ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[1.5]小时左右,请耐心等待..."
-  else
+  elif [[ "$(nproc)" =~ "12" ]]; then
     ECHOY "正在使用[$(nproc)线程]编译固件,预计要[1]小时左右,请耐心等待..."
-    ECHOG "若您的CPU线程数超过16线程的话，强制使用16线程编译"
+  else
+    ECHOY "您的CPU线程数为16线程或超过16线程，强制使用16线程编译，您在Ubuntu内分配的内存最好是6G或以上的"
   fi
-  sleep 3
+  sleep 4
 }
 
 function op_make() {
@@ -578,7 +583,7 @@ function op_make() {
   if [[ "${WSL_ubuntu}" == "YES" ]]; then
     export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
   fi
-  if [[ "$(nproc)" -ge "16" ]];then
+  if [[ "$(nproc)" -ge "12" ]];then
     make -j$(nproc)
   else
     make -j16
