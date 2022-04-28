@@ -157,14 +157,13 @@ function op_common_sh() {
 
 function op_kongjian() {
   cd ${GITHUB_WORKSPACE}
-  export Ubunkj="$(df -h|grep -v tmpfs |grep "/dev/.*" |awk '{print $4}' |awk 'NR==1')"
-  export FINAL=`echo ${Ubunkj: -1}`
-  if [[ "${FINAL}" =~ (M|K) ]]; then
+  export Ubunkj="$(df -h |grep -v tmpfs |grep "/dev/.*" |awk '{print $4}' |awk 'NR==1' |sed 's/[0-9]//g')"
+  if [[ "${Ubunkj}" =~ (M|K) ]]; then
     print_error "敬告：可用空间小于[ 1G ]退出编译,建议可用空间大于20G"
     sleep 1
     exit 1
   fi
-  export Ubuntu_kj="$(df -h|grep -v tmpfs |grep "/dev/.*" |awk '{print $4}' |awk 'NR==1' |sed 's/.$//g')"
+  export Ubuntu_kj="$(df -h |grep -v tmpfs |grep "/dev/.*" |awk '{print $4}' |awk 'NR==1' |sed 's/.$//g')"
   if [[ "${Ubuntu_kj}" -lt "20" ]];then
     ECHOY "您当前系统可用空间为${Ubuntu_kj}G"
     print_error "敬告：可用空间小于[ 20G ]编译容易出错,建议可用空间大于20G,是否继续?"
