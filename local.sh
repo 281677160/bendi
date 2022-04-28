@@ -331,7 +331,7 @@ function bianyi_xuanxiang() {
   echo -e "${Red} 提示${Font}：${Blue}您当前OP_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
   echo
   ECHOGG "是否需要选择机型和增删插件?"
-  read -t 20 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,20秒自动跳过)： " MENUu
+  read -t 30 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " MENUu
   case $MENUu in
   [Yy])
     export Menuconfig="true"
@@ -344,12 +344,11 @@ function bianyi_xuanxiang() {
   esac
   echo
   echo
-  ECHOG "3秒后为您执行编译程序,请稍后..."
-  sleep 2
+  ECHOG "正在下载common.sh程序,请稍后..."
   source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
-  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
+  curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
   if [[ $? -ne 0 ]];then
-    wget -q -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
+    wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
   fi
   if [[ $? -eq 0 ]];then
     source common.sh && Diy_repo_url
