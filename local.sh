@@ -37,7 +37,6 @@ export Author="$(grep "syslog" "/etc/group"|awk 'NR==1' |cut -d "," -f2)"
 export REPO_TOKEN="REPO_TOKEN"
 export date1="$(date +'%m-%d')"
 export bendi_script="1"
-export VerSion_opdiy="0"
 
 function print_ok() {
   echo
@@ -297,7 +296,6 @@ function bianyi_xuanxiang() {
     exit 1
   else
     source "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini"
-    [[ ${VerSion_opdiy} == "1" ]] && EVERY_INQUIRY="true"
   fi
   if [[ "${EVERY_INQUIRY}" == "true" ]]; then
     clear
