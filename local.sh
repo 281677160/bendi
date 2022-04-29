@@ -447,8 +447,8 @@ function make_defconfig() {
   cd ${HOME_PATH}
   source "${BUILD_PATH}/common.sh" && Diy_prevent
   if [[ -f ${HOME_PATH}/EXT4 ]] || [[ -f ${HOME_PATH}/Chajianlibiao ]]; then
-    read -t 30 -p " [如需重新编译请按输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " MNUu
-    case $MNUu in
+    read -t 30 -p " [如需重新编译请按输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " CTCL
+    case $CTCL in
     [Yy])
       rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4}
       sleep 1
