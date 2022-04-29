@@ -1028,7 +1028,7 @@ function menuop() {
   break
   ;;
   2)
-    export ERCI_BYGJ="1"
+    export ERCI_BYGJ="0"
     openwrt_tow
   break
   ;;
