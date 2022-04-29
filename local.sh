@@ -923,30 +923,35 @@ function menu() {
   read -p " ${XUANZHEOP}： " CHOOSE
   case $CHOOSE in
     1)
+      export ERCI_BYGJ="0"
       export matrixtarget="Lede_source"
       ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
       openwrt_new
     break
     ;;
     2)
+      export ERCI_BYGJ="0"
       export matrixtarget="Lienol_source"
       ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI 22.03版本"
       openwrt_new
     break
     ;;
     3)
+      export ERCI_BYGJ="0"
       export matrixtarget="Tianling_source"
       ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
       openwrt_new
     break
     ;;
     4)
+      export ERCI_BYGJ="0"
       export matrixtarget="Mortal_source"
       ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
       openwrt_new
     break
     ;;
     5)
+      export ERCI_BYGJ="0"
       export matrixtarget="openwrt_amlogic"
       ECHOG "您选择了：N1和晶晨系列CPU盒子专用"
       openwrt_new
