@@ -228,6 +228,10 @@ function gengxin_opdiy() {
   judge "OP_DIY文件下载"
   rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
   rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/.config
+  for X in $(find ${GITHUB_WORKSPACE}/OP_DIY -name "settings.ini" |sed 's/\/settings.ini//g'); do
+    mv "${X}/diy-part.sh" "${X}/diy-part.sh.bak"
+    mv "${X}/settings.ini" "${X}/settings.ini.bak"
+  done
   for X in $(find ./bendi -name "settings.ini" |sed 's/\/settings.ini//g'); do
     mkdir -p "${X}/version"
     echo "Version=${Version}" > "${X}/version/NumBer"
