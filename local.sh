@@ -379,7 +379,7 @@ function op_jiaoben() {
   else
     cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${HOME_PATH}/build/
   fi
-  [[ "${Tishi}" == "1" ]] && sed -i '/-rl/d' "${BUILD_PATH}/${DIY_PART_SH}"
+  [[ "${ERCI_BYGJ}" == "1" ]] && sed -i '/-rl/d' "${BUILD_PATH}/${DIY_PART_SH}"
   rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
   judge "额外扩展文件下载"
   cp -Rf ${LOCAL_Build}/common/*.sh ${BUILD_PATH}/
@@ -1018,10 +1018,12 @@ function menuop() {
   read -p " ${XUANZop}：" menu_num
   case $menu_num in
   1)
+    export ERCI_BYGJ="1"
     op_again
   break
   ;;
   2)
+    export ERCI_BYGJ="1"
     openwrt_tow
   break
   ;;
