@@ -1032,8 +1032,17 @@ function menuop() {
   break
   ;;
   2)
-    export ERCI_BYGJ="0"
-    openwrt_tow
+    ECHOR "是否删除现有源码,重新下载[${matrixtarget}]源码再编译?"
+    read -p " [输入[ N/n ]退出，直接回车则默认为是]： " MATR
+    case $MATR in
+    [Nn])
+      menuop
+    ;;
+    *)
+      export ERCI_BYGJ="0"
+      openwrt_tow
+    ;;
+    esac
   break
   ;;
   3)
