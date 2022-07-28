@@ -19,7 +19,7 @@ OK="${Green}[OK]${Font}"
 ERROR="${Red}[ERROR]${Font}"
 
 # 变量
-export Version="1.0"
+export Version="1.1"
 export GITHUB_WORKSPACE="$PWD"
 export OP_DIY="${GITHUB_WORKSPACE}/OP_DIY"
 export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
