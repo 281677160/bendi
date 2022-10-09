@@ -914,7 +914,7 @@ function menu() {
   echo
   ECHOB "  请选择编译源码"
   ECHOY " 1. Lede_${ledenh}内核,LUCI 18.06版本(Lede_source)"
-  ECHOYY " 2. Lienol_${lienolnh}内核,LUCI 22.03版本(Lienol_source)"
+  ECHOYY " 2. Lienol_${lienolnh}内核,LUCI 21.02版本(Lienol_source)"
   echo
   ECHOYY " 3. Immortalwrt_${tianlingnh}内核,LUCI 18.06版本(Tianling_source)"
   ECHOY " 4. Immortalwrt_${mortalnh}内核,LUCI 21.02版本(Mortal_source)"
@@ -936,7 +936,7 @@ function menu() {
     2)
       export ERCI_BYGJ="0"
       export matrixtarget="Lienol_source"
-      ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI 22.03版本"
+      ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI 21.02版本"
       openwrt_new
     break
     ;;
