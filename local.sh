@@ -479,7 +479,7 @@ function tixing_op_config() {
   else
     export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE})"
   fi
-  export TARGET_BSGET="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
+  export FIRMWARE_PATH="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
   if [[ -z "${TARGET_PROFILE}" ]]; then
     if [[ -f ${BUILD_PATH}/.config ]]; then
       cp -Rf ${BUILD_PATH}/.config ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
@@ -583,7 +583,7 @@ function op_make() {
   rm -rf build.log
   export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   ECHOG "正在编译固件，请耐心等待..."
-  [[ -d "${TARGET_BSGET}" ]] && rm -fr ${TARGET_BSGET}/*
+  [[ -d "${FIRMWARE_PATH}" ]] && rm -fr ${FIRMWARE_PATH}/*
   ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
   if [[ "${WSL_ubuntu}" == "YES" ]]; then
     export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
@@ -596,7 +596,7 @@ function op_make() {
   if [[ "${WSL_ubuntu}" == "YES" ]]; then
     export PATH=$PATH:'/mnt/c/windows'
   fi
-  if [[ `ls -a ${TARGET_BSGET} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
+  if [[ `ls -a ${FIRMWARE_PATH} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
     rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
     rm -rf ${LOCAL_Build}/weiwan > /dev/null 2>&1
     echo "shibai" >${LOCAL_Build}/shibai
@@ -624,7 +624,7 @@ function op_upgrade3() {
   if [[ "${REGULAR_UPDATE}" == "true" ]]; then
     [[ -d "${HOME_PATH}/bin/Firmware" ]] && rm -fr ${HOME_PATH}/bin/Firmware/*
     [[ -d "${HOME_PATH}/upgrade" ]] && rm -rf ${HOME_PATH}/upgrade
-    cp -Rf ${TARGET_BSGET} ${HOME_PATH}/upgrade
+    cp -Rf ${FIRMWARE_PATH} ${HOME_PATH}/upgrade
     source ${BUILD_PATH}/upgrade.sh && Diy_Part3
   fi
   if [[ `ls -a ${HOME_PATH}/bin/Firmware | grep -c "${Upgrade_Date}"` -ge '1' ]]; then
@@ -633,7 +633,7 @@ function op_upgrade3() {
   else
     export dsgx="加入‘定时升级固件插件’的固件失败，您的机型或者不支持定时更新!"
   fi
-  cd ${TARGET_BSGET}
+  cd ${FIRMWARE_PATH}
   mkdir -p ipk
   cp -rf $(find $HOME_PATH/bin/packages/ -type f -name "*.ipk") ipk/ && sync
   sudo tar -czf ipk.tar.gz ipk && sudo rm -rf ipk && sync
@@ -669,7 +669,7 @@ function op_end() {
       explorer.exe .
       cd ${HOME_PATH}
     else
-      cd ${TARGET_BSGET}
+      cd ${FIRMWARE_PATH}
       explorer.exe .
       cd ${HOME_PATH}
     fi
@@ -724,7 +724,7 @@ function op_amlogic() {
     judge "内核运行文件下载"
     rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
   fi
-  [[ -z "${TARGET_BSGET}" ]] && export TARGET_BSGET="${HOME_PATH}/bin/targets/armvirt/64"
+  [[ -z "${FIRMWARE_PATH}" ]] && export FIRMWARE_PATH="${HOME_PATH}/bin/targets/armvirt/64"
   [ ! -d ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt ] && mkdir -p ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt
   ECHOY "全部可打包机型：s922x s922x-n2 s922x-reva a311d s905x3 s905x2 s905x2-km3 s905l3a s912 s912-m8s s905d s905d-ki s905x s905w s905"
   ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型(all) ]"
@@ -745,11 +745,11 @@ function op_amlogic() {
   read -p " 请输入ROOTFS分区大小：" rootfs_size
   export rootfs_size=${rootfs_size:-"960"}
   ECHOYY "您设置的ROOTFS分区大小为：${rootfs_size}"
-  if [[ `ls -1 "${TARGET_BSGET}" |grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
-    cp -Rf ${TARGET_BSGET}/*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
+  if [[ `ls -1 "${FIRMWARE_PATH}" |grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
+    cp -Rf ${FIRMWARE_PATH}/*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
   else
-    armvirtargz="$(ls -1 "${TARGET_BSGET}" |grep ".*tar.gz" |awk 'END {print}')"
-    cp -Rf ${TARGET_BSGET}/${armvirtargz} ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
+    armvirtargz="$(ls -1 "${FIRMWARE_PATH}" |grep ".*tar.gz" |awk 'END {print}')"
+    cp -Rf ${FIRMWARE_PATH}/${armvirtargz} ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
   fi
   if [[ `ls -1 "${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt" | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
     print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
