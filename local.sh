@@ -463,6 +463,8 @@ else
 fi
 export FIRMWARE_PATH=${HOME_PATH}/bin/targets/${TARGET_BOARD1}/${TARGET_SUBTARGET1}
 export TARGET_OPENWRT=openwrt/bin/targets/${TARGET_BOARD1}/${TARGET_SUBTARGET1}
+echo "${FIRMWARE_PATH}"
+echo "${TARGET_OPENWRT}"
 }
 
 function make_defconfig() {
@@ -484,9 +486,7 @@ function make_defconfig() {
     esac
   fi
   source "${BUILD_PATH}/common.sh" && Diy_menu2
-  Make_upgrade
-  echo "${FIRMWARE_PATH}"
-  echo "${TARGET_OPENWRT}"
+
 }
 
 function tixing_op_config() {
@@ -911,6 +911,7 @@ function openwrt_new() {
   op_diy_ip
   op_menuconfig
   make_defconfig
+  Make_upgrade
   op_upgrade2
   op_download
   op_cpuxinghao
