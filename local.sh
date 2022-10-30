@@ -483,6 +483,8 @@ function make_defconfig() {
   fi
   source "${BUILD_PATH}/common.sh" && Diy_menu2
   Make_upgrade
+  echo "${FIRMWARE_PATH}"
+  echo "${TARGET_OPENWRT}"
 }
 
 function tixing_op_config() {
