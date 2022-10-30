@@ -217,6 +217,7 @@ function op_diywenjian() {
       sed -i '/Github/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
     done
     mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
+    rm -rf ${GITHUB_WORKSPACE}/bendi
   fi
 }
 
