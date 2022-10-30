@@ -449,7 +449,9 @@ function op_menuconfig() {
 function Make_upgrade() {
 ## 本地编译加载机型用
 export TARGET_BOARD1="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${HOME_PATH}/.config)"
+echo "${TARGET_BOARD1}"
 export TARGET_SUBTARGET1="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' ${HOME_PATH}/.config)"
+echo "${TARGET_SUBTARGET1}"
 if [[ `grep -c "CONFIG_TARGET_x86_64=y" ${HOME_PATH}/.config` -eq '1' ]]; then
   export TARGET_PROFILE="x86-64"
 elif [[ `grep -c "CONFIG_TARGET_x86=y" ${HOME_PATH}/.config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" ${HOME_PATH}/.config` == '0' ]]; then
@@ -459,8 +461,8 @@ elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" ${HOME_PATH}/.config` -eq '1' ]]; t
 else
   export TARGET_PROFILE="${TARGET_BOARD}"
 fi
-export FIRMWARE_PATH="${HOME_PATH}/bin/targets/$TAR_BOARD1/$TAR_SUBTARGET1"
-export TARGET_OPENWRT="openwrt/bin/targets/$TAR_BOARD1/$TAR_SUBTARGET1"
+export FIRMWARE_PATH=${HOME_PATH}/bin/targets/${TARGET_BOARD1}/${TARGET_SUBTARGET1}
+export TARGET_OPENWRT=openwrt/bin/targets/${TARGET_BOARD1}/${TARGET_SUBTARGET1}
 }
 
 function make_defconfig() {
