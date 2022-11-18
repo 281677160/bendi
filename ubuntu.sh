@@ -110,8 +110,8 @@ if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
   exit 1
 else
   sudo apt-get -y update
-  sudo apt-get remove openssh-server
-  sudo apt-get install openssh-server
+  sudo apt-get -y remove openssh-server
+  sudo apt-get -y install openssh-server
   sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
   sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
   sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
