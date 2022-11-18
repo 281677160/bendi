@@ -88,6 +88,11 @@ if [[ `sudo grep -c "sudo ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers` == '0' ]]; t
 fi
 
 function ubuntu_WslPath() {
+if [[ -f "/etc/wsl.conf" ]]; then
+  sudo sed -i '/[interop]/d' /etc/wsl.conf
+  sudo sed -i '/appendWindowsPath/d' /etc/wsl.conf
+fi
+
 sudo tee -a /etc/wsl.conf << EOF > /dev/null
 [interop]
 appendWindowsPath = false
