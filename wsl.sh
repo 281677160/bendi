@@ -147,7 +147,7 @@ if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
   exit 0
 else
   ECHOG "无法完成操作请查看/etc/wsl.conf自行删除试试，删除以下2行代码"
-  ECHOG "删除：[interop]
+  ECHOG "删除：[interop]"
   ECHOG "删除：appendWindowsPath = false"
   exit 1
 fi
