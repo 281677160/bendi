@@ -158,11 +158,11 @@ function menu() {
   clear
   echo
   echo
-  echo -e " 1${Red}.${Font}${Green}保留缓存,再次编译${Font}"
+  echo -e " 1${Red}.${Font}${Green}更改WSL路径和安装SSH${Font}"
   echo
-  echo -e " 2${Red}.${Font}${Green}重新选择源码编译${Font}"
+  echo -e " 2${Red}.${Font}${Green}还原回WSL路径${Font}"
   echo
-  echo -e " 3${Red}.${Font}${Green}同步上游OP_DIY文件(不覆盖config配置文件)${Font}"
+  echo -e " 3${Red}.${Font}${Green}进入SSH不需要显示IP${Font}"
   echo
   echo -e " 4${Red}.${Font}${Green}退出${Font}"
   echo
