@@ -17,6 +17,7 @@ GreenBG="\033[42;37m"
 RedBG="\033[41;37m"
 OK="${Green}[OK]${Font}"
 ERROR="${Red}[ERROR]${Font}"
+GITHUB_WORKSPACE="$PWD"
 
 function print_ok() {
   echo -e " ${OK} ${Blue} $1 ${Font}"
@@ -87,6 +88,28 @@ if [[ `sudo grep -c "sudo ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers` == '0' ]]; t
   sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
 fi
 
+function ubuntu_bashrc() {
+sudo apt-get -y update
+sudo apt-get -y remove openssh-server
+sudo apt-get -y install openssh-server
+sudo apt-get -y install net-tools
+sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
+sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
+sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
+sudo sed -i '/PasswordAuthentication/d' /etc/ssh/sshd_config
+sudo sed -i '/Port 22/d' /etc/ssh/sshd_config
+
+sudo sh -c 'echo Port 22 >> /etc/ssh/sshd_config'
+sudo sh -c 'echo PermitRootLogin yes >> /etc/ssh/sshd_config'
+sudo sh -c 'echo PasswordAuthentication yes >> /etc/ssh/sshd_config'
+sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
+sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
+
+sudo tee -a "${GITHUB_WORKSPACE}/.bashrc" << EOF > /dev/null
+echo "\$(ifconfig |grep inet |grep -v inet6 |grep -v 127.0.0.1|awk '{print \$(2)}')"
+EOF
+}
+
 function ubuntu_WslPath() {
 if [[ -f "/etc/wsl.conf" ]]; then
   sudo sed -i '/[interop]/d' /etc/wsl.conf
@@ -109,23 +132,8 @@ if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
   ECHOR "写入文件发生错误，无法完成"
   exit 1
 else
-  sudo apt-get -y update
-  sudo apt-get -y remove openssh-server
-  sudo apt-get -y install openssh-server
-  sudo apt-get -y install net-tools
-  sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
-  sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
-  sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
-  sudo sed -i '/PasswordAuthentication/d' /etc/ssh/sshd_config
-  sudo sed -i '/Port 22/d' /etc/ssh/sshd_config
-
-  sudo sh -c 'echo Port 22 >> /etc/ssh/sshd_config'
-  sudo sh -c 'echo PermitRootLogin yes >> /etc/ssh/sshd_config'
-  sudo sh -c 'echo PasswordAuthentication yes >> /etc/ssh/sshd_config'
-  sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
-  sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
-  
-  ECHOG "配置已更新，请重启电脑"
+  ubuntu_bashrc
+  ECHOG "配置已更新，请按说明完成以下步骤，然后重启电脑"
   exit 0
 fi
 }
