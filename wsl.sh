@@ -99,6 +99,12 @@ sudo sh -c 'echo PermitRootLogin yes >> /etc/ssh/sshd_config'
 sudo sh -c 'echo PasswordAuthentication yes >> /etc/ssh/sshd_config'
 sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
 sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
+service ssh restart
+
+sudo sed -i '/service ssh restart/d' ${GITHUB_WORKSPACE}/.bashrc
+sudo tee -a "${GITHUB_WORKSPACE}/.bashrc" << EOF > /dev/null
+service ssh restart
+EOF
 
 sudo sed -i '/grep -v inet6/d' ${GITHUB_WORKSPACE}/.bashrc
 sudo tee -a "${GITHUB_WORKSPACE}/.bashrc" << EOF > /dev/null
@@ -112,10 +118,12 @@ if [[ -f "/etc/wsl.conf" ]]; then
   sudo sed -i '/appendWindowsPath/d' /etc/wsl.conf
 fi
 
+if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
 sudo tee -a /etc/wsl.conf << EOF > /dev/null
 [interop]
 appendWindowsPath = false
 EOF
+fi
 
 if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
 sudo tee -a /etc/wsl.conf << EOF > /dev/null
@@ -137,6 +145,8 @@ fi
 function wsl_huanyuan() {
 sudo sed -i '/[interop]/d' /etc/wsl.conf
 sudo sed -i '/appendWindowsPath/d' /etc/wsl.conf
+sudo sed -i '/service ssh restart/d' ${GITHUB_WORKSPACE}/.bashrc
+sudo sed -i '/grep -v inet6/d' ${GITHUB_WORKSPACE}/.bashrc
 if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` -ge '1' ]]; then
   sudo sed -i '/[interop]/d' /etc/wsl.conf
   sudo sed -i '/appendWindowsPath/d' /etc/wsl.conf
