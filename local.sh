@@ -1,10 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 #====================================================
-#	System Request:Ubuntu 18.04+/20.04+
+#	System Request:Ubuntu 18.04lts/20.04lts/22.04lts
 #	Author:	281677160
-#	Dscription: openwrt onekey Management
-#	github: https://github.com/281677160
+#	Dscription: Compile openwrt firmware
+#	github: https://github.com/281677160/build-actions
 #====================================================
 
 # 字体颜色配置
@@ -18,27 +18,7 @@ RedBG="\033[41;37m"
 OK="${Green}[OK]${Font}"
 ERROR="${Red}[ERROR]${Font}"
 
-# 变量
-export Version="1.1"
-export GITHUB_WORKSPACE="$PWD"
-export OP_DIY="${GITHUB_WORKSPACE}/OP_DIY"
-export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
-export LOCAL_Build="${HOME_PATH}/build"
-export COMMON_SH="${HOME_PATH}/build/common/common.sh"
-export BASE_PATH="${HOME_PATH}/package/base-files/files"
-export NETIP="${HOME_PATH}/package/base-files/files/etc/networkip"
-export DELETE="${HOME_PATH}/package/base-files/files/etc/deletefile"
-export FIN_PATH="${HOME_PATH}/package/base-files/files/etc/FinishIng.sh"
-export KEEPD="${HOME_PATH}/package/base-files/files/lib/upgrade/keep.d/base-files-essential"
-export AMLOGIC_SH_PATH="${GITHUB_WORKSPACE}/openwrt/amlogic_openwrt"
-export CLEAR_PATH="${GITHUB_WORKSPACE}/openwrt/Clear"
-export Author="$(grep "syslog" "/etc/group"|awk 'NR==1' |cut -d "," -f2)"
-export REPO_TOKEN="REPO_TOKEN"
-export date1="$(date +'%m-%d')"
-export bendi_script="1"
-
 function print_ok() {
-  echo
   echo -e " ${OK} ${Blue} $1 ${Font}"
   echo
 }
@@ -67,6 +47,10 @@ function ECHOB() {
   echo -e "${Red} $1 ${Font}"
   echo
 }
+function ECHOBB() {
+  echo -e "${Blue} $1 ${Font}"
+  echo
+}
 function ECHOYY() {
   echo -e "${Yellow} $1 ${Font}"
 }
@@ -78,1001 +62,1230 @@ function ECHOGG() {
 }
 judge() {
   if [[ 0 -eq $? ]]; then
-    echo
     print_ok "$1 完成"
     echo
-    sleep 1
   else
-    echo
     print_error "$1 失败"
     echo
     exit 1
   fi
 }
 
-export Ubname=`cat /etc/issue`
-export xtname="Ubuntu"
-export xtbit=`getconf LONG_BIT`
-if [[ ( $Ubname != *$xtname* ) || ( $xtbit != 64 ) ]]; then
-  print_error "请使用Ubuntu 64位系统，推荐 Ubuntu 18 LTS 或 Ubuntu 20 LTS"
+# 变量
+export BENDI_VERSION="2.0"
+export GITHUB_WORKSPACE="$PWD"
+export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
+export OPERATES_PATH="${GITHUB_WORKSPACE}/operates"
+export GITHUB_ENV="${GITHUB_WORKSPACE}/GITHUB_ENV"
+CURRENT_PATH="${GITHUB_WORKSPACE##*/}"
+echo '#!/bin/bash' >${GITHUB_ENV}
+sudo chmod +x ${GITHUB_ENV}
+if [[ ! "$USER" == "openwrt" ]] && [[ "${CURRENT_PATH}" == "openwrt" ]]; then
+  print_error "已在openwrt文件夹内,请在勿在此路径使用一键命令"
   exit 1
 fi
-if [[ "$USER" == "root" ]]; then
+if [[ ! -f "/etc/oprelyon" ]]; then
+  source /etc/os-release
+  case "${UBUNTU_CODENAME}" in
+  "bionic"|"focal"|"jammy")
+    # Nothing to do
+  ;;
+  *)
+    print_error "请使用Ubuntu 64位系统，推荐 Ubuntu 20.04 LTS 或 Ubuntu 22.04 LTS"
+    exit 1
+  ;;
+  esac
+  if [[ "$USER" == "root" ]]; then
   print_error "警告：请勿使用root用户编译，换一个普通用户吧~~"
   exit 1
 fi
 Google_Check=$(curl -I -s --connect-timeout 8 google.com -w %{http_code} | tail -n1)
-if [ ! "$Google_Check" == 301 ];then
-  print_error "提醒：编译之前请自备梯子，编译全程都需要稳定梯子~~"
-  exit 0
+if [ ! "${Google_Check}" == 301 ]; then
+  print_error "提醒：编译之前请自备梯子，编译全程都需要稳定翻墙的梯子~~"
+  exit 1
 fi
-if [[ "$(echo ${GITHUB_WORKSPACE} |grep -c 'openwrt')" -ge '1' ]]; then
-  print_error "请注意命令的执行路径,并非在openwrt文件夹内执行,如果您ubuntu或机器就叫openwrt的话,恭喜您,就是不给您用,改名吧少年!"
-  exit 0
-fi
-if [[ `ls -1 /mnt/* | grep -c "Windows"` -ge '1' ]] || [[ `ls -1 /mnt | grep -c "wsl"` -ge '1' ]]; then
-  export WSL_ubuntu="YES"
-  export PATH=$PATH:'/mnt/c/windows'
-else
-  export WSL_ubuntu="NO"
-fi
-
-
-function op_common_sh() {
-  cd ${GITHUB_WORKSPACE}
-  clear
-  echo
-  ECHORR "|*******************************************|"
-  ECHOGG "|                                           |"
-  ECHOYY "|  首次编译,可能要输入Ubuntu密码继续下一步  |"
-  ECHOGG "|                                           |"
-  ECHOYY "|              部署编译环境                 |"
-  ECHORR "|                                           |"
-  ECHOGG "|*******************************************|"
-  echo
-  if [[ `sudo grep -c "NOPASSWD:ALL" /etc/sudoers` == '0' ]]; then
+  if [[ `sudo grep -c "sudo ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers` -eq '0' ]]; then
     sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
   fi
-  clear
-  if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` == '0' ]]; then
-    sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
-    sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
-    sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
-    sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
-    sudo service ssh restart
-  fi
-  curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
-  if [[ $? -ne 0 ]];then
-    wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
-  fi
-  if [[ $? -eq 0 ]];then
-    chmod +x common.sh
-    source common.sh && Diy_update
-    rm -rf common.sh
-  else
-    ECHOR "common.sh下载失败，请检测网络后再用一键命令试试!"
-    exit 1
-  fi
-}
+fi
 
-function op_kongjian() {
-  cd ${GITHUB_WORKSPACE}
-  export Ubunkj="$(df -h |grep -v tmpfs |grep "/dev/.*" |awk '{print $4}' |awk 'NR==1' |sed 's/[0-9]//g')"
-  if [[ "${Ubunkj}" =~ (M|K) ]]; then
-    print_error "敬告：可用空间小于[ 1G ]退出编译,建议可用空间大于20G"
-    sleep 1
-    exit 1
-  fi
-  export Ubuntu_kj="$(df -h |grep -v tmpfs |grep "/dev/.*" |awk '{print $4}' |awk 'NR==1' |sed 's/.$//g')"
-  if [[ "${Ubuntu_kj}" -lt "20" ]];then
-    ECHOY "您当前系统可用空间为${Ubuntu_kj}G"
-    print_error "敬告：可用空间小于[ 20G ]编译容易出错,建议可用空间大于20G,是否继续?"
-    read -p " 直接回车退出编译，按[Y/y]回车则继续编译： " YN
-    case ${YN} in
-    [Yy]) 
-      ECHOG  "可用空间太小严重影响编译,请满天神佛保佑您成功吧！"
-    ;;
-    *)
-      ECHOY  "您已取消编译,请清理Ubuntu空间或增加硬盘容量..."
-      sleep 1
-      exit 0
-    ;;
-    esac
-  fi
-}
 
-function op_diywenjian() {
-  cd ${GITHUB_WORKSPACE}
-  if [[ ! -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
-    ECHOG "正在下载OP_DIY文件，请稍后..."
-    rm -rf bendi
-    git clone https://github.com/281677160/build-actions bendi
-    judge "OP_DIY文件下载"
-    rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
-    for X in $(find ./bendi -name ".config" |sed 's/\/.config//g'); do 
-      mv "${X}/.config" "${X}/config"
-      mkdir -p "${X}/version"
-      echo "Version=${Version}" > "${X}/version/NumBer"
-      echo "NumBer文件为检测版本用,请勿修改和删除" > "${X}/version/README.md"
-    done
-    for X in $(find ./bendi -name "settings.ini"); do
-      sed -i 's/.config/config/g' "${X}"
-      sed -i '/SSH_ACTIONS/d' "${X}"
-      sed -i '/UPLOAD_CONFIG/d' "${X}"
-      sed -i '/UPLOAD_FIRMWARE/d' "${X}"
-      sed -i '/UPLOAD_WETRANSFER/d' "${X}"
-      sed -i '/UPLOAD_RELEASE/d' "${X}"
-      sed -i '/SERVERCHAN_SCKEY/d' "${X}"
-      sed -i '/USE_CACHEWRTBUILD/d' "${X}"
-      sed -i '/REGULAR_UPDATE/d' "${X}"
-      sed -i '/BY_INFORMATION/d' "${X}"
-      echo '
-        EVERY_INQUIRY="true"            # 是否每次都询问您要不要去设置自定义文件（true=开启）（false=关闭）
-        REGULAR_UPDATE="false"            # 把自动在线更新的插件编译进固件（在本地就是玩票性质）（true=开启）（false=关闭）
-        Github="https://github.com/281677160/build-actions"     # 如果开启了‘把自动在线更新的插件编译进固件’，请设置好您的github地址
-      ' >> "${X}"
-      sed -i 's/^[ ]*//g' "${X}"
-      sed -i '/^$/d' "${X}"
-      sed -i '/REGULAR_UPDATE/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
-      sed -i '/Github/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
-    done
-    mv -f ${GITHUB_WORKSPACE}/bendi/build ${GITHUB_WORKSPACE}/OP_DIY
-    rm -rf ${GITHUB_WORKSPACE}/bendi
-  fi
-}
-
-function gengxin_opdiy() {
-  cd ${GITHUB_WORKSPACE}
-  ECHOG "正在下载上游OP_DIY文件源码，请稍后..."
-  rm -rf ${GITHUB_WORKSPACE}/bendi
-  git clone https://github.com/281677160/build-actions bendi
-  judge "OP_DIY文件下载"
-  rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/start-up
-  rm -rf ${GITHUB_WORKSPACE}/bendi/build/*/.config
-  for X in $(find ${GITHUB_WORKSPACE}/OP_DIY -name "settings.ini" |sed 's/\/settings.ini//g'); do
-    mv "${X}/diy-part.sh" "${X}/diy-part.sh.bak"
-    mv "${X}/settings.ini" "${X}/settings.ini.bak"
-  done
-  for X in $(find ./bendi -name "settings.ini" |sed 's/\/settings.ini//g'); do
-    mkdir -p "${X}/version"
-    echo "Version=${Version}" > "${X}/version/NumBer"
-    echo "NumBer文件为检测版本用,请勿修改和删除" > "${X}/version/README.md"
-  done
-  for X in $(find ./bendi -name "settings.ini"); do
-    sed -i 's/.config/config/g' "${X}"
-    sed -i '/SSH_ACTIONS/d' "${X}"
-    sed -i '/UPLOAD_CONFIG/d' "${X}"
-    sed -i '/UPLOAD_FIRMWARE/d' "${X}"
-    sed -i '/UPLOAD_WETRANSFER/d' "${X}"
-    sed -i '/UPLOAD_RELEASE/d' "${X}"
-    sed -i '/SERVERCHAN_SCKEY/d' "${X}"
-    sed -i '/USE_CACHEWRTBUILD/d' "${X}"
-    sed -i '/REGULAR_UPDATE/d' "${X}"
-    sed -i '/BY_INFORMATION/d' "${X}"
-    echo '
-      EVERY_INQUIRY="true"            # 是否每次都询问您要不要去设置自定义文件（true=开启）（false=关闭）
-      REGULAR_UPDATE="false"            # 把自动在线更新的插件编译进固件（在本地就是玩票性质）（true=开启）（false=关闭）
-      Github="https://github.com/281677160/build-actions"     # 如果开启了‘把自动在线更新的插件编译进固件’，请设置好您的github地址
-    ' >> "${X}"
-    sed -i 's/^[ ]*//g' "${X}"
-    sed -i '/^$/d' "${X}"
-    sed -i '/REGULAR_UPDATE/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
-    sed -i '/Github/d' "${GITHUB_WORKSPACE}/bendi/build/openwrt_amlogic/settings.ini"
-  done
-  if [[ -d ${GITHUB_WORKSPACE}/bendi/build ]]; then
-    cp -Rf ${GITHUB_WORKSPACE}/bendi/build/* ${GITHUB_WORKSPACE}/OP_DIY/
-    rm -rf ${GITHUB_WORKSPACE}/bendi
-    [[ -f ${GITHUB_WORKSPACE}/Clear ]] && rm -rf ${GITHUB_WORKSPACE}/Clear
-    [[ -f ${GITHUB_WORKSPACE}/amlogic_openwrt ]] && rm -rf ${GITHUB_WORKSPACE}/amlogic_openwrt
-    print_ok "同步OP_DIY完成!"
-  else
-    rm -rf ${GITHUB_WORKSPACE}/bendi
-    print_error "同步OP_DIY失败!"
-    exit 1
-  fi
-}
-
-function version_opdiy() {
-  cd ${GITHUB_WORKSPACE}
-  if [[ -d ${GITHUB_WORKSPACE}/OP_DIY ]]; then
-    A="$(grep "Version=" "$(find "${GITHUB_WORKSPACE}/OP_DIY" -name "NumBer" |awk 'END {print}' )" |sed 's/\"//g' |cut -d '=' -f2)"
-    [[ -z ${A} ]] && A="0.9"
-    B="${Version}"
-    if [[ "$A" < "$B" ]]; then
-      ECHOY "上游OP_DIY文件有更新，是否同步更新OP_DIY文件?"
-      read -p " 按[Y/y]回车同步文件，直接回车则跳过更新： " TB
-      case ${TB} in
-      [Yy]) 
-        ECHOG "正在同步OP_DIY文件，请稍后..."
-	export VerSion_opdiy="1"
-	gengxin_opdiy
-      ;;
-      *)
-        ECHOR "您已跳过更新OP_DIY文件"
-    ;;
-    esac
-    fi
-  fi
-}
-
-function bianyi_xuanxiang() {
-  cd ${GITHUB_WORKSPACE}
-  if [ -z "$(ls -A "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini" 2>/dev/null)" ]; then
-    ECHOR "错误提示：编译脚本缺少[settings.ini]名称的配置文件,请在[OP_DIY/${matrixtarget}]文件夹内补齐"
-    exit 1
-  else
-    source "$GITHUB_WORKSPACE/OP_DIY/${matrixtarget}/settings.ini"
-  fi
-  if [[ "${EVERY_INQUIRY}" == "true" ]]; then
+function Bendi_WslPath() {
+if [[ `echo "${PATH}" |grep -ic "windows"` -ge '1' ]]; then
+  if [[ ! "${WSL_ROUTEPATH}" == 'true' ]] && [[ ! "${MAKE_CONFIGURATION}" == "true" ]]; then
     clear
     echo
     echo
-    ECHOYY "请在 OP_DIY/${matrixtarget} 里面设置好自定义文件"
-    ECHOY "设置完毕后，按[W/w]回车继续编译"
-    ZDYSZ="请输入您的选择"
-    if [[ "${WSL_ubuntu}" == "YES" ]]; then
-      cd ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}
-      explorer.exe .
-      cd ${GITHUB_WORKSPACE}
-    fi
-    while :; do
-      read -p " ${ZDYSZ}： " ZDYSZU
-      case $ZDYSZU in
-      [Ww])
-        echo
-      break
-      ;;
-      *)
-        ZDYSZ="提醒：确认设置完毕后，请按[W/w]回车继续编译"
-      ;;
-      esac
-    done
+    ECHOR "您的ubuntu为Windows子系统,是否一次性解决路径问题,还是使用临时路径编译?"
+    read -t 30 -p " [输入[Y/y]回车一次性解决路径问题，任意键回车则用临时路径编译继续编译](不作处理,30秒后使用临时路径编译继续编译)： " Bendi_Wsl
+    case ${Bendi_Wsl} in
+    [Yy])
+      bash <(curl -fsSL https://raw.githubusercontent.com/281677160/bendi/main/wsl.sh)
+      if [[ `grep -c "appendWindowsPath = false" /etc/wsl.conf` == '1' ]]; then
+        ECHOG "配置已更新，请重启您的电脑"
+        exit 0
+      else
+        ECHOR "无法完成操作，请再次尝试"
+        exit 1
+      fi
+    ;;
+    *)
+      ECHOYY "正在使用临时路径解决编译问题！"
+    ;;
+    esac
   fi
-  echo
-  echo
-  tixing_op_config > /dev/null 2>&1
-  clear
-  echo
-  echo
-  echo -e "${Red} 提示${Font}：${Blue}您当前OP_DIY自定义文件夹的配置机型为[${TARGET_PROFILE}]${Font}"
-  echo
-  ECHOGG "是否需要选择机型和增删插件?"
-  read -t 30 -p " [输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " MENUu
-  case $MENUu in
-  [Yy])
-    export Menuconfig="true"
-    ECHOYY "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
+fi
+}
+
+function BENDI_Diskcapacity() {
+if [[ -d "${GITHUB_WORKSPACE}/operates" ]]; then
+  source "operates/${FOLDER_NAME}/settings.ini"
+fi
+
+Cipan_Size="$(df -hT $PWD|awk 'NR==2'|awk '{print $(3)}')"
+Cipan_Used="$(df -hT $PWD|awk 'NR==2'|awk '{print $(4)}')"
+Cipan_Avail="$(df -hT $PWD|awk 'NR==2'|awk '{print $(5)}' |cut -d 'G' -f1)"
+ECHOY "磁盘总量为[${Cipan_Size}]，已用[${Cipan_Used}]，可用[${Cipan_Avail}G]"
+if [[ "${Cipan_Avail}" -lt "20" ]];then
+  print_error "敬告：可用空间小于[ 20G ]编译容易出错,建议可用空间大于20G,是否继续?"
+  read -p " 直接回车退出编译，按[Y/y]回车则继续编译： " KJYN
+  case ${KJYN} in
+  [Yy]) 
+    ECHOG  "可用空间太小严重影响编译,请满天神佛保佑您成功吧！"
   ;;
   *)
-    export Menuconfig="false"
-    ECHORR "您已关闭选择机型和增删插件设置！"
+    ECHOY  "您已取消编译,请清理Ubuntu空间或增加硬盘容量..."
+    exit 0
   ;;
   esac
-  echo
-  echo
-  ECHOG "正在下载common.sh执行文件,请稍后..."
-  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
-  curl -L https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
-  if [[ $? -ne 0 ]];then
-    wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
-  fi
-  if [[ $? -eq 0 ]];then
-    print_ok "common.sh执行文件下载 完成"
-    chmod +x common.sh
-    source common.sh && Diy_repo_url
-    rm -fr common.sh
-  else
-    print_error "common.sh文件下载失败，请检测网络后再用一键命令试试!"
-    exit 1
-  fi
+fi
 }
 
-function op_repo_branch() {
+function Bendi_Dependent() {
+ECHOG "下载common.sh运行文件"
+cd ${GITHUB_WORKSPACE}
+sudo rm -rf common.sh
+wget -O common.sh https://raw.githubusercontent.com/281677160/common-main/main/common.sh
+if [[ $? -ne 0 ]]; then
+  curl -fsSL https://raw.githubusercontent.com/281677160/common-main/main/common.sh > common.sh
+fi
+if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
+  sudo chmod +x common.sh
+  if [[ ! -f "/etc/oprelyon" ]]; then
+   clear
+   echo
+   ECHOY "首次使用本脚本，需要先安装依赖，10秒后开始安装依赖"
+   ECHOYY "升级ubuntu插件和安装依赖，时间或者会比较长(取决于您的网络质量)，请耐心等待"
+   ECHOY "如果出现 YES OR NO 选择界面，直接按回车即可"
+   sleep 10
+   echo
+   source common.sh && Diy_update
+   if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` -eq '0' ]]; then
+      sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
+      sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
+      sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
+      sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
+      sudo service ssh restart
+    fi
+  fi
+else
+  print_error "common.sh下载失败，请检测网络后再用一键命令试试!"
+  exit 1
+fi
+}
+
+function Bendi_DiySetup() {
+cd ${GITHUB_WORKSPACE}
+if [[ ! -f "operates/${FOLDER_NAME}/settings.ini" ]]; then
+  ECHOG "下载operates自定义配置文件"
+  curl -fsSL https://raw.githubusercontent.com/281677160/common-main/main/bendi/tongbu.sh -o tongbu.sh
+  source tongbu.sh && menu3
+  judge "operates自定义配置文件下载"
+  rm -rf tongbu.sh
+  if [[ -n "${FOLDER_NAME}" ]]; then
+    source "operates/${FOLDER_NAME}/settings.ini"
+  fi
+else
+  source "operates/${FOLDER_NAME}/settings.ini"
+fi
+}
+
+function Bendi_Tongbu() {
+cd ${GITHUB_WORKSPACE}
+echo
+echo "开始同步上游operates文件"
+curl -fsSL https://raw.githubusercontent.com/281677160/common-main/main/bendi/tongbu.sh -o tongbu.sh
+source tongbu.sh && ${tongbumemu}
+if [[ $? -ne 0 ]]; then
+  rm -rf tongbu.sh
+  ECHOB "同步上游仓库失败，请检查网络"
+else
+  rm -rf tongbu.sh
+  ECHOB "同步上游仓库完成，请至operates检查设置，设置好最新配置再进行编译"
+fi
+}
+
+function Bendi_Version() {
   cd ${GITHUB_WORKSPACE}
-  echo
-  ECHOG "正在下载openwrt源码中,请耐心等候~~~"
-  rm -rf openwrt && git clone -b "$REPO_BRANCH" --single-branch "$REPO_URL" openwrt
-  judge "${matrixtarget}源码下载"
-  rm -rf ${HOME_PATH}/README.* > /dev/null 2>&1
-  echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
-}
-
-function op_jiaoben() {
-  ECHOG "正在下载额外扩展文件，请稍后..."
-  if [[ ! -d "${HOME_PATH}/build" ]]; then
-    cp -Rf ${GITHUB_WORKSPACE}/OP_DIY ${HOME_PATH}/build
-  else
-    cp -Rf ${GITHUB_WORKSPACE}/OP_DIY/* ${HOME_PATH}/build/
-  fi
-  [[ "${ERCI_BYGJ}" == "1" ]] && sed -i '/-rl/d' "${BUILD_PATH}/${DIY_PART_SH}"
-  rm -rf ${HOME_PATH}/build/common && git clone https://github.com/281677160/common ${HOME_PATH}/build/common
-  judge "额外扩展文件下载"
-  cp -Rf ${LOCAL_Build}/common/*.sh ${BUILD_PATH}/
-  chmod -R +x ${BUILD_PATH}
-  source "${BUILD_PATH}/common.sh" && Diy_settings
-  source "${BUILD_PATH}/common.sh" && Bendi_variable
-  rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
-  rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
-  echo "weiwan" > "${LOCAL_Build}/weiwan"
-}
-
-function op_diy_zdy() {
-  ECHOG "正在下载插件包和更新feeds,请耐心等候~~~"
-  cd ${HOME_PATH}
-  source "${BUILD_PATH}/common.sh" && Diy_menu
-}
-
-function op_diy_ip() {
-  cd ${HOME_PATH}
-  export IP="$(grep 'network.lan.ipaddr=' ${BUILD_PATH}/$DIY_PART_SH |cut -f1 -d# |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
-  [[ -z "${IP}" ]] && export IP="$(grep 'ipaddr:' ${HOME_PATH}/package/base-files/files/bin/config_generate |egrep -o "[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+")"
-  echo "${Mark_Core}" > ${HOME_PATH}/${Mark_Core}
-  ECHOY "您的后台IP地址为：$IP"
-  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    export Github=${Github}
-    export Warehouse="${Github##*com/}"
-    export Author="$(echo "${Github}" |cut -d "/" -f4)"
-    export Library="$(echo "${Github}" |cut -d "/" -f5)"
-    ECHOYY "您的Github地址为：$Github"
-    echo
-  fi
-  sleep 2
-}
-
-function op_menuconfig() {
-  cd ${HOME_PATH}
-  if [[ "${Menuconfig}" == "true" ]]; then
-    make menuconfig
-    if [[ $? -ne 0 ]]; then
-      ECHOY "SSH工具窗口分辨率太小，无法弹出设置机型或插件的窗口"
-      ECHOG "请调整SSH工具窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
-      XUANMA="请输入您的选择"
-      while :; do
-      read -p " ${XUANMA}：" Make
-      case $Make in
-      [Yy])
-	op_menuconfig
-	break
-      ;;
-      [Nn])
-	exit 1
-	break
+  if [[ -d "operates" ]]; then
+    A="$(grep "BENDI_VERSION=" "operates/${FOLDER_NAME}/relevance/bendi_version" |grep -Eo "[0-9]+\.[0-9]+")"
+    [[ -z ${A} ]] && A="0.9"
+    B="${BENDI_VERSION}"
+    if [[ `awk -v num1=${A} -v num2=${B} 'BEGIN{print(num1<num2)?"0":"1"}'` -eq '0' ]]; then
+      clear
+      echo
+      echo
+      ECHOY "上游operates文件有更新，是否同步更新operates文件?"
+      read -p " 按[Y/y]回车同步文件，任意键回车则跳过更新： " TB
+      case ${TB} in
+      [Yy]) 
+        ECHOG "正在同步operates文件，请稍后..."
+        export tongbumemu="menu2"
+        Bendi_Tongbu
       ;;
       *)
-        XUANMA="输入错误,请输入[Y/n]"
-      ;;
-      esac
-      done
-    fi
-  fi
-}
-
-function make_defconfig() {
-  ECHOG "正在生成配置文件，请稍后..."
-  cd ${HOME_PATH}
-  source "${BUILD_PATH}/common.sh" && Diy_prevent
-  if [[ -f ${HOME_PATH}/EXT4 ]] || [[ -f ${HOME_PATH}/Chajianlibiao ]]; then
-    read -t 30 -p " [如需重新编译请按输入[ Y/y ]回车确认，直接回车则为否](不作处理,30秒自动跳过)： " CTCL
-    case $CTCL in
-    [Yy])
-      rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4}
-      sleep 1
-      exit 1
-    ;;
-    *)
-      rm -rf ${HOME_PATH}/{CHONGTU,Chajianlibiao,EXT4}
-      ECHOG "继续编译中...！"
+        ECHOR "您已跳过更新operates文件"
     ;;
     esac
-  fi
-  source "${BUILD_PATH}/common.sh" && Diy_menu2
-
-}
-
-function tixing_op_config() {
-  export TARGET_BOARD="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}")"
-  export TARGET_SUBTARGET="$(awk -F '[="]+' '/TARGET_SUBTARGET/{print $2}' "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}")"
-  if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}"` -eq '1' ]]; then
-    export TARGET_PROFILE="x86-64"
-  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}"` == '0' ]]; then
-    export TARGET_PROFILE="x86_32"
-  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}"` -eq '1' ]]; then
-    export TARGET_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" "${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
-  else
-    export TARGET_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE})"
-  fi
-  export FIRMWARE_PATH="$HOME_PATH/bin/targets/$TARGET_BOARD/$TARGET_SUBTARGET"
-  if [[ -z "${TARGET_PROFILE}" ]]; then
-    if [[ -f ${BUILD_PATH}/.config ]]; then
-      cp -Rf ${BUILD_PATH}/.config ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
-      tixing_op_config
-    else
-      TARGET_PROFILE="OP_DIY/${matrixtarget}没有${CONFIG_FILE}文件,或者${CONFIG_FILE}文件内容为空"
     fi
   fi
 }
 
-function chenggong_op_config() {
-  if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${BUILD_PATH}/.config"` -eq '1' ]]; then
-    export CG_PROFILE="x86-64"
-  elif [[ `grep -c "CONFIG_TARGET_x86=y" ${BUILD_PATH}/.config` == '1' ]] && [[ `grep -c "CONFIG_TARGET_x86_64=y" "${BUILD_PATH}/.config"` == '0' ]]; then
-    export CG_PROFILE="x86_32"
-  elif [[ `grep -c "CONFIG_TARGET.*DEVICE.*=y" "${BUILD_PATH}/.config"` -eq '1' ]]; then
-    export CG_PROFILE="$(egrep -o "CONFIG_TARGET.*DEVICE.*=y" "${BUILD_PATH}/.config" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+function github_deletefile() {
+ECHOY "删除operates文件夹里面的机型文件夹"
+ls -1 operates |awk '{print "  " $0}'
+echo
+ECHOGG "请输入您要删除的文件夹名称,多个文件名的话请用英文的逗号分隔"
+while :; do
+read -p " 请输入：" aa
+if [[ -z "${aa}" ]]; then
+  ECHOR "文件名不能为空"
+else
+  echo
+  echo " 删除${aa}"
+  github_deletefile2
+  exit 0
+fi
+done
+}
+function github_deletefile2() {
+bb=(${aa//,/ })
+for cc in ${bb[@]}; do
+  if [[ -d "operates/${cc}" ]]; then
+    rm -rf operates/${cc}
+    ECHOY "已删除[${cc}]文件夹"
   else
-    export CG_PROFILE="$(awk -F '[="]+' '/TARGET_BOARD/{print $2}' ${BUILD_PATH}/.config)"
+    ECHOR "[${cc}]文件夹不存在"
   fi
-  [[ -z "${CG_PROFILE}" ]] && CG_PROFILE="未知"
+done
+ECHOBB "10秒后返回主菜单"
+sleep 1
+seconds=9
+while [ $seconds -gt 0 ];do
+  echo -n " ${seconds}"
+  sleep 1
+  seconds=$((${seconds} - 1))
+  echo -ne "\r   \r"
+done
+BENDI_WENJIAN
 }
 
-function op_upgrade2() {
-  cd ${HOME_PATH}
-  export Upgrade_Date="$(date +%Y%m%d%H%M)"
-  if [ "${REGULAR_UPDATE}" == "true" ]; then
-    source ${BUILD_PATH}/upgrade.sh && Diy_Part2
-  fi
+function github_establish() {
+ECHOY "在operates文件夹里面创建机型文件夹"
+ls -1 operates |awk '{print "  " $0}'
+echo
+ECHOGG "请输入上面某一文件夹名称,为您要创建的机型文件夹当蓝本"
+while :; do
+read -p " 请输入：" aa
+if [[ -z "${aa}" ]]; then
+  ECHOR "文件名不能为空"
+elif [[ ! -d "operates/${aa}" ]]; then
+  ECHOR "operates文件夹里${aa}不存在"
+else
+  echo
+  echo " 以${aa}为蓝本创建文件夹"
+  github_establish2
+  exit 0
+fi
+done
+}
+function github_establish2() {
+echo
+ECHOGG "请输入您要创建的机型文件夹名称"
+while :; do
+read -p " 请输入：" bb
+if [[ -z "${bb}" ]]; then
+  ECHOR "文件名不能为空"
+elif [[ -d "operates/${bb}" ]]; then
+  ECHOR "operates文件夹里面,已存在${bb}"
+else
+  echo
+  echo " 创建${bb}文件夹"
+  github_establish3
+  exit 0
+fi
+done
+}
+function github_establish3() {
+cp -Rf operates/"${aa}" operates/"${bb}"
+ECHOY "[${bb}]文件夹创建完成"
+ECHOBB "10秒后返回主菜单"
+sleep 1
+seconds=9
+while [ $seconds -gt 0 ];do
+  echo -n " ${seconds}"
+  sleep 1
+  seconds=$((${seconds} - 1))
+  echo -ne "\r   \r"
+done
+BENDI_WENJIAN
 }
 
-function op_download() {
-  cd ${HOME_PATH}
-  ECHOG "下载DL文件，请耐心等候..."
-  rm -rf ${HOME_PATH}/build.log
-  make -j8 download |tee ${HOME_PATH}/build.log
-  find dl -size -1024c -exec ls -l {} \;
-  find dl -size -1024c -exec rm -f {} \;
-  if [[ `grep -c "make with -j1 V=s or V=sc" ${HOME_PATH}/build.log` == '0' ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build.log` == '0' ]]; then
-    print_ok "DL文件下载成功"
-  else
-    clear
+function Bendi_EveryInquiry() {
+if [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
+  clear
+  echo
+  echo
+  ECHOYY "请在 operates/${FOLDER_NAME} 里面设置好自定义文件"
+  ECHOY "设置完毕后，按[W/w]回车继续编译"
+  ZDYSZ="请输入您的选择"
+  while :; do
+  read -p " ${ZDYSZ}： " ZDYSZU
+  case $ZDYSZU in
+  [Ww])
     echo
-    print_error "下载DL失败，更换节点后再尝试下载？"
-    QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或输入[N/n]回车,退出编译"
+  break
+  ;;
+  *)
+    ZDYSZ="提醒：确认设置完毕后，请按[W/w]回车继续编译"
+  ;;
+  esac
+  done
+fi
+
+clear
+echo
+echo
+if [[ "${MAKE_CONFIGURATION}" == "true" ]]; then
+  Menuconfig_Config="true"
+  ECHOG "请耐心等待程序运行至窗口弹出进行机型和插件配置!"
+else
+  ECHOGG "是否需要选择机型和增删插件?"
+  read -t 30 -p " [输入[ Y/y ]回车确认，任意键则为否](不作处理,30秒自动跳过)： " Bendi_Diy
+  case ${Bendi_Diy} in
+  [Yy])
+    Menuconfig_Config="true"
+    ECHOY "您执行机型和增删插件命令,请耐心等待程序运行至窗口弹出进行机型和插件配置!"
+  ;;
+  *)
+    Menuconfig_Config="false"
+    ECHOR "您已关闭选择机型和增删插件设置！"
+  ;;
+  esac
+fi
+}
+
+function Bendi_Variable() {
+cd ${GITHUB_WORKSPACE}
+source common.sh && Diy_variable
+judge "变量读取"
+source ${GITHUB_ENV}
+}
+
+function Bendi_MainProgram() {
+ECHOGG "下载扩展文件"
+cd ${GITHUB_WORKSPACE}
+source "operates/${FOLDER_NAME}/settings.ini"
+echo "WSL_ROUTEPATH=${WSL_ROUTEPATH}" >> ${GITHUB_ENV}
+source ${GITHUB_ENV}
+sudo rm -rf build && cp -Rf operates build
+git clone -b main --depth 1 https://github.com/281677160/common-main build/common
+judge "扩展文件下载"
+cp -Rf build/common/common.sh build/${FOLDER_NAME}/common.sh
+cp -Rf build/common/upgrade.sh build/${FOLDER_NAME}/upgrade.sh
+cp -Rf ${GITHUB_WORKSPACE}/build/common/*.sh build/${FOLDER_NAME}/
+sudo chmod -R +x build
+
+ECHOGG "检测是否缺少文件"
+source common.sh && Diy_settings
+[[ -f "${DEFAULT_PATH}" ]] && source common.sh && Diy_wenjian
+echo
+}
+
+function Bendi_Download() {
+ECHOGG "下载${SOURCE_CODE}-${LUCI_EDITION}源码"
+cd ${GITHUB_WORKSPACE}
+sudo rm -rf ${HOME_PATH}
+git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
+judge "源码下载"
+cd ${HOME_PATH}
+mkdir -p LICENSES/doc
+source ${GITHUB_WORKSPACE}/build/${FOLDER_NAME}/common.sh && Diy_checkout
+mv -f ${GITHUB_WORKSPACE}/build ${HOME_PATH}/build
+}
+
+function Bendi_Restore() {
+rm -rf ${HOME_PATH}/build
+mv -f ${GITHUB_WORKSPACE}/build ${HOME_PATH}/build
+if [[ ! -f "${BUILD_PATH}/common.sh" ]]; then
+  cp -Rf ${HOME_PATH}/build/common/common.sh ${BUILD_PATH}/common.sh
+  cp -Rf ${HOME_PATH}/build/commonupgrade.sh ${BUILD_PATH}/upgrade.sh
+  cp -rf ${HOME_PATH}/build/common/*.sh ${BUILD_PATH}/
+else
+  source ${BUILD_PATH}/common.sh && Diy_distrib
+fi
+sed -i '/-rl \.\//d' "${BUILD_PATH}/${DIY_PART_SH}"
+}
+
+function Bendi_SourceClean() {
+ECHOGG "源码微调"
+cd ${HOME_PATH}
+source ${GITHUB_ENV}
+source ${BUILD_PATH}/common.sh && Diy_menu3
+judge "源码微调"
+echo
+}
+
+function Bendi_UpdateSource() {
+ECHOGG "读取自定义文件"
+cd ${HOME_PATH}
+source ${BUILD_PATH}/$DIY_PART_SH
+source ${BUILD_PATH}/common.sh && Diy_Publicarea
+judge "读取自定义文件"
+ECHOGG "加载files,语言,更新源"
+source ${BUILD_PATH}/common.sh && Diy_menu4
+judge "加载files,语言,更新源"
+}
+
+function Bendi_Menuconfig() {
+cd ${HOME_PATH}
+if [[ "${Menuconfig_Config}" == "true" ]]; then
+  ECHOGG "配置机型，插件等..."
+  make menuconfig
+  if [[ $? -ne 0 ]]; then
+    ECHOY "SSH工具窗口分辨率太小，无法弹出设置机型或插件的窗口"
+    ECHOG "请调整SSH工具窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
+    XUANMA="请输入您的选择"
     while :; do
-      read -p " [${QLMEUN}]： " XZDLE
-      case $XZDLE in
-      [Yy])
-        op_download
-      break
-      ;;
-      [Nn])
-        ECHOR "退出编译程序!"
-        sleep 2
-        exit 1
-       break
-       ;;
-       *)
-         QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或现在输入[N/n]回车,退出编译"
-       ;;
-       esac
+    read -p " ${XUANMA}：" Bendi_Menu
+    case ${Bendi_Menu} in
+    [Yy])
+      Bendi_Menuconfig
+    break
+    ;;
+    [Nn])
+      exit 1
+    break
+    ;;
+    *)
+      XUANMA="输入错误,请输入[Y/n]"
+    ;;
+    esac
     done
   fi
+fi
 }
 
-function op_cpuxinghao() {
-  cd ${HOME_PATH}
-  rm -rf build.log
-  Model_Name="$(cat /proc/cpuinfo |grep 'model name' |awk 'END {print}' |cut -f2 -d: |sed 's/^[ ]*//g')"
-  Cpu_Cores="$(cat /proc/cpuinfo | grep 'cpu cores' |awk 'END {print}' | cut -f2 -d: | sed 's/^[ ]*//g')"
+function Make_Menuconfig() {
+if [[ "${MAKE_CONFIGURATION}" == "true" ]]; then
+  make defconfig
+  if [[ ! -d "${GITHUB_WORKSPACE}/config" ]]; then
+    mkdir -p ${GITHUB_WORKSPACE}/config
+  else
+    rm -rf ${GITHUB_WORKSPACE}/config/*
+  fi
+  source ${BUILD_PATH}/common.sh && Make_defconfig
+  source ${GITHUB_ENV}
+  difffonfig="${FOLDER_NAME}-${LUCI_EDITION}-${TARGET_PROFILE}.config.txt"
+  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/config/${difffonfig}
+  echo "
+  SUCCESS_FAILED="makeconfig"
+  FOLDER_NAME2="${FOLDER_NAME}"
+  REPO_BRANCH2="${REPO_BRANCH}"
+  LUCI_EDITION2="${LUCI_EDITION}"
+  TARGET_PROFILE2="${TARGET_PROFILE}"
+  SOURCE2="${SOURCE}"
+  " > ${HOME_PATH}/LICENSES/doc/key-buildzu
+  sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
+  sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
+  ECHOG "配置已经存入${GITHUB_WORKSPACE}/config文件夹中"
+  exit 0
+fi
+}
+
+function Bendi_Configuration() {
+ECHOGG "检查配置,生成配置"
+cd ${HOME_PATH}
+source ${GITHUB_ENV}
+source ${BUILD_PATH}/common.sh && Diy_menu5
+judge "检测配置,生成配置"
+rm -rf ${GITHUB_WORKSPACE}/config
+}
+
+function Bendi_ErrorMessage() {
+cd ${HOME_PATH}
+source ${GITHUB_ENV}
+if [[ -s "${HOME_PATH}/CHONGTU" ]]; then
+  echo
+  TIME b "		错误提示"
+  echo
+  sudo chmod +x ${HOME_PATH}/CHONGTU
+  source ${HOME_PATH}/CHONGTU
+  echo
+  read -t 30 -p " [如需重新编译请输入[ Y/y ]按回车，任意键则为继续编译](不作处理话,30后秒继续编译)： " Bendi_Error
+  case ${Bendi_Error} in
+  [Yy])
+     exit 1
+  ;;
+  *)
+    ECHOG "继续编译中..."
+  ;;
+  esac
+fi
+rm -rf ${HOME_PATH}/CHONGTU
+}
+
+function Bendi_DownloadDLFile() {
+ECHOGG "下载DL文件，请耐心等候..."
+echo "
+SUCCESS_FAILED="xzdl"
+FOLDER_NAME2="${FOLDER_NAME}"
+REPO_BRANCH2="${REPO_BRANCH}"
+LUCI_EDITION2="${LUCI_EDITION}"
+TARGET_PROFILE2="${TARGET_PROFILE}"
+SOURCE2="${SOURCE}"
+" > ${HOME_PATH}/LICENSES/doc/key-buildzu
+sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
+sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
+cd ${HOME_PATH}
+make defconfig
+[[ -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
+make -j8 download |tee ${HOME_PATH}/build_logo/build.log
+
+if [[ `grep -c "make with -j1 V=s or V=sc" ${HOME_PATH}/build_logo/build.log` -eq '0' ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
+  print_ok "DL文件下载成功"
+else
   clear
-  ECHOY "您的CPU型号为[ ${Model_Name} ]"
-  ECHOY "在Ubuntu使用核心数为[ ${Cpu_Cores} ],线程数为[ $(nproc) ]"
-  ECHOY "使用线程数越大，就适当的多分配大一点内存给Ubuntu使用，16线程或以上的最好分配6G或以上内存"
-  if [[ ${matrixtarget} == "openwrt_amlogic" ]]; then
-    ECHOG "使用[ ${matrixtarget} ]文件夹，编译[ N1和晶晨系列盒子专用固件 ]"
-  else
-    ECHOG "使用[ ${matrixtarget} ]文件夹，编译[ ${TARGET_PROFILE} ]"
-  fi
-  if [[ "$(nproc)" == "1" ]]; then
-    ECHOY "正在使用[$(nproc)线程]编译固件,预计要[3.5]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ (2|3) ]]; then
-    ECHOY "正在使用[$(nproc)线程]编译固件,预计要[3]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ (4|5) ]]; then
-    ECHOY "正在使用[$(nproc)线程]编译固件,预计要[2.5]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ (6|7) ]]; then
-    ECHOY "正在使用[$(nproc)线程]编译固件,预计要[2]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ (8|9) ]]; then
-    ECHOY "正在使用[$(nproc)线程]编译固件,预计要[1.5]小时左右,请耐心等待..."
-  elif [[ "$(nproc)" =~ (10|11|12|13|14|15) ]]; then
-    ECHOY "正在使用[$(nproc)线程]编译固件,预计要[1]小时左右,请耐心等待..."
-  else
-    ECHOY "您的CPU线程数为16线程或超过16线程，强制使用16线程编译，您在Ubuntu内分配的内存最好是6G或以上的"
-  fi
-  sleep 4
-}
-
-function op_make() {
-  cd ${HOME_PATH}
-  rm -rf build.log
-  export START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
-  ECHOG "正在编译固件，请耐心等待..."
-  [[ -d "${FIRMWARE_PATH}" ]] && rm -fr ${FIRMWARE_PATH}/*
-  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/${CONFIG_FILE}
-  if [[ "${WSL_ubuntu}" == "YES" ]]; then
-    export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-  fi
-  if [[ "$(nproc)" -ge "12" ]];then
-    make -j$(nproc)
-  else
-    make -j16
-  fi
-  if [[ "${WSL_ubuntu}" == "YES" ]]; then
-    export PATH=$PATH:'/mnt/c/windows'
-  fi
-  if [[ `ls -a ${FIRMWARE_PATH} | grep -c "${TARGET_BOARD}"` == '0' ]]; then
-    rm -rf ${LOCAL_Build}/chenggong > /dev/null 2>&1
-    rm -rf ${LOCAL_Build}/weiwan > /dev/null 2>&1
-    echo "shibai" >${LOCAL_Build}/shibai
-    if [[ ${Tishi} == "1" ]]; then
-      rm -rf ${HOME_PATH}/dl
-      print_error "编译失败，因是二次编译，已为您删除了DL文件，请再次尝试编译试试~~!"
-      sleep 1
-      exit 1
-    else
-      print_error "编译失败~~!"
-      sleep 1
-      exit 1
-    fi
-  else
-    rm -rf ${LOCAL_Build}/shibai > /dev/null 2>&1
-    rm -rf ${LOCAL_Build}/weiwan > /dev/null 2>&1
-    echo "chenggong" >${LOCAL_Build}/chenggong
-    ./scripts/diffconfig.sh > ${BUILD_PATH}/.config
-    export GUJIAN_TIME=`date +'%Y%m%d%H%M'`
-  fi
-}
-
-function op_upgrade3() {
-  cd ${HOME_PATH}
-  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    [[ -d "${HOME_PATH}/bin/Firmware" ]] && rm -fr ${HOME_PATH}/bin/Firmware/*
-    [[ -d "${HOME_PATH}/upgrade" ]] && rm -rf ${HOME_PATH}/upgrade
-    cp -Rf ${FIRMWARE_PATH} ${HOME_PATH}/upgrade
-    source ${BUILD_PATH}/upgrade.sh && Diy_Part3
-  fi
-  if [[ `ls -a ${HOME_PATH}/bin/Firmware | grep -c "${Upgrade_Date}"` -ge '1' ]]; then
-    print_ok "加入‘定时升级插件的固件’操作完成"
-    export dsgx="加入‘定时升级插件的固件’已经放入[bin/Firmware]文件夹中"
-  else
-    export dsgx="加入‘定时升级固件插件’的固件失败，您的机型或者不支持定时更新!"
-  fi
-  cd ${FIRMWARE_PATH}
-  mkdir -p ipk
-  cp -rf $(find $HOME_PATH/bin/packages/ -type f -name "*.ipk") ipk/ && sync
-  sudo tar -czf ipk.tar.gz ipk && sudo rm -rf ipk && sync
-  if [[ `ls -1 | grep -c "immortalwrt"` -ge '1' ]]; then
-    rename -v "s/^immortalwrt/openwrt/" *
-  fi
-  for X in $(cat "${CLEAR_PATH}" |cut -d '-' -f4- |sed '/^$/d' |sed 's/ //g' |sed 's/^/*/g' |sed 's/$/*/g'); do
-    rm -rf "${X}"
+  echo
+  print_error "下载DL失败，更换节点后再尝试下载？"
+  QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或输入[N/n]回车,退出编译"
+  while :; do
+    read -p " [${QLMEUN}]： " Bendi_DownloadDL
+    case ${Bendi_DownloadDL} in
+  [Yy])
+    Bendi_DownloadDLFile
+  break
+  ;;
+  [Nn])
+    ECHOR "退出编译程序!"
+    sleep 1
+    exit 1
+  break
+  ;;
+  *)
+    QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或现在输入[N/n]回车,退出编译"
+  ;;
+  esac
   done
-  rename -v "s/^openwrt/${SOURCE}-${GUJIAN_TIME}/" * > /dev/null 2>&1
-  rename -v "s/sha256sums/${SOURCE}-${GUJIAN_TIME}-sha256sums/" * > /dev/null 2>&1
-  cd ${HOME_PATH}
+fi
 }
 
-function op_end() {
-  clear
-  echo
-  echo
-  cd ${HOME_PATH}
-  if [[ ${matrixtarget} == "openwrt_amlogic" ]]; then
-    print_ok "使用[ ${matrixtarget} ]文件夹，编译[ N1和晶晨系列盒子专用固件 ]顺利编译完成~~~"
+function Bendi_Compile() {
+cd ${HOME_PATH}
+source ${GITHUB_ENV}
+START_TIME=`date -d "$(date +'%Y-%m-%d %H:%M:%S')" +%s`
+Model_Name="$(cat /proc/cpuinfo |grep 'model name' |awk 'END {print}' |cut -f2 -d: |sed 's/^[ ]*//g')"
+Cpu_Cores="$(cat /proc/cpuinfo | grep 'cpu cores' |awk 'END {print}' | cut -f2 -d: | sed 's/^[ ]*//g')"
+RAM_total="$(free -h |awk 'NR==2' |awk '{print $(2)}' |sed 's/.$//')"
+RAM_available="$(free -h |awk 'NR==2' |awk '{print $(7)}' |sed 's/.$//')"
+
+echo
+ECHOG "您的机器CPU型号为[ ${Model_Name} ]"
+ECHOGG "在此ubuntu分配核心数为[ ${Cpu_Cores} ],线程数为[ $(nproc) ]"
+ECHOG "在此ubuntu分配内存为[ ${RAM_total} ],现剩余内存为[ ${RAM_available} ]"
+echo
+
+[[ -f "${GITHUB_WORKSPACE}/common.sh" ]] && rm -rf ${GITHUB_WORKSPACE}/common.sh
+[[ -d "${FIRMWARE_PATH}" ]] && sudo rm -rf ${FIRMWARE_PATH}
+if [[ "$(nproc)" -le "12" ]];then
+  ECHOY "即将使用$(nproc)线程进行编译固件"
+  sleep 8
+  if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
+    ECHOG "WSL临时路径编译中"
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make V=s -j$(nproc) |tee ${HOME_PATH}/build_logo/build.log
   else
-    print_ok "使用[ ${matrixtarget} ]文件夹，编译[ ${TARGET_PROFILE} ]顺利编译完成~~~"
+     make V=s -j$(nproc) |tee ${HOME_PATH}/build_logo/build.log
   fi
-  ECHOY "后台地址: ${IP}"
-  ECHOY "用户名: root"
-  ECHOY "固件已经存入${TARGET_OPENWRT}文件夹中"
-  [[ "${REGULAR_UPDATE}" == "true" ]] && ECHOY "${dsgx}"
-  ECHOR "提示：再次输入编译命令可进行二次编译"
-  if [[ "${WSL_ubuntu}" == "YES" ]]; then
-    if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-      cd bin/Firmware
-      explorer.exe .
-      cd ${HOME_PATH}
+else
+  ECHOGG "您的CPU线程超过或等于16线程，强制使用16线程进行编译固件"
+  sleep 8
+  if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
+    ECHO "WSL临时路径编译中"
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make V=s -j16 |tee ${HOME_PATH}/build_logo/build.log
+  else
+     make V=s -16 |tee ${HOME_PATH}/build_logo/build.log
+  fi
+fi
+
+if [[ -f "${FIRMWARE_PATH}" ]] && [[ `ls -1 "${FIRMWARE_PATH}" | grep -c "immortalwrt"` -ge '1' ]]; then
+  rename -v "s/^immortalwrt/openwrt/" ${FIRMWARE_PATH}/*
+fi
+
+sleep 3
+if [[ `ls -1 "${FIRMWARE_PATH}" |grep -c "${TARGET_BOARD}"` -eq '0' ]]; then
+  print_error "编译失败~~!"
+  ECHOY "在 openwrt/build_logo/build.log 可查看编译日志,日志文件比较大,拖动到电脑查看比较方便"
+  echo "
+  SUCCESS_FAILED="fail"
+  FOLDER_NAME2="${FOLDER_NAME}"
+  REPO_BRANCH2="${REPO_BRANCH}"
+  LUCI_EDITION2="${LUCI_EDITION}"
+  TARGET_PROFILE2="${TARGET_PROFILE}"
+  SOURCE2="${SOURCE}"
+  " > ${HOME_PATH}/LICENSES/doc/key-buildzu
+  sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
+  sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
+  exit 1
+else
+  cp -Rf ${FIRMWARE_PATH}/config.buildinfo ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
+  echo "
+  SUCCESS_FAILED="success"
+  FOLDER_NAME2="${FOLDER_NAME}"
+  REPO_BRANCH2="${REPO_BRANCH}"
+  LUCI_EDITION2="${LUCI_EDITION}"
+  TARGET_PROFILE2="${TARGET_PROFILE}"
+  SOURCE2="${SOURCE}"
+  " > ${HOME_PATH}/LICENSES/doc/key-buildzu
+  sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
+  sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
+fi
+}
+
+
+function Bendi_PackageAmlogic() {
+if [[ ${PACKAGING_FIRMWARE} == "true" ]]; then
+  source ${BUILD_PATH}/common.sh && Package_amlogic
+fi
+}
+
+function Bendi_Arrangement() {
+ECHOGG "整理固件"
+cd ${HOME_PATH}
+source ${GITHUB_ENV}
+source ${BUILD_PATH}/common.sh && Diy_firmware
+judge "整理固件"
+}
+
+function Bendi_shouweigongzhong() {
+if [[ "${SOURCE_CODE}" == "AMLOGIC" ]]; then
+  print_ok "[ N1或晶晨系列盒子专用固件 ]顺利编译完成~~~"
+else
+  print_ok "[ ${FOLDER_NAME}-${LUCI_EDITION2}-${TARGET_PROFILE} ]顺利编译完成~~~"
+fi
+ECHOGG "已为您把配置文件替换到operates/${FOLDER_NAME}/${CONFIG_FILE}里"
+ECHOY "编译日期：$(date +'%Y年%m月%d号')"
+END_TIME=`date -d "$(date +'%Y-%m-%d %H:%M:%S')" +%s`
+SECONDS=$((END_TIME-START_TIME))
+HOUR=$(( $SECONDS/3600 ))
+MIN=$(( ($SECONDS-${HOUR}*3600)/60 ))
+SEC=$(( $SECONDS-${HOUR}*3600-${MIN}*60 ))
+if [[ "${HOUR}" == "0" ]]; then
+  ECHOGG "编译总计用时 ${MIN}分${SEC}秒"
+else
+  ECHOGG "编译总计用时 ${HOUR}时${MIN}分${SEC}秒"
+fi
+ECHOR "提示：再次输入编译命令可进行二次编译"
+echo
+}
+
+function Bendi_Packaging() {
+  cd ${GITHUB_WORKSPACE}
+  export FIRMWARE_PATH="${HOME_PATH}/bin/targets/armvirt/64"
+  if [[ -d "amlogic" ]]; then
+    t1="$(cat amlogic/start_time)"
+    END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
+    t2=`date -d "$END_TIME" +%s`
+    SECONDS=$((t2-t1))
+    HOUR=$(( $SECONDS/3600 ))
+    if [[ "${HOUR}" -lt "12" ]]; then
+      sudo rm -rf amlogic/out/*
+      echo "amlogic"
     else
-      cd ${FIRMWARE_PATH}
-      explorer.exe .
-      cd ${HOME_PATH}
+      sudo rm -rf amlogic
+      if [[ -d "amlogic" ]]; then
+        ECHOR "已存在的amlogic文件夹无法删除，请重启系统再来尝试"
+        exit 1
+      else
+        ECHOY "正在下载打包所需的程序,请耐心等候~~~"
+        git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
+        judge "打包程序下载1"
+        curl -fsSL https://github.com/281677160/common-main/releases/download/API/stable.api -o amlogic/stable.api
+        if [[ $? -ne 0 ]]; then
+          curl -fsSL https://github.com/281677160/common-main/releases/download/API/stable.api -o amlogic/stable.api
+        fi
+        if [[ `grep -c "name" amlogic/stable.api` -eq '0' ]]; then
+          print_error "上游仓库amlogic内核版本API下载失败!"
+          exit 1
+        fi
+      fi
+    fi
+  else
+    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
+    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
+    judge "打包程序下载1"
+    curl -fsSL https://github.com/281677160/common-main/releases/download/API/stable.api -o amlogic/stable.api
+    if [[ $? -ne 0 ]]; then
+      curl -fsSL https://github.com/281677160/common-main/releases/download/API/stable.api -o amlogic/stable.api
+    fi
+    if [[ `grep -c "name" amlogic/stable.api` -eq '0' ]]; then
+      print_error "上游仓库amlogic内核版本API下载失败!"
+      exit 1
     fi
   fi
-  ECHOY "编译日期：$(date +'%Y年%m月%d号')"
-  export END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
-  START_SECONDS=$(date --date="$START_TIME" +%s)
-  END_SECONDS=$(date --date="$END_TIME" +%s)
-  SECONDS=$((END_SECONDS-START_SECONDS))
-  HOUR=$(( $SECONDS/3600 ))
-  MIN=$(( ($SECONDS-${HOUR}*3600)/60 ))
-  SEC=$(( $SECONDS-${HOUR}*3600-${MIN}*60 ))
-  if [[ "${HOUR}" == "0" ]]; then
-    ECHOG "编译总计用时 ${MIN}分${SEC}秒"
-  else
-    ECHOG "编译总计用时 ${HOUR}时${MIN}分${SEC}秒"
-  fi
-}
-
-function op_amlogic() {
-  cd ${GITHUB_WORKSPACE}
-  if [[ `ls -1 "${HOME_PATH}/bin/targets/armvirt/64" | grep -c "tar.gz"` == '0' ]]; then
-    mkdir -p "${HOME_PATH}/bin/targets/armvirt/64"
+  if [[ ! -d "${FIRMWARE_PATH}" ]] || [[ `ls -1 "${FIRMWARE_PATH}" |grep -Eoc "*armvirt-64-default-rootfs.tar.gz"` -eq '0' ]]; then
+    mkdir -p "${FIRMWARE_PATH}"
     clear
-    echo
-    echo
     ECHOR "没发现 openwrt/bin/targets/armvirt/64 文件夹里存在.tar.gz固件，已为你创建了文件夹"
     ECHORR "请用WinSCP工具将\"openwrt-armvirt-64-default-rootfs.tar.gz\"固件存入文件夹中"
-    ECHOY "提醒：Windows的WSL系统的话，千万别直接打开文件夹来存放固件，很容易出错的，要用WinSCP工具或SSH工具自带的文件管理器"
-    echo
+    if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
+      ECHOY "提醒：Windows的WSL系统的话，千万别直接打开文件夹来存放固件，很容易出错的，要用WinSCP工具或SSH工具自带的文件管理器"
+    fi
     exit 1
   fi
-  if [[ -d "${GITHUB_WORKSPACE}/amlogic" ]]; then
-    ECHOY "首次使用请输入ubuntu密码进行下载打包所需的程序!"
-    if [[ `sudo grep -c "NOPASSWD:ALL" /etc/sudoers` == '0' ]]; then
-      sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
-    fi
-    clear
-    echo
-    sudo rm -rf "${GITHUB_WORKSPACE}/amlogic"
-    if [[ -d "${GITHUB_WORKSPACE}/amlogic" ]]; then
-      ECHOR "已存在的amlogic文件夹无法删除，请重启系统再来尝试"
-      exit 1
-    fi
-    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
-    judge "内核运行文件下载"
-    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-  else
-    ECHOY "正在下载打包所需的程序,请耐心等候~~~"
-    git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
-    judge "内核运行文件下载"
-    rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,LICENSE,README.cn.md,README.md,.github,.git}
-  fi
-  [[ -z "${FIRMWARE_PATH}" ]] && export FIRMWARE_PATH="${HOME_PATH}/bin/targets/armvirt/64"
-  [ ! -d ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt ] && mkdir -p ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt
-  ECHOY "全部可打包机型：s922x s922x-n2 s922x-reva a311d s905x3 s905x2 s905x2-km3 s905l3a s912 s912-m8s s905d s905d-ki s905x s905w s905"
-  ECHOGG "设置要打包固件的机型[ 直接回车则默认全部机型(all) ]"
+  sudo chmod +x common.sh
+  grep -Eo '"name": "[0-9]+\.[0-9]+\.[0-9]+"' "amlogic/stable.api" |grep -Eo "[0-9]+\.[0-9]+\.[0-9]+" >amlogic/kernelpub
+  START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
+  t1=`date -d "$START_TIME" +%s`
+  echo "${t1}" >amlogic/start_time
+  export amkernel="$(cat amlogic/kernelpub |awk 'END {print}' |sed s/[[:space:]]//g)"
+  export kernel_repo=https://github.com/ophub/kernel/tree/main/pub
+  rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,*README*,LICENSE}
+  [ ! -d amlogic/openwrt-armvirt ] && mkdir -p amlogic/openwrt-armvirt
+  
+  ECHOY "可用芯片：a311d, s922x, s905x3, s905x2, s905l3a, s912, s905d, s905x, s905w, s905"
+  ECHOYY "对应支持有什么机型请看说明"
+  ECHOGG "设置要打包固件的机型[ 任意键回车则默认(N1) ]"
   read -p " 请输入您要设置的机型：" amlogic_model
-  export amlogic_model=${amlogic_model:-"all"}
+  export amlogic_model=${amlogic_model:-"s905d"}
   ECHOYY "您设置的机型为：${amlogic_model}"
   echo
-  ECHOGG "设置打包的内核版本[直接回车则默认 5.15.xx 和 5.10.xx ，xx为当前最新版本]"
-  read -p " 请输入您要设置的内核：" amlogic_kernel
-  export amlogic_kernel=${amlogic_kernel:-"5.15.25_5.10.100 -a true"}
-  if [[ "${amlogic_kernel}" == "5.15.25_5.10.100 -a true" ]]; then
-    ECHOYY "您设置的内核版本为：5.15.xx 和 5.10.xx "
+  ECHOGG "设置打包的内核版本[任意键回车则默认 ${amkernel}]"
+  echo
+  cat amlogic/kernelpub|awk '{print "  " $0}'
+  echo
+  read -p " 请输入您要设置打包的内核版本：" amlogic_kernel
+  export amlogic_kernel=${amlogic_kernel:-"${amkernel}"}
+  ECHOYY "您设置的内核版本为：${amlogic_kernel}"
+  echo
+  ECHOGG "请选择是否自动打包您输入的内核版本同类型的最新内核"
+  export YUMINGIP=" 输入[Y/y]则为是,任意键回车则为否"
+  read -p "${YUMINGIP}：" auto_kernel
+  case $auto_kernel in
+  [Yy])
+    export auto_kernel="true"
+  ;;
+  *)
+    export auto_kernel="false"
+  ;;
+  esac
+  export auto_kernel=${auto_kernel}
+  if [[ "${auto_kernel}" == "false" ]]; then
+    ECHORR "关闭自动打包最新内核"
   else
-    ECHOYY "您设置的内核版本为：${amlogic_kernel}"
+    ECHOYY "开启自动打包最新内核"
   fi
   echo
   ECHOGG "设置ROOTFS分区大小[ 直接回车则默认：960 ]"
   read -p " 请输入ROOTFS分区大小：" rootfs_size
   export rootfs_size=${rootfs_size:-"960"}
   ECHOYY "您设置的ROOTFS分区大小为：${rootfs_size}"
+  ECHOG "设置完毕，开始进行打包操作"
   if [[ `ls -1 "${FIRMWARE_PATH}" |grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
-    cp -Rf ${FIRMWARE_PATH}/*default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
+    cp -Rf ${FIRMWARE_PATH}/*armvirt-64-default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz
   else
     armvirtargz="$(ls -1 "${FIRMWARE_PATH}" |grep ".*tar.gz" |awk 'END {print}')"
-    cp -Rf ${FIRMWARE_PATH}/${armvirtargz} ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz && sync
+    cp -Rf ${FIRMWARE_PATH}/${armvirtargz} ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz
   fi
-  if [[ `ls -1 "${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt" | grep -c "openwrt-armvirt-64-default-rootfs.tar.gz"` == '0' ]]; then
+  if [[ `ls -1 "${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt" | grep -c ".tar.gz"` -eq '0' ]]; then
     print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
-    print_error "请检查${HOME_PATH}/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
+    print_error "请检查openwrt/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
     exit 1
   fi
   cd ${GITHUB_WORKSPACE}/amlogic
   sudo chmod +x make
-  sudo ./make -d -b ${amlogic_model} -k ${amlogic_kernel} -s ${rootfs_size}
-  if [[ `ls -1 ${GITHUB_WORKSPACE}/amlogic/out | grep -c "openwrt"` -ge '1' ]]; then
+  sudo ./make -b ${amlogic_model} -k ${amlogic_kernel} -a ${auto_kernel} -s ${rootfs_size}
+  if [[ $? -eq 0 ]];then
+    echo
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
-    if [[ "${WSL_ubuntu}" == "YES" ]]; then
-      cd ${GITHUB_WORKSPACE}/amlogic/out
-      explorer.exe .
-      cd ${GITHUB_WORKSPACE}
-    fi
   else
-    print_error "打包失败，请再次尝试!"
+    print_error "打包失败，请查看当前错误说明!"
   fi
 }
 
-function op_firmware() {
-  if [[ "${matrixtarget}" == "Lede_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Lede_core" 2>/dev/null)" ]]; then
-    export matrixtarget="Lede_source"
-    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
-    [[ -f ${BUILD_PATH}/common.sh ]] && source "${BUILD_PATH}/common.sh" && Bendi_variable
-    export Mark_Core=".Lede_core"
-    [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
-  elif [[ "${matrixtarget}" == "Lienol_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Lienol_core" 2>/dev/null)" ]]; then
-    export matrixtarget="Lienol_source"
-    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
-    [[ -f ${BUILD_PATH}/common.sh ]] && source "${BUILD_PATH}/common.sh" && Bendi_variable
-    export Mark_Core=".Lienol_core"
-    [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
-  elif [[ "${matrixtarget}" == "Tianling_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Tianling_core" 2>/dev/null)" ]]; then
-    export matrixtarget="Tianling_source"
-    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
-    [[ -f ${BUILD_PATH}/common.sh ]] && source "${BUILD_PATH}/common.sh" && Bendi_variable
-    export Mark_Core=".Tianling_core"
-    [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
-  elif [[ "${matrixtarget}" == "Mortal_source" ]] || [[ -n "$(ls -A "${HOME_PATH}/.Mortal_core" 2>/dev/null)" ]]; then
-    export matrixtarget="Mortal_source"
-    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
-    [[ -f ${BUILD_PATH}/common.sh ]] && source "${BUILD_PATH}/common.sh" && Bendi_variable
-    export Mark_Core=".Mortal_core"
-    [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
-  elif [[ "${matrixtarget}" == "openwrt_amlogic" ]] || [[ -n "$(ls -A "${HOME_PATH}/.amlogic_core" 2>/dev/null)" ]]; then
-    export matrixtarget="openwrt_amlogic"
-    export BUILD_PATH="${GITHUB_WORKSPACE}/openwrt/build/${matrixtarget}"
-    [[ -f ${BUILD_PATH}/common.sh ]] && source "${BUILD_PATH}/common.sh" && Bendi_variable
-    export Mark_Core=".amlogic_core"
-    [[ -d "${HOME_PATH}" ]] && echo "${Mark_Core}" > "${HOME_PATH}/${Mark_Core}"
-  fi
-}
-
-function openwrt_qx() {
-    cd ${GITHUB_WORKSPACE}
-    if [[ -d ${HOME_PATH} ]]; then
-      ECHOG "正在删除已存在的openwrt文件夹,请稍后..."
-      rm -rf ${HOME_PATH}
-    fi
-}
-
-function openwrt_gitpull() {
-  cd ${HOME_PATH}
-  ECHOG "git pull上游源码"
-  if [[ ! -d ${HOME_PATH}/feeds ]]; then
+function Bendi_Change() {
+cd ${HOME_PATH}
+sed -i '/^#/d' feeds.conf.default
+if [[ ! "${REPO_BRANCH2}" == "${REPO_BRANCH}" ]]; then
+  ECHOR "编译分支发生改变,需要重新下载源码,下载源码中..."
+  sleep 3
+  Bendi_Download
+elif [[ ! "${COLLECTED_PACKAGES}" == "true" ]]; then
+  if [[ `grep -c "danshui" feeds.conf.default` -ge '1' ]]; then
+    ECHOR "您的自定义设置更改为不需要作者收集的插件包,正在清理插件中..."
+    sleep 3
+    find . -name 'luci-app-openclash' | xargs -i rm -rf {}
+    sed -i '/danshui/d' feeds.conf.default
+    sed -i '/helloworld/d' feeds.conf.default
+    sed -i '/passwall/d' feeds.conf.default
+    ./scripts/feeds clean
     ./scripts/feeds update -a
   fi
-  git reset --hard
-  if [[ `grep -c "webweb.sh" ${ZZZ_PATH}` -ge '1' ]]; then
-    git reset --hard
+elif [[ "${COLLECTED_PACKAGES}" == "true" ]]; then
+  if [[ `grep -c "danshui" feeds.conf.default` -eq '0' ]]; then
+    ECHOG "您的自定义设置更改为需要作者收集的插件包,正在增加插件中..."
+    sleep 3
+    sed -i '/danshui/d' feeds.conf.default
+    sed -i '/helloworld/d' feeds.conf.default
+    sed -i '/fw876/d' feeds.conf.default
+    sed -i '/passwall/d' feeds.conf.default
+    sed -i '/xiaorouji/d' feeds.conf.default
+    ./scripts/feeds clean
+    ./scripts/feeds update -a
+    source ${GITHUB_WORKSPACE}/common.sh && Diy_${SOURCE_CODE}
+    source ${GITHUB_WORKSPACE}/common.sh && Diy_chajianyuan
   fi
+fi
+}
+
+function Bendi_gitpull() {
+if [[ "${SOURCE_CODE}" == "OFFICIAL" ]] && [[ "${REPO_BRANCH}" =~ (openwrt-19.07|openwrt-21.02|openwrt-22.03) ]]; then
+  echo
+else
+  ECHOG "同步上游源码"
   git pull
-  ECHOG "同步上游源码完毕,开始编译固件"
-  source "${BUILD_PATH}/common.sh" && Diy_menu
-}
-
-function op_upgrade1() {
-  if [[ "${REGULAR_UPDATE}" == "true" ]]; then
-    source $BUILD_PATH/upgrade.sh && Diy_Part1
-  fi
-}
-
-function op_again() {
-  version_opdiy
-  op_firmware
-  bianyi_xuanxiang
-  op_common_sh
-  op_diy_ip
-  op_diywenjian
-  op_jiaoben
-  openwrt_gitpull
-  op_kongjian
-  op_menuconfig
-  make_defconfig
-  op_upgrade2
-  op_download
-  op_make
-  op_upgrade3
-  op_end
-}
-
-function openwrt_tow() {
-  version_opdiy
-  bianyi_xuanxiang
-  op_common_sh
-  openwrt_qx
-  op_firmware
-  op_kongjian
-  op_diywenjian
-  op_repo_branch
-  op_jiaoben
-  op_diy_zdy
-  op_diy_ip
-  op_menuconfig
-  make_defconfig
-  op_upgrade2
-  op_download
-  op_cpuxinghao
-  op_make
-  op_upgrade3
-  op_end
-}
-
-function openwrt_new() {
-  op_common_sh
-  openwrt_qx
-  op_firmware
-  op_kongjian
-  version_opdiy
-  op_diywenjian
-  bianyi_xuanxiang
-  op_repo_branch
-  op_jiaoben
-  op_diy_zdy
-  op_diy_ip
-  op_menuconfig
-  make_defconfig
-  op_upgrade2
-  op_download
-  op_cpuxinghao
-  op_make
-  op_upgrade3
-  op_end
-}
-
-function menu() {
-  ECHOG "正在加载数据中，请稍后..."
-  cd ${GITHUB_WORKSPACE}
-  curl -fsSL https://raw.githubusercontent.com/coolsnowwolf/lede/master/target/linux/x86/Makefile > Makefile
-  export ledenh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
-  curl -fsSL https://raw.githubusercontent.com/Lienol/openwrt/21.02/target/linux/x86/Makefile > Makefile
-  export lienolnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
-  curl -fsSL https://raw.githubusercontent.com/immortalwrt/immortalwrt/openwrt-21.02/target/linux/x86/Makefile > Makefile
-  export mortalnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
-  curl -fsSL https://raw.githubusercontent.com/immortalwrt/immortalwrt/openwrt-18.06/target/linux/x86/Makefile > Makefile
-  export tianlingnh="$(egrep -o "KERNEL_PATCHVER:=[0-9]+\.[0-9]+" Makefile |cut -d "=" -f2)"
-  rm -rf Makefile
-  clear
-  clear
-  echo
-  ECHOB "  请选择编译源码"
-  ECHOY " 1. Lede_${ledenh}内核,LUCI 18.06版本(Lede_source)"
-  ECHOYY " 2. Lienol_${lienolnh}内核,LUCI 21.02版本(Lienol_source)"
-  echo
-  ECHOYY " 3. Immortalwrt_${tianlingnh}内核,LUCI 18.06版本(Tianling_source)"
-  ECHOY " 4. Immortalwrt_${mortalnh}内核,LUCI 21.02版本(Mortal_source)"
-  ECHOYY " 5. N1和晶晨系列CPU盒子专用(openwrt_amlogic)"
-  ECHOY " 6. 单独打包晶晨系列固件(前提是您要有armvirt的.tar.gz固件)"
-  ECHOYY " 7. 退出编译程序"
-  echo
-  XUANZHEOP="请输入数字"
-  while :; do
-  read -p " ${XUANZHEOP}： " CHOOSE
-  case $CHOOSE in
-    1)
-      export ERCI_BYGJ="0"
-      export matrixtarget="Lede_source"
-      ECHOG "您选择了：Lede_${ledenh}内核,LUCI 18.06版本"
-      openwrt_new
-    break
-    ;;
-    2)
-      export ERCI_BYGJ="0"
-      export matrixtarget="Lienol_source"
-      ECHOG "您选择了：Lienol_${lienolnh}内核,LUCI 21.02版本"
-      openwrt_new
-    break
-    ;;
-    3)
-      export ERCI_BYGJ="0"
-      export matrixtarget="Tianling_source"
-      ECHOG "您选择了：Immortalwrt_${tianlingnh}内核,LUCI 18.06版本"
-      openwrt_new
-    break
-    ;;
-    4)
-      export ERCI_BYGJ="0"
-      export matrixtarget="Mortal_source"
-      ECHOG "您选择了：Immortalwrt_${mortalnh}内核,LUCI 21.02版本"
-      openwrt_new
-    break
-    ;;
-    5)
-      export ERCI_BYGJ="0"
-      export matrixtarget="openwrt_amlogic"
-      ECHOG "您选择了：N1和晶晨系列CPU盒子专用"
-      openwrt_new
-    break
-    ;;
-    6)
-      ECHOG "您选择了单独打包晶晨系列固件"
-      export matrixtarget="openwrt_amlogic"
-      op_common_sh
-      op_amlogic
-    break
-    ;;
-    7)
-      ECHOR "您选择了退出编译程序"
-      echo
-      exit 0
-    break
-    ;;
-    *)
-      XUANZHEOP="请输入正确的数字编号!"
-    ;;
-    esac
-    done
-}
-
-function Menu_requirements() {
-  op_firmware > /dev/null 2>&1
-  source ${GITHUB_WORKSPACE}/OP_DIY/${matrixtarget}/settings.ini > /dev/null 2>&1
-  tixing_op_config > /dev/null 2>&1
-  chenggong_op_config > /dev/null 2>&1
-  if [[ -f ${LOCAL_Build}/shibai ]] ; then
-    SHANGCIZHUANGTAI="失败"
-  elif [[ -f ${LOCAL_Build}/weiwan ]] ; then
-    SHANGCIZHUANGTAI="未完成"
-  elif [[ -f ${LOCAL_Build}/chenggong ]] ; then
-    SHANGCIZHUANGTAI="成功"
+  if [[ $? -ne 0 ]]; then
+    ECHOR "同步上游源码失败"
   else
-    SHANGCIZHUANGTAI="未知"
+    ECHOB "同步上游源码完成"
   fi
-  cd ${GITHUB_WORKSPACE}
+fi
 }
 
-function menuop() {
-  Menu_requirements
+function Bendi_xuanzhe() {
+  cd ${GITHUB_WORKSPACE}
+  if [[ ! -f "/etc/oprelyon" ]]; then
+    Bendi_Dependent
+  fi
+  if [[ ! -d "operates" ]]; then
+    ECHOG "没有主要编译程序存在,正在下载中,请稍后..."
+    sleep 2
+    Bendi_DiySetup
+  else
+    YY="$(ls -1 "operates" |awk 'NR==1')"
+    if [[ ! -f "operates/${YY}/settings.ini" ]]; then
+      ECHOG "没有主要编译程序存在,正在下载中,请稍后..."
+      sleep 2
+      Bendi_DiySetup
+    fi
+  fi
   clear
+  echo 
+  echo
+  ls -1 "operates" |awk '$0=NR" "$0' > GITHUB_ENN
+  ls -1 "operates" > GITHUB_EVN
+  XYZDSZ="$(cat GITHUB_ENN | awk 'END {print}' |awk '{print $(1)}')"
+  rm -rf GITHUB_ENN
+  ls -1 "operates" |awk '$0=NR"、"$0'|awk '{print "  " $0}'
   echo
   echo
-  echo -e " ${Blue}当前使用源码${Font}：${Yellow}${matrixtarget}${Font}"
-  echo -e " ${Blue}成功编译过的机型${Font}：${Yellow}${CG_PROFILE}${Font}"
-  echo -e " ${Blue}OP_DIY配置文件机型${Font}：${Yellow}${TARGET_PROFILE}${Font}"
-  echo -e " ${Blue}上回编译操作${Font}：${Yellow}${SHANGCIZHUANGTAI}${Font}"
+  echo -e "${Blue}  请输入您要编译源码前面对应的数值(1~X),输入[N]则为退出程序${Font}"
   echo
+  echo -e "${Yellow}  输入[0]或[Y/y]回车,进行创建机型文件夹或删除机型文件夹${Font}"
   echo
-  echo -e " 1${Red}.${Font}${Green}保留缓存同步上游仓库源码,再次编译${Font}"
-  echo
-  echo -e " 2${Red}.${Font}${Green}删除现有源码,重新下载[${matrixtarget}]源码再编译${Font}"
-  echo
-  echo -e " 3${Red}.${Font}${Green}同步上游OP_DIY文件(不覆盖config配置文件)${Font}"
-  echo
-  echo -e " 4${Red}.${Font}${Green}打包N1和晶晨系列CPU固件${Font}"
-  echo
-  echo -e " 5${Red}.${Font}${Green}更换其他作者源码编译${Font}"
-  echo
-  echo -e " 6${Red}.${Font}${Green}退出${Font}"
-  echo
-  echo
-  XUANZop="请输入数字"
+  export YUMINGIP="  请输入您的选择"
   while :; do
-  read -p " ${XUANZop}：" menu_num
-  case $menu_num in
-  1)
-    export ERCI_BYGJ="1"
-    op_again
+  YMXZ=""
+  read -p "${YUMINGIP}：" YMXZ
+  if [[ "${YMXZ}" == "0" ]] || [[ "${YMXZ}" == "Y" ]] || [[ "${YMXZ}" == "y" ]]; then
+    CUrrenty="Y"
+  elif [[ "${YMXZ}" == "N" ]] || [[ "${YMXZ}" == "n" ]]; then
+    CUrrenty="N"
+  elif [[ -z "${YMXZ}" ]]; then
+    CUrrenty="x"
+  elif [[ "${YMXZ}" -le "${XYZDSZ}" ]]; then
+    CUrrenty="B"
+  else
+    CUrrenty="x"
+  fi
+  case $CUrrenty in
+  B)
+    export FOLDER_NAME3=$(cat GITHUB_EVN |awk ''NR==${YMXZ}'')
+    export FOLDER_NAME="${FOLDER_NAME3}"
+    sed -i '/FOLDER_NAME=/d' "${GITHUB_ENV}"
+    echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
+    source ${GITHUB_ENV}
+    ECHOY " 您选择了使用 ${FOLDER_NAME} 编译固件,3秒后将进行启动编译"
+    rm -rf GITHUB_EVN
+    sleep 2
+    Bendi_menu
   break
   ;;
-  2)
-    ECHOR "是否删除现有源码,重新下载[${matrixtarget}]源码再编译?"
-    read -p " [输入[ N/n ]退出，直接回车则默认为是]： " MATR
-    case $MATR in
-    [Nn])
-      menuop
-    ;;
-    *)
-      export ERCI_BYGJ="0"
-      openwrt_tow
-    ;;
-    esac
-  break
-  ;;
-  3)
-    gengxin_opdiy
-  break
-  ;;
-  4)
-    op_amlogic
-  break
-  ;;
-  5)
-    menu
-  break
-  ;;
-  6)
+  N)
+    rm -rf GITHUB_ENN
     echo
     exit 0
-    break
+  break
+  ;;
+  Y)
+    BENDI_WENJIAN
+    echo
+  break
   ;;
   *)
-    XUANZop="请输入正确的数字编号!"
+    export YUMINGIP="  敬告,请输入正确选项"
   ;;
   esac
   done
 }
 
-if [[ -d "${HOME_PATH}/package" && -d "${HOME_PATH}/target" && -d "${HOME_PATH}/toolchain" && -d "${HOME_PATH}/build" && -d "${GITHUB_WORKSPACE}/OP_DIY" && -n "$(ls -A "${HOME_PATH}" |egrep ".*_core" 2>/dev/null)" ]]; then
-	menuop "$@"
-else
-	menu "$@"
+function Bendi_menu2() {
+export ERCI="1"
+BENDI_Diskcapacity
+Bendi_Dependent
+Bendi_Version
+Bendi_WslPath
+Bendi_DiySetup
+Bendi_EveryInquiry
+Bendi_Variable
+Bendi_Version
+Bendi_Change
+Bendi_gitpull
+Bendi_MainProgram
+Bendi_Restore
+Bendi_UpdateSource
+Bendi_Menuconfig
+Make_Menuconfig
+Bendi_Configuration
+Bendi_ErrorMessage
+Bendi_DownloadDLFile
+Bendi_Compile
+Bendi_PackageAmlogic
+Bendi_Arrangement
+Bendi_shouweigongzhong
+}
+
+function Bendi_menu() {
+BENDI_Diskcapacity
+Bendi_Dependent
+Bendi_Version
+Bendi_WslPath
+Bendi_DiySetup
+Bendi_EveryInquiry
+Bendi_Variable
+Bendi_MainProgram
+Bendi_Download
+Bendi_SourceClean
+Bendi_UpdateSource
+Bendi_Menuconfig
+Make_Menuconfig
+Bendi_Configuration
+Bendi_ErrorMessage
+Bendi_DownloadDLFile
+Bendi_Compile
+Bendi_PackageAmlogic
+Bendi_Arrangement
+Bendi_shouweigongzhong
+}
+
+function BENDI_WENJIAN() {
+cd ${GITHUB_WORKSPACE}
+clear
+echo
+echo
+ECHOY " 1. 创建机型文件夹"
+ECHOY " 2. 删除机型文件夹"
+ECHOY " 3. 啥都不干,回到选择机型继续编译"
+echo
+XUANZHEOP="请输入数字"
+echo
+while :; do
+read -p " ${XUANZHEOP}： " CHOOSE
+case $CHOOSE in
+1)
+  github_establish
+break
+;;
+2)
+  github_deletefile
+break
+;;
+3)
+  Bendi_xuanzhe
+break
+;;
+*)
+   XUANZHEOP="请输入正确的数字编号"
+;;
+esac
+done
+}
+
+function Bendi_UPDIYSETUP() {
+cd ${GITHUB_WORKSPACE}
+clear
+echo 
+echo
+echo -e "  ${Green}请选择更新方式${Font}"
+echo
+echo -e "  ${Blue}1${Font}、${Yellow}单文件更新,只更新您现有机型文件夹的diy-part.sh和settings.ini(带备份文件)${Font}"
+echo
+echo -e "  ${Blue}2${Font}、${Yellow}单文件更新,只更新您现有机型文件夹的diy-part.sh和settings.ini(不要备份文件)${Font}"
+echo
+echo -e "  ${Blue}3${Font}、${Yellow}删除您现有的operates文件夹,从上游重新拉取operates文件夹${Font}"
+echo
+echo -e "  ${Blue}4${Font}、${Yellow}返回上级菜单${Font}"
+echo
+echo -e "  ${Blue}5${Font}、${Yellow}退出程序${Font}"
+echo
+echo
+IYSETUP="  请输入数字确定您的选择"
+echo
+while :; do
+read -p "${IYSETUP}：" Bendi_upsetup
+case ${Bendi_upsetup} in
+1)
+  [[ ! -f "/etc/oprelyon" ]] && Bendi_Dependent
+  export tongbumemu="menu2"
+  Bendi_Tongbu
+break
+;;
+2)
+  [[ ! -f "/etc/oprelyon" ]] && Bendi_Dependent
+  export tongbumemu="menu3"
+  Bendi_Tongbu
+break
+;;
+3)
+  [[ ! -f "/etc/oprelyon" ]] && Bendi_Dependent
+  [[ -d "operates" ]] && rm -rf operates
+  Bendi_DiySetup
+break
+;;
+4)
+  if [[ -n "${BENDI_MEMU}" ]]; then
+    ${BENDI_MEMU}
+  else
+    menu
+  fi
+break
+;;
+5)
+  exit 0
+break
+;;
+*)
+  IYSETUP="  输入错误,请输入数字"
+;;
+esac
+done
+}
+
+function menu2() {
+  clear
+  echo
+  echo
+  if [[ "${SUCCESS_FAILED}" == "success" ]]; then
+    echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
+    echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
+    echo -e " ${Blue}上回成功编译机型${Font}：${Yellow}${TARGET_PROFILE2}${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}使用配置文件名称${Font}：${Yellow}${CONFIG_FILE1}${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}/seed文件夹是否存在${CONFIG_FILE1}名称文件${Font}：${Yellow}${JIXINGWENJIAN}${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}/${SEED_CONFIG1}配置文件机型${Font}：${Yellow}${TARGET_PROFILE3}${Font}"
+    aaaa="保留缓存,再次编译?"
+    bbbbb="编译"
+  elif [[ "${SUCCESS_FAILED}" == "makeconfig" ]]; then  
+    echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
+    echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
+    echo -e " ${Blue}上回制作了${Font}${Yellow}${TARGET_PROFILE2}机型的.config${Font}${Blue}配置文件${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}使用配置文件名称${Font}：${Yellow}${CONFIG_FILE1}${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}/seed文件夹是否存在${CONFIG_FILE1}名称文件${Font}：${Yellow}${JIXINGWENJIAN}${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}/${SEED_CONFIG1}配置文件机型${Font}：${Yellow}${TARGET_PROFILE3}${Font}"
+    aaaa="继续制作.config配置文件"
+    bbbbb="制作.config配置文件?"
+  elif [[ "${SUCCESS_FAILED}" == "xzdl" ]]; then
+    echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
+    echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
+    echo -e " ${Red}大兄弟啊,上回没搞成,继续[${FOLDER_NAME2}]搞下去?${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}使用配置文件名称${Font}：${Yellow}${CONFIG_FILE1}${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}/seed文件夹是否存在${CONFIG_FILE1}名称文件${Font}：${Yellow}${JIXINGWENJIAN}${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}/${SEED_CONFIG1}配置文件机型${Font}：${Yellow}${TARGET_PROFILE3}${Font}"
+    aaaa="接着上次继续再搞下去?"
+    bbbbb="编译"
+  else
+    echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
+    echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
+    echo -e " ${Red}大兄弟啊,上回编译${Yellow}[${TARGET_PROFILE2}]${Font}${Red}于失败告终了${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}使用配置文件名称${Font}：${Yellow}${CONFIG_FILE1}${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}/seed文件夹是否存在${CONFIG_FILE1}名称文件${Font}：${Yellow}${JIXINGWENJIAN}${Font}"
+    echo -e " ${Blue}当前operates/${FOLDER_NAME2}/${SEED_CONFIG1}配置文件机型${Font}：${Yellow}${TARGET_PROFILE3}${Font}"
+    aaaa="保留缓存,再特么的搞一搞?"
+    bbbbb="编译"
+  fi
+  echo
+  echo
+  echo -e " 1${Red}.${Font}${Green}${aaaa}${Font}"
+  echo
+  echo -e " 2${Red}.${Font}${Green}重新选择源码${bbbbb}${Font}"
+  echo
+  echo -e " 3${Red}.${Font}${Green}同步上游operates文件${Font}"
+  echo
+  echo -e " 4${Red}.${Font}${Green}打包N1或晶晨系列固件(您要有armvirt_64的.tar.gz固件)${Font}"
+  echo
+  echo -e " 5${Red}.${Font}${Green}退出${Font}"
+  echo
+  echo
+  XUANZop="请输入数字"
+  echo
+  while :; do
+  read -p " ${XUANZop}：" menu_num
+  case $menu_num in
+  1)
+    Bendi_menu2
+  break
+  ;;
+  2)
+    Bendi_xuanzhe
+  break
+  ;;
+  3)
+    Bendi_UPDIYSETUP
+  break
+  ;;
+  4)
+    Bendi_Dependent
+    Bendi_Packaging
+  break
+  ;;
+  5)
+    echo
+    exit 0
+  break
+  ;;
+  *)
+    XUANZop="请输入正确的数字编号"
+  ;;
+  esac
+  done
+}
+
+function menu() {
+cd ${GITHUB_WORKSPACE}
+clear
+echo
+echo
+ECHOY " 1. 进行选择编译或制作配置文件源码"
+ECHOY " 2. 同步上游operates文件"
+ECHOY " 3. 打包N1或晶晨系列固件(您要有armvirt_64的.tar.gz固件)"
+ECHOY " 4. 退出程序"
+echo
+XUANZHEOP="请输入数字"
+echo
+while :; do
+read -p " ${XUANZHEOP}： " CHOOSE
+case $CHOOSE in
+1)
+  Bendi_xuanzhe
+break
+;;
+2)
+  Bendi_UPDIYSETUP
+break
+;;
+3)
+  Bendi_Dependent
+  Bendi_Packaging
+break
+;;
+4)
+  echo
+  exit 0
+break
+;;
+*)
+   XUANZHEOP="请输入正确的数字编号"
+;;
+esac
+done
+}
+
+function menuoo() {
+cd ${GITHUB_WORKSPACE}
+if [[ -d "${HOME_PATH}" ]]; then
+cat > Update.txt <<EOF
+config
+include
+package
+scripts
+target
+toolchain
+tools
+EOF
+ls -1 ${HOME_PATH} > UpdateList.txt
+FOLDERS=`grep -Fxvf UpdateList.txt Update.txt`
+FOLDERSX=`echo $FOLDERS | sed 's/ /、/g'`;echo $FOLDERSX
+rm -rf {UpdateList.txt,Update.txt}
 fi
+
+if [[ -z "${FOLDERS}" ]]; then
+  KAIDUAN_JIANCE="1"
+else
+  KAIDUAN_JIANCE="0"
+fi
+if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
+  KAIDUAN_JIANCE="1"
+  source ${HOME_PATH}/LICENSES/doc/key-buildzu
+else
+  KAIDUAN_JIANCE="0"
+fi
+if [[ -f "operates/${FOLDER_NAME2}/settings.ini" ]]; then
+  KAIDUAN_JIANCE="1"
+  CONFIG_FILE1="$(source ${OPERATES_PATH}/${FOLDER_NAME2}/settings.ini && echo "${CONFIG_FILE}")"
+  SEED_CONFIG1="seed/${CONFIG_FILE1}"
+else
+  KAIDUAN_JIANCE="0"
+fi
+
+if [[ -f "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}" ]]; then
+  JIXINGWENJIAN="存在"
+else
+  JIXINGWENJIAN="不存在"
+fi
+
+if [[ "${KAIDUAN_JIANCE}" == "1" ]] && [[ "${JIXINGWENJIAN}" == "存在" ]]; then
+  if [[ `grep -c "CONFIG_TARGET_x86_64=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` -eq '1' ]]; then
+    TARGET_PROFILE3="x86-64"
+  elif [[ `grep -c "CONFIG_TARGET_x86=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` == '1' ]]; then
+    TARGET_PROFILE3="x86-32"
+  elif [[ `grep -c "CONFIG_TARGET_armvirt_64_Default=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` -eq '1' ]]; then
+    TARGET_PROFILE3="Armvirt_64"
+  else
+    TARGET_PROFILE3="$(grep -Eo "CONFIG_TARGET.*DEVICE.*=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+  fi
+  [[ -z "${TARGET_PROFILE3}" ]] && TARGET_PROFILE3="未知"
+else
+  TARGET_PROFILE3="未知"
+fi
+if [[ "${KAIDUAN_JIANCE}" == "1" ]]; then
+  FOLDER_NAME="${FOLDER_NAME2}"
+  echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
+  BENDI_MEMU="menu2"
+  menu2
+else
+  FOLDER_NAME=""
+  echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
+  BENDI_MEMU="menu"
+  menu
+fi
+}
+
+menuoo "$@"
