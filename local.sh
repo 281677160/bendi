@@ -813,7 +813,7 @@ function Bendi_Packaging() {
   fi
   cd ${GITHUB_WORKSPACE}/amlogic
   sudo chmod +x make
-  sudo ./make -b ${amlogic_model} -k ${amlogic_kernel} -a ${auto_kernel} -s ${rootfs_size}
+  sudo ./make -b ${amlogic_model} -v stable_rk3588 -k ${amlogic_kernel} -a ${auto_kernel} -s ${rootfs_size}
   if [[ $? -eq 0 ]];then
     echo
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
