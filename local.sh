@@ -72,7 +72,7 @@ judge() {
 }
 
 # 变量
-export BENDI_VERSION="2.0"
+export BENDI_VERSION="2.1"
 export GITHUB_WORKSPACE="$PWD"
 export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
 export OPERATES_PATH="${GITHUB_WORKSPACE}/operates"
@@ -292,15 +292,16 @@ BENDI_WENJIAN
 
 function github_establish() {
 ECHOY "在operates文件夹里面创建机型文件夹"
-ls -1 operates |awk '{print "  " $0}'
+git clone https://github.com/281677160/autobuild chuang
+ls -1 chuang/build |awk '{print "  " $0}'
 echo
 ECHOGG "请输入上面某一文件夹名称,为您要创建的机型文件夹当蓝本"
 while :; do
 read -p " 请输入：" aa
 if [[ -z "${aa}" ]]; then
   ECHOR "文件名不能为空"
-elif [[ ! -d "operates/${aa}" ]]; then
-  ECHOR "operates文件夹里${aa}不存在"
+elif [[ ! -d "chuang/build/${aa}" ]]; then
+  ECHOR "${aa}源码不存在"
 else
   echo
   echo " 以${aa}为蓝本创建文件夹"
@@ -310,6 +311,7 @@ fi
 done
 }
 function github_establish2() {
+rm -rf chuang
 echo
 ECHOGG "请输入您要创建的机型文件夹名称"
 while :; do
