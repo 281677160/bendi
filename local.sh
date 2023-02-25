@@ -306,7 +306,7 @@ fi
 echo
 ECHOGG "请输入上面某一文件夹名称,为您要创建的机型文件夹当蓝本"
 while :; do
-read -p " 请输入：" aa
+read -p " 请输入源码文件夹名称：" aa
 if [[ -z "${aa}" ]]; then
   ECHOR "文件名不能为空"
 elif [[ ! -d "chuang/build/${aa}" ]]; then
@@ -323,7 +323,7 @@ function github_establish2() {
 echo
 ECHOGG "请输入您要创建的机型文件夹名称"
 while :; do
-read -p " 请输入：" bb
+read -p " 请输入创建文件名称：" bb
 if [[ -z "${bb}" ]]; then
   ECHOR "文件名不能为空"
 elif [[ -d "operates/${bb}" ]]; then
