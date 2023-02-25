@@ -291,14 +291,15 @@ BENDI_WENJIAN
 }
 
 function github_establish() {
-ECHOY "在operates文件夹里面创建机型文件夹"
+ECHOY "在operates文件夹里面创建机型文件夹,正在下载上游源码,请稍后..."
 rm -rf chuang && git clone https://github.com/281677160/autobuild chuang > /dev/null 2>&1
-if [[ ! -d "chuang/build1" ]]; then
+if [[ ! -d "chuang/build" ]]; then
   rm -rf chuang && svn co https://github.com/281677160/autobuild/trunk/build chuang/build > /dev/null 2>&1
   rm -rf chuang/build/.svn
 fi
-if [[ ! -d "chuang/build1" ]]; then
+if [[ ! -d "chuang/build" ]]; then
   ECHOR "上游源码下载失败,请检测网络"
+  exit 1
 else
   ls -1 chuang/build |awk '{print "  " $0}'
 fi
