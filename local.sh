@@ -292,8 +292,17 @@ BENDI_WENJIAN
 
 function github_establish() {
 ECHOY "在operates文件夹里面创建机型文件夹"
-git clone https://github.com/281677160/autobuild chuang
-ls -1 chuang/build |awk '{print "  " $0}'
+rm -rf chuang && git clone https://github.com/281677160/autobuild chuang > /dev/null 2>&1
+if [[ -d "chuang/build" ]]; then
+  ls -1 chuang/build |awk '{print "  " $0}'
+else
+  Amlogic
+  Immortalwrt
+  Lede
+  Lienol
+  Official
+  Xwrt
+fi
 echo
 ECHOGG "请输入上面某一文件夹名称,为您要创建的机型文件夹当蓝本"
 while :; do
