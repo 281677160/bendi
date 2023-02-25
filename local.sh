@@ -296,12 +296,14 @@ rm -rf chuang && git clone https://github.com/281677160/autobuild chuang > /dev/
 if [[ -d "chuang/build1" ]]; then
   ls -1 chuang/build |awk '{print "  " $0}'
 else
+  echo "
   Amlogic
   Immortalwrt
   Lede
   Lienol
   Official
   Xwrt
+  "
 fi
 echo
 ECHOGG "请输入上面某一文件夹名称,为您要创建的机型文件夹当蓝本"
