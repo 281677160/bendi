@@ -293,7 +293,7 @@ BENDI_WENJIAN
 function github_establish() {
 ECHOY "在operates文件夹里面创建机型文件夹"
 rm -rf chuang && git clone https://github.com/281677160/autobuild chuang > /dev/null 2>&1
-if [[ -d "chuang/build" ]]; then
+if [[ -d "chuang/build1" ]]; then
   ls -1 chuang/build |awk '{print "  " $0}'
 else
   Amlogic
