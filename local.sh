@@ -357,7 +357,8 @@ if [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   clear
   echo
   echo
-  ECHOYY "请在 operates/${FOLDER_NAME} 里面设置好自定义文件"
+  ECHOY "提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件"
+  ECHOG "提示：如果单纯制作配置文件的话请在 operates/${FOLDER_NAME}/settings.ini 里面设置该选项"
   ECHOY "设置完毕后，按[W/w]回车继续编译"
   ZDYSZ="请输入您的选择"
   while :; do
