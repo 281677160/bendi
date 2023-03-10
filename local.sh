@@ -447,10 +447,6 @@ else
   source ${BUILD_PATH}/common.sh && Diy_distrib
 fi
 sed -i '/-rl \.\//d' "${BUILD_PATH}/${DIY_PART_SH}"
-
-if [[ "${SOURCE_CODE}" == "COOLSNOWWOLF" ]]; then
-  source ${GITHUB_WORKSPACE}/build/${FOLDER_NAME}/common.sh && Diy_ramips515
-fi
 }
 
 function Bendi_SourceClean() {
