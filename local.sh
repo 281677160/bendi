@@ -713,6 +713,7 @@ echo
 function Bendi_Packaging() {
   cd ${GITHUB_WORKSPACE}
   export FIRMWARE_PATH="${HOME_PATH}/bin/targets/armvirt/64"
+  sudo rm -rf ${FIRMWARE_PATH}/*Identifier*
   if [[ -d "amlogic" ]]; then
     t1="$(cat amlogic/start_time)"
     END_TIME=`date +'%Y-%m-%d %H:%M:%S'`
