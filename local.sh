@@ -677,7 +677,7 @@ fi
 
 
 function Bendi_PackageAmlogic() {
-if [[ ${PACKAGING_FIRMWARE} == "true" ]]; then
+if [[ ${PACKAGING_FIRMWARE} == "true" ]] && [[ ${TARGET_PROFILE} == "Armvirt_64" ]]; then
   source ${BUILD_PATH}/common.sh && Package_amlogic
 fi
 }
