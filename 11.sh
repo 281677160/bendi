@@ -145,7 +145,15 @@ if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
   exit 1
 else
   ubuntu_bashrc
-  ECHOG "配置已更新，请按说明完成以下步骤，然后重启电脑"
+  ECHOG "配置已更新，请按以下说明完成步骤"
+  echo
+  ECHOG "按电脑键盘的 win键+x，点击终端(管理员)(A)"
+  ECHOG "或者鼠标右击开始菜单图标，点击终端(管理员)"
+  echo
+  ECHOG "然后会弹出 windows PowerShell 的命令输入窗"
+  ECHOG "然后出入命令：wsl --shutdown"
+  ECHOG "看清楚命令格式是 wsl然后空格，然后两个横杠shutdown"
+  ECHOG "输入命令后，重启您的电脑就完成了"
   exit 0
 fi
 }
