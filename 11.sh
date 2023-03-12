@@ -92,7 +92,7 @@ sudo apt-get -y install openssh-server
 sudo apt-get -y install net-tools
 sudo service ssh start
 
-if [[ sudo -f "/etc/ssh/sshd_config" ]]; then
+if [[ -f "/etc/ssh/sshd_config" ]]; then
   sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
   sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
   sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
