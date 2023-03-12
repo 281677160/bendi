@@ -86,24 +86,40 @@ fi
 function ubuntu_bashrc() {
 sudo apt-get -y update
 sudo apt-get -y remove openssh-server
+sudo apt-get -y remove openssh-server
+sudo apt-get -y install openssh-server
 sudo apt-get -y install openssh-server
 sudo apt-get -y install net-tools
-sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
-sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
-sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
-sudo sed -i '/PasswordAuthentication/d' /etc/ssh/sshd_config
-sudo sed -i '/Port 22/d' /etc/ssh/sshd_config
+sudo service ssh start
 
-sudo sh -c 'echo Port 22 >> /etc/ssh/sshd_config'
-sudo sh -c 'echo PermitRootLogin yes >> /etc/ssh/sshd_config'
-sudo sh -c 'echo PasswordAuthentication yes >> /etc/ssh/sshd_config'
-sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
-sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
+if [[ sudo -f "/etc/ssh/sshd_config" ]]; then
+  sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
+  sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
+  sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
+  sudo sed -i '/PasswordAuthentication/d' /etc/ssh/sshd_config
+  sudo sed -i '/Port 22/d' /etc/ssh/sshd_config
 
-sudo sed -i '/grep -v inet6/d' ${GITHUB_WORKSPACE}/.bashrc
-sudo tee -a "${GITHUB_WORKSPACE}/.bashrc" << EOF > /dev/null
+  sudo sh -c 'echo Port 22 >> /etc/ssh/sshd_config'
+  sudo sh -c 'echo PermitRootLogin yes >> /etc/ssh/sshd_config'
+  sudo sh -c 'echo PasswordAuthentication yes >> /etc/ssh/sshd_config'
+  sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
+  sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
+else
+  echo "SSH安装失败"
+fi
+
+sudo sed -i '/grep -v inet6/d' ".bashrc"
+sudo tee -a ".bashrc" << EOF > /dev/null
 echo "\$(ifconfig |grep inet |grep -v inet6 |grep -v 127.0.0.1|awk '{print \$(2)}')"
 EOF
+
+if [[ `sudo grep -c "grep -Eoc sshd" ".bashrc"` -eq '0' ]]; then
+sudo echo '
+if [ `sudo ps -e |grep ssh |grep -Eoc sshd` -eq "0" ]; then
+  sudo service ssh start
+fi
+' >> ".bashrc"
+fi
 }
 
 function ubuntu_WslPath() {
