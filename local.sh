@@ -670,6 +670,8 @@ else
   " > ${HOME_PATH}/LICENSES/doc/key-buildzu
   sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
   sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
+  source ${GITHUB_ENV}
+  source ${BUILD_PATH}/common.sh && firmware_jiance
 fi
 }
 
@@ -689,7 +691,7 @@ judge "整理固件"
 }
 
 function Bendi_shouweigongzhong() {
-if [[ "${SOURCE_CODE}" == "AMLOGIC" ]]; then
+if [[ "${AMLOGIC_CODE}" == "AMLOGIC" ]]; then
   print_ok "[ N1或晶晨系列盒子专用固件 ]顺利编译完成~~~"
 else
   print_ok "[ ${FOLDER_NAME}-${LUCI_EDITION2}-${TARGET_PROFILE} ]顺利编译完成~~~"
@@ -1281,8 +1283,10 @@ if [[ "${KAIDUAN_JIANCE}" == "1" ]] && [[ "${JIXINGWENJIAN}" == "存在" ]]; the
     TARGET_PROFILE3="x86-32"
   elif [[ `grep -c "CONFIG_TARGET_armvirt_64_Default=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` -eq '1' ]]; then
     TARGET_PROFILE3="Armvirt_64"
-  else
+  elif [[ `grep -Eoc "CONFIG_TARGET.*DEVICE.*=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` -eq '1' ]]; then
     TARGET_PROFILE3="$(grep -Eo "CONFIG_TARGET.*DEVICE.*=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
+  else
+    TARGET_PROFILE3="$(cat "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}" |grep "CONFIG_TARGET_.*=y" |awk 'END {print}'|sed "s/CONFIG_TARGET_//g"|sed "s/=y//g")"
   fi
   [[ -z "${TARGET_PROFILE3}" ]] && TARGET_PROFILE3="未知"
 else
