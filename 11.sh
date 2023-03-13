@@ -182,7 +182,7 @@ function menu() {
   clear
   echo
   echo
-  echo -e " 1${Red}.${Font}${Green}更改WSL路径和安装SSH${Font}"
+  echo -e " 1${Red}.${Font}${Green}解决WSL编译固件路径和安装SSH功能${Font}"
   echo
   echo -e " 2${Red}.${Font}${Green}还原回WSL路径${Font}"
   echo
