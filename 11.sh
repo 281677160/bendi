@@ -108,11 +108,6 @@ else
   echo "SSH安装失败"
 fi
 
-sudo sed -i '/grep -v inet6/d' ".bashrc"
-sudo tee -a ".bashrc" << EOF > /dev/null
-echo "当前IP：\$(ifconfig |grep inet |grep -v inet6 |grep -v 127.0.0.1|awk '{print \$(2)}')"
-EOF
-
 if [[ `sudo grep -c "grep -Eoc sshd" ".bashrc"` -eq '0' ]]; then
 sudo echo '
 if [ `sudo ps -e |grep ssh |grep -Eoc sshd` -eq "0" ]; then
@@ -120,6 +115,11 @@ if [ `sudo ps -e |grep ssh |grep -Eoc sshd` -eq "0" ]; then
 fi
 ' >> ".bashrc"
 fi
+
+sudo sed -i '/grep -v inet6/d' ".bashrc"
+sudo tee -a ".bashrc" << EOF > /dev/null
+echo "当前IP：\$(ifconfig |grep inet |grep -v inet6 |grep -v 127.0.0.1|awk '{print \$(2)}')"
+EOF
 }
 
 function ubuntu_WslPath() {
