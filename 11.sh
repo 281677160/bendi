@@ -182,11 +182,11 @@ function menu() {
   clear
   echo
   echo
-  echo -e " 1${Red}.${Font}${Green}解决WSL编译固件路径和安装SSH功能${Font}"
+  echo -e " 1${Red}.${Font}${Green}解决WSL编译固件路径、安装SSH功能和增加当前IP显示${Font}"
   echo
   echo -e " 2${Red}.${Font}${Green}还原回WSL路径${Font}"
   echo
-  echo -e " 3${Red}.${Font}${Green}进入SSH不需要显示IP${Font}"
+  echo -e " 3${Red}.${Font}${Green}进入Ubuntu不需要显示当前IP${Font}"
   echo
   echo -e " 4${Red}.${Font}${Green}退出${Font}"
   echo
