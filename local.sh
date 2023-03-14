@@ -678,7 +678,6 @@ else
   sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
   sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
   source ${GITHUB_ENV}
-  source ${BUILD_PATH}/common.sh && firmware_jiance
 fi
 }
 
