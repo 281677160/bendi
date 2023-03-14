@@ -575,7 +575,7 @@ make defconfig
 rm -rf ${HOME_PATH}/build_logo/build.log
 package_error="0"
 
-make -j8 download V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && package_error="1"
+make download -j8 | tee ${HOME_PATH}/build_logo/build.log | grep -i "ERROR" && tail -20 tee ${HOME_PATH}/build_logo/build.log && package_error="1"
 
 if [[ "${package_error}" == "1" ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
   print_ok "DL文件下载成功"
@@ -631,18 +631,18 @@ if [[ "$(nproc)" -le "12" ]];then
   sleep 8
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
     ECHOG "WSL临时路径编译中"
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(nproc) V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(nproc) V=s | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
   else
-     make -j$(nproc) V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
+     make -j$(nproc) V=s | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
   fi
 else
   ECHOGG "您的CPU线程超过或等于16线程，强制使用16线程进行编译固件"
   sleep 8
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
     ECHO "WSL临时路径编译中"
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 V=s | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
   else
-     make -j16 V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
+     make -j16 V=s | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
   fi
 fi
 
