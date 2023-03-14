@@ -573,11 +573,10 @@ cd ${HOME_PATH}
 make defconfig
 [[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
 rm -rf ${HOME_PATH}/build_logo/build.log
-package_error="0"
 
-make download -j8 | tee ${HOME_PATH}/build_logo/build.log | grep -i "ERROR" && tail -20 tee ${HOME_PATH}/build_logo/build.log && package_error="1"
+make -j8 download | tee ${HOME_PATH}/build_logo/build.log
 
-if [[ "${package_error}" == "1" ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
+if [[ `grep -ic "ERROR" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
   print_ok "DL文件下载成功"
 else
   clear
