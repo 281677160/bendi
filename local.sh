@@ -571,10 +571,12 @@ sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
 sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
 cd ${HOME_PATH}
 make defconfig
-[[ -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
-make -j8 download |tee ${HOME_PATH}/build_logo/build.log
+[[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
+rm -rf ${HOME_PATH}/build_logo/build.log
 
-if [[ `grep -c "make with -j1 V=s or V=sc" ${HOME_PATH}/build_logo/build.log` -eq '0' ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
+make -j8 download V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && package_error="1"
+
+if [[ "${package_error}" == "1" ]] || [[ `grep -c "ERROR" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
   print_ok "DL文件下载成功"
 else
   clear
@@ -619,23 +621,26 @@ echo
 
 [[ -f "${GITHUB_WORKSPACE}/common.sh" ]] && rm -rf ${GITHUB_WORKSPACE}/common.sh
 [[ -d "${FIRMWARE_PATH}" ]] && sudo rm -rf ${FIRMWARE_PATH}
+[[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
+rm -rf ${HOME_PATH}/build_logo/build.log
+
 if [[ "$(nproc)" -le "12" ]];then
   ECHOY "即将使用$(nproc)线程进行编译固件"
   sleep 8
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
     ECHOG "WSL临时路径编译中"
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make V=s -j$(nproc) |tee ${HOME_PATH}/build_logo/build.log
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(nproc) V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
   else
-     make V=s -j$(nproc) |tee ${HOME_PATH}/build_logo/build.log
+     make -j$(nproc) V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
   fi
 else
   ECHOGG "您的CPU线程超过或等于16线程，强制使用16线程进行编译固件"
   sleep 8
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
     ECHO "WSL临时路径编译中"
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make V=s -j16 |tee ${HOME_PATH}/build_logo/build.log
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
   else
-     make V=s -16 |tee ${HOME_PATH}/build_logo/build.log
+     make -j16 V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
   fi
 fi
 
@@ -644,7 +649,7 @@ if [[ -f "${FIRMWARE_PATH}" ]] && [[ `ls -1 "${FIRMWARE_PATH}" | grep -c "immort
 fi
 
 sleep 3
-if [[ `ls -1 "${FIRMWARE_PATH}" |grep -c "${TARGET_BOARD}"` -eq '0' ]]; then
+if [[ "${compile_error}" == "1" ]] || [[ `ls -1 "${FIRMWARE_PATH}" |grep -c "${TARGET_BOARD}"` -eq '0' ]]; then
   print_error "编译失败~~!"
   ECHOY "在 openwrt/build_logo/build.log 可查看编译日志,日志文件比较大,拖动到电脑查看比较方便"
   echo "
@@ -671,7 +676,7 @@ else
   sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
   sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
   source ${GITHUB_ENV}
-  #source ${BUILD_PATH}/common.sh && firmware_jiance
+  source ${BUILD_PATH}/common.sh && firmware_jiance
 fi
 }
 
