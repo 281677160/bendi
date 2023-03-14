@@ -573,6 +573,7 @@ cd ${HOME_PATH}
 make defconfig
 [[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
 rm -rf ${HOME_PATH}/build_logo/build.log
+package_error="0"
 
 make -j8 download V=s 2>&1 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && package_error="1"
 
@@ -623,6 +624,7 @@ echo
 [[ -d "${FIRMWARE_PATH}" ]] && sudo rm -rf ${FIRMWARE_PATH}
 [[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
 rm -rf ${HOME_PATH}/build_logo/build.log
+compile_error="0"
 
 if [[ "$(nproc)" -le "12" ]];then
   ECHOY "即将使用$(nproc)线程进行编译固件"
