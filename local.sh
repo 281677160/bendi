@@ -682,7 +682,7 @@ fi
 
 
 function Bendi_PackageAmlogic() {
-if [[ ${PACKAGING_FIRMWARE} == "true" ]] && [[ ${TARGET_PROFILE} == "Armvirt_64" ]]; then
+if [[ ${PACKAGING_FIRMWARE} == "true" ]] && [[ "${TARGET_PROFILE}" == "Armvirt_64" ]]; then
   source ${BUILD_PATH}/common.sh && Package_amlogic
 fi
 }
@@ -696,7 +696,7 @@ judge "整理固件"
 }
 
 function Bendi_shouweigongzhong() {
-if [[ "${AMLOGIC_CODE}" == "AMLOGIC" ]]; then
+if [[ "${TARGET_PROFILE}" == "Armvirt_64" ]]; then
   print_ok "[ N1或晶晨系列盒子专用固件 ]顺利编译完成~~~"
 else
   print_ok "[ ${FOLDER_NAME}-${LUCI_EDITION2}-${TARGET_PROFILE} ]顺利编译完成~~~"
