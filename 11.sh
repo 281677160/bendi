@@ -107,7 +107,7 @@ if [[ -f "/etc/ssh/sshd_config" ]]; then
 else
   echo "SSH安装失败"
 fi
-
+sudo service ssh restart
 if [[ `sudo grep -c "grep -Eoc sshd" ".bashrc"` -eq '0' ]]; then
 sudo echo '
 if [ `sudo ps -e |grep ssh |grep -Eoc sshd` -eq "0" ]; then
