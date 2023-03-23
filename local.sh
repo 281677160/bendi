@@ -623,30 +623,31 @@ echo
 [[ -d "${FIRMWARE_PATH}" ]] && sudo rm -rf ${FIRMWARE_PATH}
 [[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
 rm -rf ${HOME_PATH}/build_logo/build.log
-compile_error="0"
 
 if [[ "$(nproc)" -le "12" ]];then
   ECHOY "即将使用$(nproc)线程进行编译固件"
   sleep 8
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
     ECHOG "WSL临时路径编译中"
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(nproc) | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(nproc) | tee ${HOME_PATH}/build_logo/build.log
   else
-     make -j$(nproc) | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
+     make -j$(nproc) | tee ${HOME_PATH}/build_logo/build.log
   fi
 else
   ECHOGG "您的CPU线程超过或等于16线程，强制使用16线程进行编译固件"
   sleep 8
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
     ECHO "WSL临时路径编译中"
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 | tee ${HOME_PATH}/build_logo/build.log | tee ${HOME_PATH}/build_logo/build.log
   else
-     make -j16 | tee ${HOME_PATH}/build_logo/build.log | grep -i "Error 2" && tail -20 tee ${HOME_PATH}/build_logo/build.log && compile_error="1"
+     make -j16 | tee ${HOME_PATH}/build_logo/build.log | tee ${HOME_PATH}/build_logo/build.log
   fi
 fi
 
-if [[ -f "${FIRMWARE_PATH}" ]] && [[ `ls -1 "${FIRMWARE_PATH}" | grep -c "immortalwrt"` -ge '1' ]]; then
-  rename -v "s/^immortalwrt/openwrt/" ${FIRMWARE_PATH}/*
+if [[ `grep -ic "Error 2" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
+  compile_error="0"
+else
+  compile_error="1"
 fi
 
 sleep 3
@@ -678,6 +679,10 @@ else
   sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
   source ${GITHUB_ENV}
 fi
+
+if [[ -f "${FIRMWARE_PATH}" ]] && [[ `ls -1 "${FIRMWARE_PATH}" | grep -c "immortalwrt"` -ge '1' ]]; then
+  rename -v "s/^immortalwrt/openwrt/" ${FIRMWARE_PATH}/*
+fi
 }
 
 
@@ -696,10 +701,10 @@ judge "整理固件"
 }
 
 function Bendi_shouweigongzhong() {
-if [[ "${TARGET_PROFILE}" == "Armvirt_64" ]]; then
+if [[ `grep -c 'CONFIG_TARGET_armvirt_64_Default=y' ${HOME_PATH}/.config` -eq '1' ]]; then
   print_ok "[ N1或晶晨系列盒子专用固件 ]顺利编译完成~~~"
 else
-  print_ok "[ ${FOLDER_NAME}-${LUCI_EDITION2}-${TARGET_PROFILE} ]顺利编译完成~~~"
+  print_ok "[ ${FOLDER_NAME}-${LUCI_EDITION}-${TARGET_PROFILE} ]顺利编译完成~~~"
 fi
 ECHOGG "已为您把配置文件替换到operates/${FOLDER_NAME}/${CONFIG_FILE}里"
 ECHOY "编译日期：$(date +'%Y年%m月%d号')"
