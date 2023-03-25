@@ -358,7 +358,7 @@ if [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   echo
   echo
   if [[ "${zhizuoconfig}" = "1" ]]; then
-    ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好分支"
+    ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
   else
     ECHOY "提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件"
   fi
