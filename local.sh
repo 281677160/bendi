@@ -426,7 +426,10 @@ sudo chmod -R +x build
 
 ECHOGG "检测是否缺少文件"
 source common.sh && Diy_settings
+
+ECHOGG "整理源码中,请稍后..."
 [[ -f "${DEFAULT_PATH}" ]] && source common.sh && Diy_wenjian
+judge "整理源码"
 echo
 }
 
@@ -438,7 +441,9 @@ git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
 judge "源码下载"
 cd ${HOME_PATH}
 mkdir -p LICENSES/doc
+ECHOGG "整理源码和增加插件源"
 source ${GITHUB_WORKSPACE}/build/${FOLDER_NAME}/common.sh && Diy_checkout
+judge "整理源码和增加插件源"
 mv -f ${GITHUB_WORKSPACE}/build ${HOME_PATH}/build
 }
 
@@ -510,14 +515,9 @@ fi
 function Make_Menuconfig() {
 if [[ "${MAKE_CONFIGURATION}" == "true" ]]; then
   make defconfig
-  if [[ ! -d "${GITHUB_WORKSPACE}/operates/config" ]]; then
-    mkdir -p ${GITHUB_WORKSPACE}/operates/config
-  fi
   source ${BUILD_PATH}/common.sh && Make_defconfig
   source ${GITHUB_ENV}
-  difffonfig="${FOLDER_NAME}-${LUCI_EDITION}-${TARGET_PROFILE}.config.txt"
-  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/operates/config/${difffonfig}
-  cp -Rf ${GITHUB_WORKSPACE}/operates/config/${difffonfig} ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
+  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
   echo "
   SUCCESS_FAILED="makeconfig"
   FOLDER_NAME2="${FOLDER_NAME}"
@@ -528,7 +528,7 @@ if [[ "${MAKE_CONFIGURATION}" == "true" ]]; then
   " > ${HOME_PATH}/LICENSES/doc/key-buildzu
   sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
   sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
-  ECHOG "配置已经存入operates/config文件夹中"
+  ECHOG "配置已经存入operates/${FOLDER_NAME}/${CONFIG_FILE}中"
   exit 0
 fi
 }
