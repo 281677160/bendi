@@ -923,7 +923,11 @@ function Bendi_xuanzhe() {
   ls -1 "operates" |awk '$0=NR"、"$0'|awk '{print "  " $0}'
   echo
   echo
-  echo -e "${Blue}  请输入您要编译源码前面对应的数值(1~X),输入[N]则为退出程序${Font}"
+  if [[ "$zhizuoconfig" == "1" ]]; then
+    echo -e "${Blue}  请输入您要制作.config配置文件的源码前面对应的数值(1~X),输入[N]则为退出程序${Font}"
+  else
+    echo -e "${Blue}  请输入您要编译源码前面对应的数值(1~X),输入[N]则为退出程序${Font}"
+  fi
   echo
   echo -e "${Yellow}  输入[0]或[Y/y]回车,进行创建机型文件夹或删除机型文件夹${Font}"
   echo
@@ -949,7 +953,11 @@ function Bendi_xuanzhe() {
     sed -i '/FOLDER_NAME=/d' "${GITHUB_ENV}"
     echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
     source ${GITHUB_ENV}
-    ECHOY " 您选择了使用 ${FOLDER_NAME} 编译固件,3秒后将进行启动编译"
+    if [[ "$zhizuoconfig" == "1" ]]; then
+      ECHOY " 您选择了使用 ${FOLDER_NAME} 制作.config配置文件,3秒后将进行启动编译"
+    else
+      ECHOY " 您选择了使用 ${FOLDER_NAME} 编译固件,3秒后将进行启动编译"
+    fi
     rm -rf GITHUB_EVN
     sleep 2
     Bendi_menu
@@ -1208,10 +1216,11 @@ cd ${GITHUB_WORKSPACE}
 clear
 echo
 echo
-ECHOY " 1. 进行选择编译或制作配置文件源码"
-ECHOY " 2. 同步上游operates文件"
-ECHOY " 3. 打包N1或晶晨系列固件(您要有armvirt_64的.tar.gz固件)"
-ECHOY " 4. 退出程序"
+ECHOY " 1. 进行编译固件"if [[ "$zhizuoconfig" == "1" ]]; then
+ECHOY " 2. 进行制作.config配置文件"
+ECHOY " 3. 同步上游operates文件"
+ECHOY " 4. 打包N1或晶晨系列固件(您要有armvirt_64的.tar.gz固件)"
+ECHOY " 5. 退出程序"
 echo
 XUANZHEOP="请输入数字"
 echo
@@ -1223,15 +1232,20 @@ case $CHOOSE in
 break
 ;;
 2)
-  Bendi_UPDIYSETUP
+  zhizuoconfig="1"
+  Bendi_xuanzhe
 break
 ;;
 3)
+  Bendi_UPDIYSETUP
+break
+;;
+4)
   Bendi_Dependent
   Bendi_Packaging
 break
 ;;
-4)
+5)
   echo
   exit 0
 break
