@@ -425,7 +425,12 @@ cp -Rf ${GITHUB_WORKSPACE}/build/common/*.sh build/${FOLDER_NAME}/
 sudo chmod -R +x build
 
 ECHOGG "检测是否缺少文件"
-source common.sh && Diy_settings
+source ${GITHUB_WORKSPACE}/common.sh && Diy_settings
+
+if [[ "${ERCI}" == "1" ]]; then
+  cd ${HOME_PATH}
+  source ${GITHUB_WORKSPACE}/common.sh && Diy_wenjian2
+fi
 }
 
 function Bendi_Download() {
