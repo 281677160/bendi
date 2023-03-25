@@ -358,7 +358,7 @@ if [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   echo
   echo
   if [[ "${zhizuoconfig}" = "1" ]]; then
-    ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好分支，还有开启单纯制作.config配置文件选项"
+    ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好分支"
   else
     ECHOY "提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件"
   fi
@@ -404,6 +404,9 @@ function Bendi_Variable() {
 cd ${GITHUB_WORKSPACE}
 source common.sh && Diy_variable
 judge "变量读取"
+if [[ "${zhizuoconfig}" = "1" ]]; then
+  echo "MAKE_CONFIGURATION=true" >> ${GITHUB_ENV}
+fi
 source ${GITHUB_ENV}
 }
 
