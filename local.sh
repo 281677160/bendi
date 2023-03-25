@@ -1185,9 +1185,11 @@ function menu2() {
   echo
   echo -e " 3${Red}.${Font}${Green}同步上游operates文件${Font}"
   echo
-  echo -e " 4${Red}.${Font}${Green}打包N1或晶晨系列固件(您要有armvirt_64的.tar.gz固件)${Font}"
+  echo -e " 4${Red}.${Font}${Green}回到编译主菜单${Font}"
   echo
-  echo -e " 5${Red}.${Font}${Green}退出${Font}"
+  echo -e " 5${Red}.${Font}${Green}打包N1或晶晨系列固件(您要有armvirt_64的.tar.gz固件)${Font}"
+  echo
+  echo -e " 6${Red}.${Font}${Green}退出${Font}"
   echo
   echo
   XUANZop="请输入数字"
@@ -1208,11 +1210,15 @@ function menu2() {
   break
   ;;
   4)
+    menu
+  break
+  ;;
+  5)
     Bendi_Dependent
     Bendi_Packaging
   break
   ;;
-  5)
+  6)
     echo
     exit 0
   break
