@@ -1016,6 +1016,7 @@ Bendi_shouweigongzhong
 }
 
 function Bendi_menu() {
+export ERCI="0"
 BENDI_Diskcapacity
 Bendi_Dependent
 Bendi_Version
