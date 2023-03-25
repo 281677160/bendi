@@ -381,6 +381,7 @@ fi
 clear
 echo
 echo
+echo
 if [[ "${zhizuoconfig}" = "1" ]]; then
   Menuconfig_Config="true"
   ECHOG "请耐心等待程序运行至窗口弹出进行机型和插件配置!"
@@ -434,6 +435,7 @@ fi
 }
 
 function Bendi_Download() {
+echo
 ECHOGG "下载${SOURCE_CODE}-${LUCI_EDITION}源码"
 cd ${GITHUB_WORKSPACE}
 sudo rm -rf ${HOME_PATH}
@@ -441,9 +443,9 @@ git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
 judge "源码下载"
 cd ${HOME_PATH}
 mkdir -p LICENSES/doc
-ECHOGG "整理源码和增加插件源"
+ECHOGG "整理源码"
 source ${GITHUB_WORKSPACE}/build/${FOLDER_NAME}/common.sh && Diy_checkout
-judge "整理源码和增加插件源"
+judge "整理源码"
 mv -f ${GITHUB_WORKSPACE}/build ${HOME_PATH}/build
 }
 
