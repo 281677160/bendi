@@ -357,8 +357,11 @@ if [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   clear
   echo
   echo
-  ECHOY "提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件"
-  ECHOG "提示：如果单纯制作配置文件的话请在 operates/${FOLDER_NAME}/settings.ini 里面设置该选项"
+  if [[ "${zhizuoconfig}" = "1" ]]; then
+    ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好分支，还有开启单纯制作.config配置文件选项"
+  else
+    ECHOY "提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件"
+  fi
   ECHOY "设置完毕后，按[W/w]回车继续编译"
   ZDYSZ="请输入您的选择"
   while :; do
@@ -378,7 +381,7 @@ fi
 clear
 echo
 echo
-if [[ "${MAKE_CONFIGURATION}" == "true" ]]; then
+if [[ "${zhizuoconfig}" = "1" ]]; then
   Menuconfig_Config="true"
   ECHOG "请耐心等待程序运行至窗口弹出进行机型和插件配置!"
 else
@@ -470,6 +473,9 @@ judge "加载files,语言,更新源"
 }
 
 function Bendi_Menuconfig() {
+if [[ "${zhizuoconfig}" = "1" ]]; then
+  Menuconfig_Config="true"
+fi
 cd ${HOME_PATH}
 if [[ "${Menuconfig_Config}" == "true" ]]; then
   ECHOGG "配置机型，插件等..."
@@ -1136,6 +1142,7 @@ function menu2() {
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}/${SEED_CONFIG1}配置文件机型${Font}：${Yellow}${TARGET_PROFILE3}${Font}"
     aaaa="保留缓存,再次编译?"
     bbbbb="编译"
+    zhizuoconfig="0"
   elif [[ "${SUCCESS_FAILED}" == "makeconfig" ]]; then  
     echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
     echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
@@ -1145,6 +1152,7 @@ function menu2() {
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}/${SEED_CONFIG1}配置文件机型${Font}：${Yellow}${TARGET_PROFILE3}${Font}"
     aaaa="继续制作.config配置文件"
     bbbbb="制作.config配置文件?"
+    zhizuoconfig="1"
   elif [[ "${SUCCESS_FAILED}" == "xzdl" ]]; then
     echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
     echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
@@ -1154,6 +1162,7 @@ function menu2() {
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}/${SEED_CONFIG1}配置文件机型${Font}：${Yellow}${TARGET_PROFILE3}${Font}"
     aaaa="接着上次继续再搞下去?"
     bbbbb="编译"
+    zhizuoconfig="0"
   else
     echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
     echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
@@ -1163,6 +1172,7 @@ function menu2() {
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}/${SEED_CONFIG1}配置文件机型${Font}：${Yellow}${TARGET_PROFILE3}${Font}"
     aaaa="保留缓存,再特么的搞一搞?"
     bbbbb="编译"
+    zhizuoconfig="0"
   fi
   echo
   echo
@@ -1228,6 +1238,7 @@ while :; do
 read -p " ${XUANZHEOP}： " CHOOSE
 case $CHOOSE in
 1)
+  zhizuoconfig="0"
   Bendi_xuanzhe
 break
 ;;
