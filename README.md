@@ -1,6 +1,4 @@
-### 本地Ubuntu一键编译openwrt脚本,全程无脑操作,只要梯子质量过关就好了
-
-### 本地Ubuntu一键制作.config配置文件,全程无脑操作,只要梯子质量过关就好了
+### 本地Ubuntu一键编译openwrt脚本或一键制作.config配置文件,全程无脑操作,只要梯子质量过关就好了
 
 - ### 说明：
 - 《[Telegram聊天吹水群](https://t.me/heiheiheio)》- 《[Telegram中文设置方法](https://github.com/danshui-git/shuoming/blob/master/tele.md)》
