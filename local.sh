@@ -510,15 +510,14 @@ fi
 function Make_Menuconfig() {
 if [[ "${MAKE_CONFIGURATION}" == "true" ]]; then
   make defconfig
-  if [[ ! -d "${GITHUB_WORKSPACE}/config" ]]; then
-    mkdir -p ${GITHUB_WORKSPACE}/config
-  else
-    rm -rf ${GITHUB_WORKSPACE}/config/*
+  if [[ ! -d "${GITHUB_WORKSPACE}/operates/config" ]]; then
+    mkdir -p ${GITHUB_WORKSPACE}/operates/config
   fi
   source ${BUILD_PATH}/common.sh && Make_defconfig
   source ${GITHUB_ENV}
   difffonfig="${FOLDER_NAME}-${LUCI_EDITION}-${TARGET_PROFILE}.config.txt"
-  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/config/${difffonfig}
+  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/operates/config/${difffonfig}
+  cp -Rf ${GITHUB_WORKSPACE}/operates/config/${difffonfig} ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
   echo "
   SUCCESS_FAILED="makeconfig"
   FOLDER_NAME2="${FOLDER_NAME}"
@@ -529,7 +528,7 @@ if [[ "${MAKE_CONFIGURATION}" == "true" ]]; then
   " > ${HOME_PATH}/LICENSES/doc/key-buildzu
   sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
   sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
-  ECHOG "配置已经存入${GITHUB_WORKSPACE}/config文件夹中"
+  ECHOG "配置已经存入operates/config文件夹中"
   exit 0
 fi
 }
@@ -1148,7 +1147,7 @@ function menu2() {
     zhizuoconfig="0"
   elif [[ "${SUCCESS_FAILED}" == "makeconfig" ]]; then  
     echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
-    echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
+    echo -e " ${Blue}上回使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
     echo -e " ${Blue}上回制作了${Font}${Yellow}${TARGET_PROFILE2}机型的.config${Font}${Blue}配置文件${Font}"
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}使用配置文件名称${Font}：${Yellow}${CONFIG_FILE1}${Font}"
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}/seed文件夹是否存在${CONFIG_FILE1}名称文件${Font}：${Yellow}${JIXINGWENJIAN}${Font}"
