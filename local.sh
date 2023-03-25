@@ -426,11 +426,6 @@ sudo chmod -R +x build
 
 ECHOGG "检测是否缺少文件"
 source common.sh && Diy_settings
-
-ECHOGG "整理源码中,请稍后..."
-[[ -f "${DEFAULT_PATH}" ]] && source common.sh && Diy_wenjian
-judge "整理源码"
-echo
 }
 
 function Bendi_Download() {
