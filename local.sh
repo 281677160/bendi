@@ -1136,8 +1136,8 @@ function menu2() {
   echo
   echo
   if [[ "${SUCCESS_FAILED}" == "success" ]]; then
-    echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
-    echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
+    echo -e " ${Blue}上回使用源码文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
+    echo -e " ${Blue}上回编译使用分支${Font}：${Yellow}${LUCI_EDITION2}${Font}"
     echo -e " ${Blue}上回成功编译机型${Font}：${Yellow}${TARGET_PROFILE2}${Font}"
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}使用配置文件名称${Font}：${Yellow}${CONFIG_FILE1}${Font}"
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}/seed文件夹是否存在${CONFIG_FILE1}名称文件${Font}：${Yellow}${JIXINGWENJIAN}${Font}"
@@ -1146,8 +1146,8 @@ function menu2() {
     bbbbb="编译"
     zhizuoconfig="0"
   elif [[ "${SUCCESS_FAILED}" == "makeconfig" ]]; then  
-    echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
-    echo -e " ${Blue}上回使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
+    echo -e " ${Blue}上回使用源码文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
+    echo -e " ${Blue}上回编译使用分支${Font}：${Yellow}${LUCI_EDITION2}${Font}"
     echo -e " ${Blue}上回制作了${Font}${Yellow}${TARGET_PROFILE2}机型的.config${Font}${Blue}配置文件${Font}"
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}使用配置文件名称${Font}：${Yellow}${CONFIG_FILE1}${Font}"
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}/seed文件夹是否存在${CONFIG_FILE1}名称文件${Font}：${Yellow}${JIXINGWENJIAN}${Font}"
@@ -1156,8 +1156,8 @@ function menu2() {
     bbbbb="制作.config配置文件?"
     zhizuoconfig="1"
   elif [[ "${SUCCESS_FAILED}" == "xzdl" ]]; then
-    echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
-    echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
+    echo -e " ${Blue}上回使用源码文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
+    echo -e " ${Blue}上回编译使用分支${Font}：${Yellow}${LUCI_EDITION2}${Font}"
     echo -e " ${Red}大兄弟啊,上回没搞成,继续[${FOLDER_NAME2}]搞下去?${Font}"
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}使用配置文件名称${Font}：${Yellow}${CONFIG_FILE1}${Font}"
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}/seed文件夹是否存在${CONFIG_FILE1}名称文件${Font}：${Yellow}${JIXINGWENJIAN}${Font}"
@@ -1166,8 +1166,8 @@ function menu2() {
     bbbbb="编译"
     zhizuoconfig="0"
   else
-    echo -e " ${Blue}上回使用机型文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
-    echo -e " ${Blue}上回编译使用源码${Font}：${Yellow}${SOURCE2}-${LUCI_EDITION2}${Font}"
+    echo -e " ${Blue}上回使用源码文件夹${Font}：${Yellow}${FOLDER_NAME2}${Font}"
+    echo -e " ${Blue}上回编译使用分支${Font}：${Yellow}${LUCI_EDITION2}${Font}"
     echo -e " ${Red}大兄弟啊,上回编译${Yellow}[${TARGET_PROFILE2}]${Font}${Red}于失败告终了${Font}"
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}使用配置文件名称${Font}：${Yellow}${CONFIG_FILE1}${Font}"
     echo -e " ${Blue}当前operates/${FOLDER_NAME2}/seed文件夹是否存在${CONFIG_FILE1}名称文件${Font}：${Yellow}${JIXINGWENJIAN}${Font}"
