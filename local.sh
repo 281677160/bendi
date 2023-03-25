@@ -1226,7 +1226,7 @@ cd ${GITHUB_WORKSPACE}
 clear
 echo
 echo
-ECHOY " 1. 进行编译固件"if [[ "$zhizuoconfig" == "1" ]]; then
+ECHOY " 1. 进行编译固件"
 ECHOY " 2. 进行制作.config配置文件"
 ECHOY " 3. 同步上游operates文件"
 ECHOY " 4. 打包N1或晶晨系列固件(您要有armvirt_64的.tar.gz固件)"
