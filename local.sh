@@ -689,15 +689,11 @@ else
   sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
   source ${GITHUB_ENV}
 fi
-
-if [[ -f "${FIRMWARE_PATH}" ]] && [[ `ls -1 "${FIRMWARE_PATH}" | grep -c "immortalwrt"` -ge '1' ]]; then
-  rename -v "s/^immortalwrt/openwrt/" ${FIRMWARE_PATH}/*
-fi
 }
 
 
 function Bendi_PackageAmlogic() {
-if [[ ${PACKAGING_FIRMWARE} == "true" ]] && [[ "${TARGET_PROFILE}" == "Armvirt_64" ]]; then
+if [[ ${PACKAGING_FIRMWARE} == "true" ]] && [[ `grep -Eoc 'CONFIG_TARGET_armvirt_64_Default=y' ${HOME_PATH}/.config` -eq '1' ]]; then
   source ${BUILD_PATH}/common.sh && Package_amlogic
 fi
 }
