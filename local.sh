@@ -474,6 +474,7 @@ function Bendi_UpdateSource() {
 ECHOGG "读取自定义文件"
 cd ${HOME_PATH}
 source ${BUILD_PATH}/common.sh && Diy_zdypartsh
+sed -i '/-rl \.\//d' "${BUILD_PATH}/${DIY_PART_SH}"
 source ${BUILD_PATH}/common.sh && Diy_Publicarea
 judge "读取自定义文件"
 ECHOGG "加载files,语言,更新源"
