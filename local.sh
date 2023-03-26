@@ -459,7 +459,6 @@ if [[ ! -f "${BUILD_PATH}/common.sh" ]]; then
 else
   source ${BUILD_PATH}/common.sh && Diy_distrib
 fi
-sed -i '/-rl \.\//d' "${BUILD_PATH}/${DIY_PART_SH}"
 }
 
 function Bendi_SourceClean() {
