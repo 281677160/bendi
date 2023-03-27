@@ -462,11 +462,11 @@ fi
 }
 
 function Bendi_SourceClean() {
-ECHOGG "源码微调"
+ECHOGG "源码微调和增加插件源"
 cd ${HOME_PATH}
 source ${GITHUB_ENV}
 source ${BUILD_PATH}/common.sh && Diy_menu3
-judge "源码微调"
+judge "源码微调和增加插件源"
 echo
 }
 
