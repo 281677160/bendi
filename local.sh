@@ -361,7 +361,7 @@ if [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   if [[ "${zhizuoconfig}" = "1" ]]; then
     ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
   else
-    ECHOY "提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件"
+    ECHOY "提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件和源码分支"
   fi
   ECHOY "设置完毕后，按[W/w]回车继续编译"
   ZDYSZ="请输入您的选择"
