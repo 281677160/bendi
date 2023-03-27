@@ -425,15 +425,14 @@ sudo chmod -R +x build
 
 ECHOGG "检测是否缺少文件"
 source ${GITHUB_WORKSPACE}/common.sh && Diy_settings
-
 if [[ "${ERCI}" == "1" ]]; then
   cd ${HOME_PATH}
   source ${GITHUB_WORKSPACE}/common.sh && Diy_wenjian2
 fi
+echo
 }
 
 function Bendi_Download() {
-echo
 ECHOGG "下载${SOURCE_CODE}-${LUCI_EDITION}源码"
 cd ${GITHUB_WORKSPACE}
 sudo rm -rf ${HOME_PATH}
