@@ -129,9 +129,6 @@ if [[ `echo "${PATH}" |grep -ic "windows"` -ge '1' ]] && [[ ! "${WSL_ROUTEPATH}"
     fi
   ;;
   *)
-    for X in $(find "${GITHUB_WORKSPACE}/operates" -name "settings.ini"); do
-      echo 'WSL_ROUTEPATH="true"                # 关闭询问改变WSL路径（true=开启）（false=关闭）' >> "${X}"
-    done
     ECHOYY "正在使用临时路径解决编译问题！"
   ;;
   esac
