@@ -163,9 +163,9 @@ function Bendi_Dependent() {
 ECHOG "下载common.sh运行文件"
 cd ${GITHUB_WORKSPACE}
 sudo rm -rf common.sh
-wget -O common.sh https://raw.githubusercontent.com/281677160/common-main/main/common.sh
+wget -O common.sh https://raw.githubusercontent.com/281677160/common/main/common.sh
 if [[ $? -ne 0 ]]; then
-  curl -fsSL https://raw.githubusercontent.com/281677160/common-main/main/common.sh > common.sh
+  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh > common.sh
 fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   sudo chmod +x common.sh
@@ -196,7 +196,7 @@ function Bendi_DiySetup() {
 cd ${GITHUB_WORKSPACE}
 if [[ ! -f "operates/${FOLDER_NAME}/settings.ini" ]]; then
   ECHOG "下载operates自定义配置文件"
-  curl -fsSL https://raw.githubusercontent.com/281677160/common-main/main/bendi/tongbu.sh -o tongbu.sh
+  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/bendi/tongbu.sh -o tongbu.sh
   source tongbu.sh && menu3
   judge "operates自定义配置文件下载"
   rm -rf tongbu.sh
@@ -212,7 +212,7 @@ function Bendi_Tongbu() {
 cd ${GITHUB_WORKSPACE}
 echo
 echo "开始同步上游operates文件"
-curl -fsSL https://raw.githubusercontent.com/281677160/common-main/main/bendi/tongbu.sh -o tongbu.sh
+curl -fsSL https://raw.githubusercontent.com/281677160/common/main/bendi/tongbu.sh -o tongbu.sh
 source tongbu.sh && ${tongbumemu}
 if [[ $? -ne 0 ]]; then
   rm -rf tongbu.sh
@@ -290,9 +290,9 @@ BENDI_WENJIAN
 
 function github_establish() {
 ECHOY "在operates文件夹里面创建机型文件夹,正在下载上游源码,请稍后..."
-rm -rf chuang && git clone https://github.com/281677160/autobuild chuang > /dev/null 2>&1
+rm -rf chuang && git clone https://github.com/281677160/build-actions chuang > /dev/null 2>&1
 if [[ ! -d "chuang/build" ]]; then
-  rm -rf chuang && svn co https://github.com/281677160/autobuild/trunk/build chuang/build > /dev/null 2>&1
+  rm -rf chuang && svn co https://github.com/281677160/build-actions/trunk/build chuang/build > /dev/null 2>&1
   rm -rf chuang/build/.svn
 fi
 if [[ ! -d "chuang/build" ]]; then
@@ -413,7 +413,7 @@ source "operates/${FOLDER_NAME}/settings.ini"
 echo "WSL_ROUTEPATH=${WSL_ROUTEPATH}" >> ${GITHUB_ENV}
 source ${GITHUB_ENV}
 sudo rm -rf build && cp -Rf operates build
-git clone -b main --depth 1 https://github.com/281677160/common-main build/common
+git clone -b main --depth 1 https://github.com/281677160/common build/common
 judge "扩展文件下载"
 cp -Rf build/common/common.sh build/${FOLDER_NAME}/common.sh
 cp -Rf build/common/upgrade.sh build/${FOLDER_NAME}/upgrade.sh
@@ -744,9 +744,9 @@ function Bendi_Packaging() {
         ECHOY "正在下载打包所需的程序,请耐心等候~~~"
         git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
         judge "打包程序下载1"
-        curl -fsSL https://github.com/281677160/common-main/releases/download/API/stable.api -o amlogic/stable.api
+        curl -fsSL https://github.com/281677160/common/releases/download/API/stable.api -o amlogic/stable.api
         if [[ $? -ne 0 ]]; then
-          curl -fsSL https://github.com/281677160/common-main/releases/download/API/stable.api -o amlogic/stable.api
+          curl -fsSL https://github.com/281677160/common/releases/download/API/stable.api -o amlogic/stable.api
         fi
         if [[ `grep -c "name" amlogic/stable.api` -eq '0' ]]; then
           print_error "上游仓库amlogic内核版本API下载失败!"
@@ -758,9 +758,9 @@ function Bendi_Packaging() {
     ECHOY "正在下载打包所需的程序,请耐心等候~~~"
     git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
     judge "打包程序下载1"
-    curl -fsSL https://github.com/281677160/common-main/releases/download/API/stable.api -o amlogic/stable.api
+    curl -fsSL https://github.com/281677160/common/releases/download/API/stable.api -o amlogic/stable.api
     if [[ $? -ne 0 ]]; then
-      curl -fsSL https://github.com/281677160/common-main/releases/download/API/stable.api -o amlogic/stable.api
+      curl -fsSL https://github.com/281677160/common/releases/download/API/stable.api -o amlogic/stable.api
     fi
     if [[ `grep -c "name" amlogic/stable.api` -eq '0' ]]; then
       print_error "上游仓库amlogic内核版本API下载失败!"
