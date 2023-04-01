@@ -803,14 +803,14 @@ function Bendi_Packaging() {
   ECHOYY "您设置的内核版本为：${amlogic_kernel}"
   echo
   ECHOGG "请选择是否自动打包您输入的内核版本同类型的最新内核"
-  export YUMINGIP=" 输入[Y/y]则为是,任意键回车则为否"
+  export YUMINGIP=" 输入[N/n]则为否,任意键回车则为是"
   read -p "${YUMINGIP}：" auto_kernel
   case $auto_kernel in
-  [Yy])
-    export auto_kernel="true"
+  [Nn])
+    export auto_kernel="false"
   ;;
   *)
-    export auto_kernel="false"
+    export auto_kernel="true"
   ;;
   esac
   export auto_kernel=${auto_kernel}
