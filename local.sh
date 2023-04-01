@@ -778,7 +778,7 @@ function Bendi_Packaging() {
     exit 1
   fi
   sudo chmod +x common.sh
-  grep -Eo '"name": "[0-9]+\.[0-9]+\.[0-9]+"' "amlogic/stable.api" |grep -Eo "[0-9]+\.[0-9]+\.[0-9]+" >amlogic/kernelpub
+  grep -Eo '"name": "[0-9]+\.[0-9]+\.[0-9]+\.tar.gz"' "amlogic/stable.api" |grep -Eo "[0-9]+\.[0-9]+\.[0-9]+" >amlogic/kernelpub
   START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   t1=`date -d "$START_TIME" +%s`
   echo "${t1}" >amlogic/start_time
