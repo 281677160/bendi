@@ -43,7 +43,6 @@ jobs:
     - name: 同步上游仓库
       run: |
         cd $GITHUB_WORKSPACE
-        rm -fr shangyou/OP_DIY
         chmod -R 775 shangyou
         cd shangyou
         git add .
