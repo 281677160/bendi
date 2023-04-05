@@ -430,14 +430,14 @@ echo
 }
 
 function Bendi_Download() {
-ECHOGG "下载${SOURCE_CODE}-${LUCI_EDITION}源码"
+ECHOGG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
 cd ${GITHUB_WORKSPACE}
 sudo rm -rf ${HOME_PATH}
 git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
-judge "源码下载"
+judge "${SOURCE_CODE}-${LUCI_EDITION}源码下载"
 cd ${HOME_PATH}
 mkdir -p LICENSES/doc
-ECHOGG "整理源码"
+ECHOGG "整理源码，请耐心等候..."
 source ${GITHUB_WORKSPACE}/build/${FOLDER_NAME}/common.sh && Diy_checkout
 judge "整理源码"
 mv -f ${GITHUB_WORKSPACE}/build ${HOME_PATH}/build
