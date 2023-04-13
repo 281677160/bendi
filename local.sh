@@ -739,28 +739,12 @@ function Bendi_Packaging() {
         ECHOY "正在下载打包所需的程序,请耐心等候~~~"
         git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
         judge "打包程序下载1"
-        curl -fsSL https://github.com/281677160/common/releases/download/API/stable.api -o amlogic/stable.api
-        if [[ $? -ne 0 ]]; then
-          curl -fsSL https://github.com/281677160/common/releases/download/API/stable.api -o amlogic/stable.api
-        fi
-        if [[ `grep -c "name" amlogic/stable.api` -eq '0' ]]; then
-          print_error "上游仓库amlogic内核版本API下载失败!"
-          exit 1
-        fi
       fi
     fi
   else
     ECHOY "正在下载打包所需的程序,请耐心等候~~~"
     git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
     judge "打包程序下载1"
-    curl -fsSL https://github.com/281677160/common/releases/download/API/stable.api -o amlogic/stable.api
-    if [[ $? -ne 0 ]]; then
-      curl -fsSL https://github.com/281677160/common/releases/download/API/stable.api -o amlogic/stable.api
-    fi
-    if [[ `grep -c "name" amlogic/stable.api` -eq '0' ]]; then
-      print_error "上游仓库amlogic内核版本API下载失败!"
-      exit 1
-    fi
   fi
   if [[ ! -d "${FIRMWARE_PATH}" ]] || [[ `ls -1 "${FIRMWARE_PATH}" |grep -Eoc "*armvirt-64-default-rootfs.tar.gz"` -eq '0' ]]; then
     mkdir -p "${FIRMWARE_PATH}"
@@ -773,14 +757,35 @@ function Bendi_Packaging() {
     exit 1
   fi
   sudo chmod +x common.sh
-  grep -Eo '"name": "[0-9]+\.[0-9]+\.[0-9]+\.tar.gz"' "amlogic/stable.api" |grep -Eo "[0-9]+\.[0-9]+\.[0-9]+" >amlogic/kernelpub
   START_TIME=`date +'%Y-%m-%d %H:%M:%S'`
   t1=`date -d "$START_TIME" +%s`
   echo "${t1}" >amlogic/start_time
-  export amkernel="$(cat amlogic/kernelpub |awk 'END {print}' |sed s/[[:space:]]//g)"
-  export kernel_repo=https://github.com/ophub/kernel/tree/main/pub
+  export kernel_repo="ophub/kernel"
   rm -rf ${GITHUB_WORKSPACE}/amlogic/{router-config,*README*,LICENSE}
   [ ! -d amlogic/openwrt-armvirt ] && mkdir -p amlogic/openwrt-armvirt
+  
+  ECHOY "选择内核仓库：stable(稳定版)、dev(测试版)、flippy(unifreq版)、rk3588(Rock-5B和HinLink-H88K专用版)"
+  ECHOGG "设置要使用的内核仓库[ 任意键回车则默认(stable) ]"
+  read -p " 请输入要使用的内核仓库：" kernel_usage
+  export kernel_usage=${kernel_usage:-"stable"}
+  ECHOYY "您设置的内核仓库：${kernel_usage}"
+  
+  if [[ "${kernel_usage}" =~ (stable|dev|flippy|rk3588) ]]; then
+    echo
+  else
+    export kernel_usage="stable"
+    ECHOR "仓库名称输入错误，只支持（stable、dev、flippy、rk3588），修改成默认stable仓库使用"
+  fi
+  
+  curl -fsSL https://github.com/281677160/common/releases/download/API/${kernel_usage}.api -o amlogic/${kernel_usage}.api
+  if [[ $? -ne 0 ]]; then
+    curl -fsSL https://github.com/281677160/common/releases/download/API/${kernel_usage}.api -o amlogic/${kernel_usage}.api
+  fi
+  
+  if [[ `grep -c "name" amlogic/stable.api` -ge '1' ]]; then
+    grep -Eo '"name": "[0-9]+\.[0-9]+\.[0-9]+\.tar.gz"' "amlogic/${kernel_usage}.api" |grep -Eo "[0-9]+\.[0-9]+\.[0-9]+" >amlogic/kernelpub
+    export amkernel="$(cat amlogic/kernelpub |awk 'END {print}' |sed s/[[:space:]]//g)"
+  fi
   
   ECHOY "可用芯片：a311d, s922x, s905x3, s905x2, s905l3a, s912, s905d, s905x, s905w, s905"
   ECHOYY "对应支持有什么机型请看说明"
@@ -833,7 +838,7 @@ function Bendi_Packaging() {
   fi
   cd ${GITHUB_WORKSPACE}/amlogic
   sudo chmod +x make
-  sudo ./make -b ${amlogic_model} -v stable -k ${amlogic_kernel} -a ${auto_kernel} -s ${rootfs_size}
+  sudo ./make -b ${amlogic_model} -k ${amlogic_kernel} -a ${auto_kernel} -s ${rootfs_size} -r ${kernel_repo} -u ${kernel_usage}
   if [[ $? -eq 0 ]];then
     echo
     print_ok "打包完成，固件存放在[amlogic/out]文件夹"
