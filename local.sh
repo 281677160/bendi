@@ -765,7 +765,7 @@ function Bendi_Packaging() {
   [ ! -d amlogic/openwrt-armvirt ] && mkdir -p amlogic/openwrt-armvirt
   
   ECHOY "选择内核仓库：stable(稳定版)、dev(测试版)、flippy(unifreq版)、rk3588(Rock-5B和HinLink-H88K专用版)"
-  ECHOGG "设置要使用的内核仓库[ 任意键回车则默认(stable) ]"
+  ECHOGG "设置要使用的内核仓库,任意键回车则默认：stable"
   read -p " 请输入要使用的内核仓库：" kernel_usage
   export kernel_usage=${kernel_usage:-"stable"}
   ECHOYY "您设置的内核仓库：${kernel_usage}"
@@ -789,7 +789,7 @@ function Bendi_Packaging() {
   
   ECHOY "可用芯片：a311d, s922x, s905x3, s905x2, s905l3a, s912, s905d, s905x, s905w, s905"
   ECHOYY "对应支持有什么机型请看说明"
-  ECHOGG "设置要打包固件的机型[ 任意键回车则默认(N1) ]"
+  ECHOGG "设置要打包固件的机型,任意键回车则默认：s905d"
   read -p " 请输入您要设置的机型：" amlogic_model
   export amlogic_model=${amlogic_model:-"s905d"}
   ECHOYY "您设置的机型为：${amlogic_model}"
