@@ -92,8 +92,8 @@ else
   exit 1
 fi
 if [[ "$USER" == "root" ]]; then
- print_error "警告：请勿使用root用户编译，换一个普通用户吧~~"
- exit 1
+  print_error "警告：请勿使用root用户编译，换一个普通用户吧~~"
+  exit 1
 fi
 Google_Check=$(curl -I -s --connect-timeout 8 google.com -w %{http_code} | tail -n1)
 if [ ! "${Google_Check}" == 301 ]; then
