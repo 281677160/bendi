@@ -85,9 +85,7 @@ if [[ ! "$USER" == "openwrt" ]] && [[ "${CURRENT_PATH}" == "openwrt" ]]; then
   exit 1
 fi
 source /etc/os-release
-if [[ "${UBUNTU_CODENAME}" =~ (bionic|focal|jammy) ]]; then
-  echo "${UBUNTU_CODENAME}"
-else
+if [[ ! "${UBUNTU_CODENAME}" =~ (bionic|focal|jammy) ]]; then
   print_error "请使用Ubuntu 64位系统，推荐 Ubuntu 20.04 LTS 或 Ubuntu 22.04 LTS"
   exit 1
 fi
