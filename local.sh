@@ -572,7 +572,7 @@ rm -rf ${HOME_PATH}/build_logo/build.log
 
 make -j8 download | tee ${HOME_PATH}/build_logo/build.log
 
-if [[ `grep -ic "ERROR" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
+if [[ `grep -ic "ERROR" ${HOME_PATH}/build_logo/build.log |grep -v "libgpg-error"` -eq '0' ]]; then
   print_ok "DL文件下载成功"
 else
   clear
