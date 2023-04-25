@@ -640,7 +640,7 @@ else
   fi
 fi
 
-if [[ `grep -ic "Error 2" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
+if [[ `grep -ic "Error 2" ${HOME_PATH}/build_logo/build.log` -eq '0' ]] || [[ `grep -c "make with -j1 V=s or V=sc" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
   compile_error="0"
 else
   compile_error="1"
