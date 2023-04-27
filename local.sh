@@ -572,7 +572,7 @@ rm -rf ${HOME_PATH}/build_logo/build.log
 
 make -j8 download |tee ${HOME_PATH}/build_logo/build.log
 
-if [[ `grep -c "ERROR" ${HOME_PATH}/build_logo/build.log` -eq '0' ]] && [[ `grep -c "make with -j1 V=s" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
+if [[ `grep -c "ERROR" ${HOME_PATH}/build_logo/build.log` -eq '0' ]] || [[ `grep -c "make with -j1 V=s" ${HOME_PATH}/build_logo/build.log` -eq '0' ]]; then
   print_ok "DL文件下载成功"
 else
   clear
@@ -625,18 +625,18 @@ if [[ "$(nproc)" -le "12" ]];then
   sleep 8
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
     ECHOG "WSL临时路径编译中"
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j$(nproc) | tee ${HOME_PATH}/build_logo/build.log
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make V=s -j$(nproc) | tee ${HOME_PATH}/build_logo/build.log
   else
-     make -j$(nproc) | tee ${HOME_PATH}/build_logo/build.log
+     make V=s -j$(nproc) | tee ${HOME_PATH}/build_logo/build.log
   fi
 else
   ECHOGG "您的CPU线程超过或等于16线程，强制使用16线程进行编译固件"
   sleep 8
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
     ECHOY "WSL临时路径编译中"
-    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make -j16 | tee ${HOME_PATH}/build_logo/build.log | tee ${HOME_PATH}/build_logo/build.log
+    PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make V=s -j16 | tee ${HOME_PATH}/build_logo/build.log | tee ${HOME_PATH}/build_logo/build.log
   else
-     make -j16 | tee ${HOME_PATH}/build_logo/build.log | tee ${HOME_PATH}/build_logo/build.log
+     make V=s -j16 | tee ${HOME_PATH}/build_logo/build.log | tee ${HOME_PATH}/build_logo/build.log
   fi
 fi
 
