@@ -904,7 +904,9 @@ function Bendi_xuanzhe() {
     sleep 2
     Bendi_DiySetup
   else
-    YY="$(ls -1 "operates" |awk 'NR==1')"
+    cd operates
+    YY="$(ls -1 -d */ |cut -d"/" -f1 |awk 'NR==1')"
+    cd ..
     if [[ ! -f "operates/${YY}/settings.ini" ]]; then
       ECHOG "没有主要编译程序存在,正在下载中,请稍后..."
       sleep 2
@@ -914,11 +916,12 @@ function Bendi_xuanzhe() {
   clear
   echo 
   echo
-  ls -1 "operates" |awk '$0=NR" "$0' > GITHUB_ENN
-  ls -1 "operates" > GITHUB_EVN
-  XYZDSZ="$(cat GITHUB_ENN | awk 'END {print}' |awk '{print $(1)}')"
-  rm -rf GITHUB_ENN
-  ls -1 "operates" |awk '$0=NR"、"$0'|awk '{print "  " $0}'
+  cd operates
+  XYZDSZ="$(ls -1 -d */ |cut -d"/" -f1 |awk '$0=NR" "$0'| awk 'END {print}' |awk '{print $(1)}')"
+  ls -1 -d */ |cut -d"/" -f1 > GITHUB_EVN
+  mv -f GITHUB_EVN ../GITHUB_EVN
+  ls -1 -d */ |cut -d"/" -f1 |awk '$0=NR"、"$0'|awk '{print "  " $0}'
+  cd ..
   echo
   echo
   if [[ "$zhizuoconfig" == "1" ]]; then
