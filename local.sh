@@ -417,7 +417,7 @@ ECHOGG "检测是否缺少文件"
 source ${GITHUB_WORKSPACE}/common.sh && Diy_settings
 if [[ "${ERCI}" == "1" ]]; then
   cd ${HOME_PATH}
-  source ${GITHUB_WORKSPACE}/common.sh && Diy_wenjian2
+  source ${GITHUB_WORKSPACE}/common.sh && Diy_wenjian
 fi
 echo
 }
