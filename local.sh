@@ -883,8 +883,6 @@ if [[ "${SOURCE_CODE}" == "OFFICIAL" ]] && [[ "${REPO_BRANCH}" =~ (openwrt-19.07
   echo
 else
   ECHOG "同步上游源码"
-  git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-  git config --global user.name "github-actions[bot]"
   git pull
   if [[ $? -ne 0 ]]; then
     ECHOR "同步上游源码失败"
