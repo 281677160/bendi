@@ -553,6 +553,10 @@ rm -rf ${HOME_PATH}/CHONGTU
 
 function Bendi_DownloadDLFile() {
 ECHOGG "下载DL文件，请耐心等候..."
+cd ${HOME_PATH}
+make defconfig
+
+./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
 echo "
 SUCCESS_FAILED="xzdl"
 FOLDER_NAME2="${FOLDER_NAME}"
@@ -563,8 +567,7 @@ SOURCE2="${SOURCE}"
 " > ${HOME_PATH}/LICENSES/doc/key-buildzu
 sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
 sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
-cd ${HOME_PATH}
-make defconfig
+
 [[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
 rm -rf ${HOME_PATH}/build_logo/build.log
 
