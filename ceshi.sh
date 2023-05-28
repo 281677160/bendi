@@ -791,8 +791,12 @@ fi
 }
 
 function Bendi_xuanzhe() {
-  bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/jiance.sh)"
   cd ${GITHUB_WORKSPACE}
+  if [[ ! -d "operates" ]]; then
+    git clone -b main --depth 1 https://github.com/281677160/build-actions shangyou
+    mv -f shangyou/build operates
+    sudo rm -rf shangyou
+  fi
   clear
   echo 
   echo
