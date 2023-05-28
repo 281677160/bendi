@@ -283,6 +283,7 @@ BENDI_WENJIAN
 
 function Bendi_DiySetup() {
 cd ${GITHUB_WORKSPACE}
+bash <(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/jiance.sh)
 source operates/${FOLDER_NAME}/settings.ini
 }
 
