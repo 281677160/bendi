@@ -359,6 +359,8 @@ clear
 echo
 echo
 echo
+chmod -R +x ${GITHUB_WORKSPACE}/operates
+source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 if [[ "${zhizuoconfig}" = "1" ]]; then
   Menuconfig_Config="true"
   ECHOG "请耐心等待程序运行至窗口弹出进行机型和插件配置!"
@@ -396,7 +398,7 @@ judge "更新扩展文件"
 cp -Rf ${HOME_PATH}/build/common/*.sh ${HOME_PATH}/build/${FOLDER_NAME}/
 cp -Rf ${HOME_PATH}/build/common/xiugai.sh ${HOME_PATH}/build/${FOLDER_NAME}/common.sh
 chmod -R +x ${HOME_PATH}/build
-
+source ${HOME_PATH}/build/${FOLDER_NAME}/common.sh && Diy_menu1
 [[ ! -d "${HOME_PATH}/LICENSES/doc" ]] && mkdir -p ${HOME_PATH}/LICENSES/doc
 [[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
 }
