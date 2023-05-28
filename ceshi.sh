@@ -283,13 +283,6 @@ BENDI_WENJIAN
 
 function Bendi_DiySetup() {
 cd ${GITHUB_WORKSPACE}
-if [[ ! -d "operates" ]]; then
-  git clone -b main --depth 1 https://github.com/281677160/build-actions shangyou
-  mv -f shangyou/build operates
-  rm -rf shangyou
-fi
-bash <(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/jiance.sh)
-cd ${GITHUB_WORKSPACE}
 source operates/${FOLDER_NAME}/settings.ini
 }
 
@@ -798,23 +791,7 @@ fi
 
 function Bendi_xuanzhe() {
   cd ${GITHUB_WORKSPACE}
-  if [[ ! -f "/etc/oprelyon" ]]; then
-    Bendi_Dependent
-  fi
-  if [[ ! -d "operates" ]]; then
-    ECHOG "没有主要编译程序存在,正在下载中,请稍后..."
-    sleep 2
-    Bendi_DiySetup
-  else
-    cd operates
-    YY="$(ls -1 -d */ |cut -d"/" -f1 |awk 'NR==1')"
-    cd ..
-    if [[ ! -f "operates/${YY}/settings.ini" ]]; then
-      ECHOG "没有主要编译程序存在,正在下载中,请稍后..."
-      sleep 2
-      Bendi_DiySetup
-    fi
-  fi
+  bash <(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/jiance.sh)
   clear
   echo 
   echo
