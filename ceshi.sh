@@ -885,16 +885,12 @@ function Bendi_xuanzhe() {
 }
 
 function Bendi_menu() {
+Bendi_WslPath
 BENDI_Diskcapacity
 Bendi_Dependent
-Bendi_Version
-Bendi_WslPath
 Bendi_DiySetup
 Bendi_EveryInquiry
-Bendi_Variable
-Bendi_MainProgram
 Bendi_Download
-Bendi_SourceClean
 Bendi_UpdateSource
 Bendi_Menuconfig
 Make_Menuconfig
@@ -1004,7 +1000,7 @@ function menu2() {
   read -p " ${XUANZop}：" menu_num
   case $menu_num in
   1)
-    Bendi_menu2
+    Bendi_menu
   break
   ;;
   2)
