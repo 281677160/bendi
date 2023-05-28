@@ -181,10 +181,12 @@ fi
 }
 
 function github_deletefile() {
-ECHOY "删除operates文件夹里面的机型文件夹"
-ls -1 operates |awk '{print "  " $0}'
+ECHOY "删除operates文件夹里面的文件"
+cd operates
+ls -1 -d */ |cut -d"/" -f1 |awk '{print "  " $0}'
+cd ../
 echo
-ECHOGG "请输入您要删除的文件夹名称,多个文件名的话请用英文的逗号分隔"
+ECHOGG "请输入您要删除的文件名称,多个文件名的话请用英文的逗号分隔"
 while :; do
 read -p " 请输入：" aa
 if [[ -z "${aa}" ]]; then
@@ -230,7 +232,9 @@ if [[ ! -d "chuang/build" ]]; then
   ECHOR "上游源码下载失败,请检测网络"
   exit 1
 else
-  ls -1 chuang/build |awk '{print "  " $0}'
+  cd chuang/build
+  ls -1 -d */ |cut -d"/" -f1 |awk '{print "  " $0}'
+  cd ${GITHUB_WORKSPACE} 
 fi
 echo
 ECHOGG "请输入上面某一文件夹名称,为您要创建的机型文件夹当蓝本"
