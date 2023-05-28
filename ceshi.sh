@@ -102,31 +102,6 @@ if [[ `sudo grep -c "sudo ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers` -eq '0' ]]; 
   sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
 fi
 
-function Bendi_WslPath() {
-if [[ `echo "${PATH}" |grep -ic "windows"` -ge '1' ]] && [[ ! "${WSL_ROUTEPATH}" == 'true' ]]; then
-  clear
-  echo
-  echo
-  ECHOR "您的ubuntu为Windows子系统,是否一次性解决路径问题,还是使用临时路径编译?"
-  read -t 30 -p " [输入[Y/y]回车一次性解决路径问题，任意键回车则用临时路径编译继续编译](不作处理,30秒后使用临时路径编译继续编译)： " Bendi_Wsl
-  case ${Bendi_Wsl} in
-  [Yy])
-    bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/bendi/main/wsl.sh)"
-    if [[ `grep -c "appendWindowsPath = false" /etc/wsl.conf` == '1' ]]; then
-      ECHOG "配置已更新，请重启您的电脑"
-      exit 0
-    else
-      ECHOR "无法完成操作，请再次尝试"
-      exit 1
-    fi
-  ;;
-  *)
-    ECHOYY "正在使用临时路径解决编译问题！"
-  ;;
-  esac
-fi
-}
-
 function BENDI_Diskcapacity() {
 Cipan_Size="$(df -hT $PWD|awk 'NR==2'|awk '{print $(3)}')"
 Cipan_Used="$(df -hT $PWD|awk 'NR==2'|awk '{print $(4)}')"
@@ -288,6 +263,31 @@ function Bendi_DiySetup() {
 cd ${GITHUB_WORKSPACE}
 bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/jiance.sh)"
 source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
+}
+
+function Bendi_WslPath() {
+if [[ `echo "${PATH}" |grep -ic "windows"` -ge '1' ]] && [[ ! "${WSL_ROUTEPATH}" == 'true' ]]; then
+  clear
+  echo
+  echo
+  ECHOR "您的ubuntu为Windows子系统,是否一次性解决路径问题,还是使用临时路径编译?"
+  read -t 30 -p " [输入[Y/y]回车一次性解决路径问题，任意键回车则用临时路径编译继续编译](不作处理,30秒后使用临时路径编译继续编译)： " Bendi_Wsl
+  case ${Bendi_Wsl} in
+  [Yy])
+    bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/bendi/main/wsl.sh)"
+    if [[ `grep -c "appendWindowsPath = false" /etc/wsl.conf` == '1' ]]; then
+      ECHOG "配置已更新，请重启您的电脑"
+      exit 0
+    else
+      ECHOR "无法完成操作，请再次尝试"
+      exit 1
+    fi
+  ;;
+  *)
+    ECHOYY "正在使用临时路径解决编译问题！"
+  ;;
+  esac
+fi
 }
 
 function Bendi_EveryInquiry() {
@@ -905,10 +905,10 @@ function Bendi_xuanzhe() {
 }
 
 function Bendi_menu() {
-Bendi_WslPath
 BENDI_Diskcapacity
 Bendi_Dependent
 Bendi_DiySetup
+Bendi_WslPath
 Bendi_EveryInquiry
 Bendi_Download
 Bendi_UpdateSource
