@@ -288,7 +288,31 @@ source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 }
 
 function Bendi_EveryInquiry() {
-if [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
+if [[ "${TONGBU_BENDI}" == "1" ]]; then
+  clear
+  echo
+  echo
+  ECHOG "重要提示：因为刚刚自动同步了上游仓库,请重新设置好所有配置文件再继续"
+  if [[ "${zhizuoconfig}" = "1" ]]; then
+    ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
+  else
+    ECHOY "提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件和源码分支"
+  fi
+  ECHOY "设置完毕后，按[W/w]回车继续编译"
+  ZDYSZ="请输入您的选择"
+  while :; do
+  read -p " ${ZDYSZ}： " ZDYSZU
+  case $ZDYSZU in
+  [Ww])
+    echo
+  break
+  ;;
+  *)
+    ZDYSZ="提醒：确认设置完毕后，请按[W/w]回车继续编译"
+  ;;
+  esac
+  done
+elif [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   clear
   echo
   echo
