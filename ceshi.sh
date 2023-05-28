@@ -295,7 +295,7 @@ function Bendi_EveryInquiry() {
 cd ${GITHUB_WORKSPACE}
 if [[ -f "${GITHUB_WORKSPACE}/xiaobanben_d" ]]; then
   TONGBU_BENDI="1"
-  tishi1="重要提示：因为刚刚自动同步了上游仓库,请重新设置好所有配置文件再继续"
+  tishi1="重要提示：因为刚刚自动同步了上游小更新,请重新设置[settings.ini]和[${DIY_PART_SH}]文件再继续"
   tishi2="提示：请在 operates/${FOLDER_NAME} 文件夹内，重新设置[settings.ini]和[${DIY_PART_SH}]文件"
   tishi3="提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
 elif [[ -f "${GITHUB_WORKSPACE}/dabanben_x" ]]; then
