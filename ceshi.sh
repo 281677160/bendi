@@ -372,7 +372,6 @@ else
   ;;
   esac
 fi
-
 chmod -R +x ${GITHUB_WORKSPACE}/operates
 source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 wget -q https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -O common.sh
@@ -380,6 +379,9 @@ if [[ $? -ne 0 ]]; then
   curl -fsSL https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -o common.sh
 fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
+  if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
+    git reset --hard HEAD^
+  fi
   sudo chmod +x common.sh
   source ${GITHUB_WORKSPACE}/common.sh && Diy_menu1
   sudo rm -rf common.sh
@@ -423,7 +425,6 @@ else
     done
   fi
 fi
-
 sudo rm -rf ${HOME_PATH}/build
 cp -Rf ${GITHUB_WORKSPACE}/operates ${HOME_PATH}/build
 sudo rm -rf ${HOME_PATH}/build/common
@@ -656,7 +657,6 @@ else
 fi
 }
 
-
 function Bendi_PackageAmlogic() {
 if [[ ${PACKAGING_FIRMWARE} == "true" ]] && [[ `grep -Eoc 'CONFIG_TARGET_armvirt_64_Default=y' ${HOME_PATH}/.config` -eq '1' ]]; then
   source ${BUILD_PATH}/common.sh && Package_amlogic
@@ -820,16 +820,6 @@ function Bendi_Packaging() {
   else
     print_error "打包失败，请查看当前错误说明!"
   fi
-}
-
-function Bendi_gitpull() {
-ECHOG "同步上游源码"
-git reset --hard HEAD^
-if [[ $? -ne 0 ]]; then
-  ECHOR "同步上游源码失败"
-else
-  ECHOB "同步上游源码完成"
-fi
 }
 
 function Bendi_xuanzhe() {
