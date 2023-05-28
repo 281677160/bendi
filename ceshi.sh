@@ -415,17 +415,16 @@ chmod -R +x ${HOME_PATH}/build
 function Bendi_UpdateSource() {
 ECHOGG "更新插件源"
 cd ${HOME_PATH}
-source ${GITHUB_ENV}
 source ${BUILD_PATH}/common.sh && Diy_menu3
 judge "更新插件源"
 
 ECHOGG "加载自定义设置"
-source ${GITHUB_ENV}
+cd ${HOME_PATH}
 source ${BUILD_PATH}/common.sh && Diy_menu4
 judge "加载自定义设置"
 
 ECHOGG "安装插件源"
-source ${GITHUB_ENV}
+cd ${HOME_PATH}
 source ${BUILD_PATH}/common.sh && Diy_menu5
 judge "安装插件源"
 }
