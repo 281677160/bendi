@@ -381,7 +381,7 @@ fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
     cd ${HOME_PATH}
-    git reset --hard HEAD^ > /dev/null 2>&1
+    git reset --hard HEAD^
     cd ${GITHUB_WORKSPACE}
   fi
   sudo chmod +x common.sh
