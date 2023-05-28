@@ -866,17 +866,16 @@ function Bendi_xuanzhe() {
   fi
   case $CUrrenty in
   B)
-    export FOLDER_NAME3=$(cat GITHUB_EVN |awk ''NR==${YMXZ}'')
+    export FOLDER_NAME3=$(cat ${GITHUB_WORKSPACE}/GITHUB_EVN |awk ''NR==${YMXZ}'')
     export FOLDER_NAME="${FOLDER_NAME3}"
     sed -i '/FOLDER_NAME=/d' "${GITHUB_ENV}"
     echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
     if [[ "$zhizuoconfig" == "1" ]]; then
       ECHOY " 您选择了使用 ${FOLDER_NAME} 制作.config配置文件,3秒后将进行启动编译"
     else
-      ECHOY " 您选择了使用 ${FOLDER_NAME} 编译固件,3秒后将进行启动编译"
+      ECHOY " 您选择了使用 ${FOLDER_NAME} 编译固件"
     fi
-    rm -rf GITHUB_EVN
-    sleep 2
+    rm -rf ${GITHUB_WORKSPACE}/GITHUB_EVN
     Bendi_menu
   break
   ;;
