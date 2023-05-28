@@ -673,8 +673,8 @@ judge "整理固件"
 }
 
 function Bendi_shouweigongzhong() {
-if [[ `grep -c 'CONFIG_TARGET_armvirt_64_Default=y' ${HOME_PATH}/.config` -eq '1' ]]; then
-  print_ok "[ N1或晶晨系列盒子专用固件 ]顺利编译完成~~~"
+if [[ `grep -c 'CONFIG_TARGET_armvirt_64=y' ${HOME_PATH}/.config` -eq '1' ]]; then
+  print_ok "[ Amlogic_Rockchip系列专用固件 ]顺利编译完成~~~"
 else
   print_ok "[ ${FOLDER_NAME}-${LUCI_EDITION}-${TARGET_PROFILE} ]顺利编译完成~~~"
 fi
@@ -1001,7 +1001,7 @@ function menu2() {
   echo
   echo -e " 3${Red}.${Font}${Green}回到编译主菜单${Font}"
   echo
-  echo -e " 4${Red}.${Font}${Green}打包N1或晶晨系列固件(您要有armvirt_64的.tar.gz固件)${Font}"
+  echo -e " 4${Red}.${Font}${Green}打包Amlogic/Rockchip固件(您要有armvirt_64的.tar.gz固件)${Font}"
   echo
   echo -e " 5${Red}.${Font}${Green}退出${Font}"
   echo
@@ -1130,7 +1130,7 @@ if [[ "${KAIDUAN_JIANCE}" == "1" ]] && [[ "${JIXINGWENJIAN}" == "存在" ]]; the
     TARGET_PROFILE3="x86-64"
   elif [[ `grep -c "CONFIG_TARGET_x86=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` == '1' ]]; then
     TARGET_PROFILE3="x86-32"
-  elif [[ `grep -c "CONFIG_TARGET_armvirt_64_Default=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` -eq '1' ]]; then
+  elif [[ `grep -c "CONFIG_TARGET_armvirt_64=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` -eq '1' ]]; then
     TARGET_PROFILE3="Armvirt_64"
   elif [[ `grep -Eoc "CONFIG_TARGET.*DEVICE.*=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` -eq '1' ]]; then
     TARGET_PROFILE3="$(grep -Eo "CONFIG_TARGET.*DEVICE.*=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}" | sed -r 's/.*DEVICE_(.*)=y/\1/')"
