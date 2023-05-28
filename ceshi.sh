@@ -283,8 +283,8 @@ BENDI_WENJIAN
 
 function Bendi_DiySetup() {
 cd ${GITHUB_WORKSPACE}
-bash <(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/jiance.sh)
-source operates/${FOLDER_NAME}/settings.ini
+bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/jiance.sh)"
+source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 }
 
 function Bendi_EveryInquiry() {
@@ -791,8 +791,8 @@ fi
 }
 
 function Bendi_xuanzhe() {
+  bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/jiance.sh)"
   cd ${GITHUB_WORKSPACE}
-  bash <(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/jiance.sh)
   clear
   echo 
   echo
