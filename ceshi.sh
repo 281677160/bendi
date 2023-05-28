@@ -439,17 +439,17 @@ chmod -R +x ${HOME_PATH}/build
 }
 
 function Bendi_UpdateSource() {
-ECHOGG "更新插件源"
+ECHOGG "更新插件源,请耐心等候..."
 cd ${HOME_PATH} && source ${GITHUB_ENV}
 source ${BUILD_PATH}/common.sh && Diy_menu3
 judge "更新插件源"
 
-ECHOGG "加载自定义设置"
+ECHOGG "加载自定义设置,请耐心等候..."
 cd ${HOME_PATH} && source ${GITHUB_ENV}
 source ${BUILD_PATH}/common.sh && Diy_menu4
 judge "加载自定义设置"
 
-ECHOGG "安装插件源"
+ECHOGG "安装插件源,请耐心等候..."
 cd ${HOME_PATH} && source ${GITHUB_ENV}
 source ${BUILD_PATH}/common.sh && Diy_menu5
 judge "安装插件源"
@@ -510,7 +510,7 @@ fi
 
 function Bendi_Configuration() {
 cd ${HOME_PATH} && source ${GITHUB_ENV}
-ECHOGG "检查配置,生成配置"
+ECHOGG "检查配置,生成配置,请耐心等候..."
 source ${BUILD_PATH}/common.sh && Diy_menu6
 judge "检测配置,生成配置"
 cp -Rf ${HOME_PATH}/build_logo/config.txt ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
@@ -549,7 +549,7 @@ rm -rf ${HOME_PATH}/CHONGTU
 }
 
 function Bendi_DownloadDLFile() {
-ECHOGG "下载DL文件，请耐心等候..."
+ECHOGG "下载DL文件,请耐心等候..."
 cd ${HOME_PATH} && source ${GITHUB_ENV}
 make defconfig
 rm -rf ${HOME_PATH}/build_logo/build.log
@@ -601,7 +601,7 @@ echo
 rm -rf ${HOME_PATH}/build_logo/build.log
 
 if [[ "$(nproc)" -le "12" ]];then
-  ECHOY "即将使用$(nproc)线程进行编译固件"
+  ECHOY "即将使用$(nproc)线程进行编译固件,请耐心等候..."
   sleep 8
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
     ECHOG "WSL临时路径编译中"
@@ -610,10 +610,10 @@ if [[ "$(nproc)" -le "12" ]];then
      make V=s -j$(nproc) | tee ${HOME_PATH}/build_logo/build.log
   fi
 else
-  ECHOGG "您的CPU线程超过或等于16线程，强制使用16线程进行编译固件"
+  ECHOGG "您的CPU线程超过或等于16线程，强制使用16线程进行编译固件,请耐心等候..."
   sleep 8
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
-    ECHOY "WSL临时路径编译中"
+    ECHOY "WSL临时路径编译中,请耐心等候..."
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make V=s -j16 | tee ${HOME_PATH}/build_logo/build.log | tee ${HOME_PATH}/build_logo/build.log
   else
      make V=s -j16 | tee ${HOME_PATH}/build_logo/build.log | tee ${HOME_PATH}/build_logo/build.log
