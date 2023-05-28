@@ -847,12 +847,12 @@ function Bendi_xuanzhe() {
   clear
   echo 
   echo
-  cd operates
+  cd ${GITHUB_WORKSPACE}/operates
   XYZDSZ="$(ls -1 -d */ |cut -d"/" -f1 |grep -v 'backups' |awk '$0=NR" "$0'| awk 'END {print}' |awk '{print $(1)}')"
   ls -1 -d */ |cut -d"/" -f1 > GITHUB_EVN
   mv -f GITHUB_EVN ../GITHUB_EVN
   ls -1 -d */ |cut -d"/" -f1 |awk '$0=NR"、"$0'|awk '{print "  " $0}'
-  cd ..
+  cd ${GITHUB_WORKSPACE}
   echo
   echo
   if [[ "$zhizuoconfig" == "1" ]]; then
