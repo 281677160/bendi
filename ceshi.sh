@@ -439,8 +439,6 @@ judge "更新扩展文件"
 cp -Rf ${HOME_PATH}/build/common/*.sh ${HOME_PATH}/build/${FOLDER_NAME}/
 cp -Rf ${HOME_PATH}/build/common/xiugai.sh ${HOME_PATH}/build/${FOLDER_NAME}/common.sh
 chmod -R +x ${HOME_PATH}/build
-[[ ! -d "${HOME_PATH}/LICENSES/doc" ]] && mkdir -p ${HOME_PATH}/LICENSES/doc
-[[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
 }
 
 function Bendi_UpdateSource() {
