@@ -848,7 +848,7 @@ function Bendi_xuanzhe() {
   echo 
   echo
   cd operates
-  XYZDSZ="$(ls -1 -d */ |cut -d"/" -f1 |awk '$0=NR" "$0'| awk 'END {print}' |awk '{print $(1)}')"
+  XYZDSZ="$(ls -1 -d */ |cut -d"/" -f1 |grep -v 'backups' |awk '$0=NR" "$0'| awk 'END {print}' |awk '{print $(1)}')"
   ls -1 -d */ |cut -d"/" -f1 > GITHUB_EVN
   mv -f GITHUB_EVN ../GITHUB_EVN
   ls -1 -d */ |cut -d"/" -f1 |awk '$0=NR"、"$0'|awk '{print "  " $0}'
