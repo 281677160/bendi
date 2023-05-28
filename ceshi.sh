@@ -379,9 +379,9 @@ fi
 
 chmod -R +x ${GITHUB_WORKSPACE}/operates
 source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
-wget -q https://raw.githubusercontent.com/281677160/common/main/common.sh -O common.sh
+wget -q https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -O common.sh
 if [[ $? -ne 0 ]]; then
-  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh -o common.sh
+  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -o common.sh
 fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   sudo chmod +x common.sh
