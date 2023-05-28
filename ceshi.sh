@@ -359,8 +359,6 @@ clear
 echo
 echo
 echo
-chmod -R +x ${GITHUB_WORKSPACE}/operates
-source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 if [[ "${zhizuoconfig}" = "1" ]]; then
   Menuconfig_Config="true"
   ECHOG "请耐心等待程序运行至窗口弹出进行机型和插件配置!"
@@ -378,6 +376,20 @@ else
   ;;
   esac
 fi
+chmod -R +x ${GITHUB_WORKSPACE}/operates
+source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
+wget -q https://raw.githubusercontent.com/281677160/common/main/common.sh -O common.sh
+if [[ $? -ne 0 ]]; then
+  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh -o common.sh
+fi
+if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
+  sudo chmod +x common.sh
+else
+  print_error "common.sh下载失败，请检测网络后再用一键命令试试!"
+  exit 1
+fi
+source ${GITHUB_WORKSPACE}/common.sh && Diy_menu1
+sudo rm -rf common.sh
 }
 
 function Bendi_Download() {
@@ -398,7 +410,6 @@ judge "更新扩展文件"
 cp -Rf ${HOME_PATH}/build/common/*.sh ${HOME_PATH}/build/${FOLDER_NAME}/
 cp -Rf ${HOME_PATH}/build/common/xiugai.sh ${HOME_PATH}/build/${FOLDER_NAME}/common.sh
 chmod -R +x ${HOME_PATH}/build
-source ${HOME_PATH}/build/${FOLDER_NAME}/common.sh && Diy_menu1
 [[ ! -d "${HOME_PATH}/LICENSES/doc" ]] && mkdir -p ${HOME_PATH}/LICENSES/doc
 [[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
 }
