@@ -848,10 +848,9 @@ function Bendi_xuanzhe() {
   echo 
   echo
   cd ${GITHUB_WORKSPACE}/operates
-  XYZDSZ="$(ls -1 -d */ |grep -v 'backups' |cut -d"/" -f1 |awk '$0=NR" "$0'| awk 'END {print}' |awk '{print $(1)}')"
-  ls -1 -d */ |cut -d"/" -f1 > GITHUB_EVN
-  mv -f GITHUB_EVN ../GITHUB_EVN
-  ls -1 -d */ |cut -d"/" -f1 |awk '$0=NR"、"$0'|awk '{print "  " $0}'
+  XYZDSZ="$(ls -1 -d */ |sed '/backups/d' |cut -d"/" -f1 |awk '$0=NR" "$0'| awk 'END {print}' |awk '{print $(1)}')"
+  ls -1 -d */ |sed '/backups/d' |cut -d"/" -f1 > ${GITHUB_WORKSPACE}/GITHUB_EVN
+  ls -1 -d */ |sed '/backups/d' |cut -d"/" -f1 |awk '$0=NR"、"$0'|awk '{print "  " $0}'
   cd ${GITHUB_WORKSPACE}
   echo
   echo
