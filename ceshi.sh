@@ -884,34 +884,7 @@ function Bendi_xuanzhe() {
   done
 }
 
-function Bendi_menu2() {
-export ERCI="1"
-BENDI_Diskcapacity
-Bendi_Dependent
-Bendi_Version
-Bendi_WslPath
-Bendi_DiySetup
-Bendi_EveryInquiry
-Bendi_Variable
-Bendi_Version
-Bendi_Change
-Bendi_gitpull
-Bendi_MainProgram
-Bendi_Restore
-Bendi_UpdateSource
-Bendi_Menuconfig
-Make_Menuconfig
-Bendi_Configuration
-Bendi_ErrorMessage
-Bendi_DownloadDLFile
-Bendi_Compile
-Bendi_PackageAmlogic
-Bendi_Arrangement
-Bendi_shouweigongzhong
-}
-
 function Bendi_menu() {
-export ERCI="0"
 BENDI_Diskcapacity
 Bendi_Dependent
 Bendi_Version
