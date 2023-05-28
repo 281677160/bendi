@@ -289,15 +289,26 @@ source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 
 function Bendi_EveryInquiry() {
 cd ${GITHUB_WORKSPACE}
+if [[ -f "${TONGBU_BENDI}/xiaobanben" ]]; then
+  TONGBU_BENDI="1"
+  tishi1="重要提示：因为刚刚自动同步了上游仓库,请重新设置好所有配置文件再继续"
+  tishi2="提示：请在 operates/${FOLDER_NAME} 文件夹内，重新设置[settings.ini]和[${DIY_PART_SH}]文件"
+  tishi3="提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
+elif [[ -f "${TONGBU_BENDI}/dabanben" ]]; then
+  TONGBU_BENDI="1"
+  tishi1="重要提示：因为刚刚自动同步了上游仓库,请重新设置好所有配置文件再继续"
+  tishi2="提示：请在 operates/${FOLDER_NAME} 内重新设置全部文件，包括配置文件和（diy、files、patches、seed）等"
+  tishi3="提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
+fi
 if [[ "${TONGBU_BENDI}" == "1" ]]; then
   clear
   echo
   echo
-  ECHOG "重要提示：因为刚刚自动同步了上游仓库,请重新设置好所有配置文件再继续"
+  ECHOG "${tishi1}"
   if [[ "${zhizuoconfig}" = "1" ]]; then
-    ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
+    ECHOY "${tishi3}"
   else
-    ECHOY "提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件和源码分支"
+    ECHOY "${tishi2}"
   fi
   ECHOY "设置完毕后，按[W/w]回车继续编译"
   ZDYSZ="请输入您的选择"
