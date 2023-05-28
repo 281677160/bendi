@@ -880,7 +880,7 @@ function Bendi_xuanzhe() {
   break
   ;;
   N)
-    rm -rf GITHUB_ENN
+    rm -rf ${GITHUB_WORKSPACE}/GITHUB_EVN
     echo
     exit 0
   break
