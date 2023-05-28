@@ -376,6 +376,7 @@ else
   ;;
   esac
 fi
+
 chmod -R +x ${GITHUB_WORKSPACE}/operates
 source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 wget -q https://raw.githubusercontent.com/281677160/common/main/common.sh -O common.sh
@@ -384,12 +385,12 @@ if [[ $? -ne 0 ]]; then
 fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   sudo chmod +x common.sh
+  source ${GITHUB_WORKSPACE}/common.sh && Diy_menu1
+  sudo rm -rf common.sh
 else
   print_error "common.sh下载失败，请检测网络后再用一键命令试试!"
   exit 1
 fi
-source ${GITHUB_WORKSPACE}/common.sh && Diy_menu1
-sudo rm -rf common.sh
 }
 
 function Bendi_Download() {
