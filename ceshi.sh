@@ -861,7 +861,6 @@ function Bendi_xuanzhe() {
     export FOLDER_NAME="${FOLDER_NAME3}"
     sed -i '/FOLDER_NAME=/d' "${GITHUB_ENV}"
     echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
-    source ${GITHUB_ENV}
     if [[ "$zhizuoconfig" == "1" ]]; then
       ECHOY " 您选择了使用 ${FOLDER_NAME} 制作.config配置文件,3秒后将进行启动编译"
     else
