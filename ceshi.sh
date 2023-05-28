@@ -830,7 +830,6 @@ fi
 function Bendi_gitpull() {
 ECHOG "同步上游源码"
 git reset --hard HEAD^
-git pull
 if [[ $? -ne 0 ]]; then
   ECHOR "同步上游源码失败"
 else
