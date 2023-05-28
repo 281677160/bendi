@@ -369,10 +369,17 @@ if [[ ! -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
   git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
   judge "${SOURCE_CODE}-${LUCI_EDITION}源码下载"
 fi
-mv -f ${GITHUB_WORKSPACE}/build ${GITHUB_WORKSPACE}/openwrt/build
-if [[ ! -d "${HOME_PATH}/LICENSES/doc" ]]; then
-  mkdir -p ${HOME_PATH}/LICENSES/doc
-fi
+
+sudo rm -rf ${HOME_PATH}/build
+cp -Rf ${GITHUB_WORKSPACE}/operates ${HOME_PATH}/build
+sudo rm -rf ${HOME_PATH}/build/common
+git clone -b main --depth 1 https://github.com/281677160/common ${HOME_PATH}/build/common
+cp -Rf ${HOME_PATH}/build/common/*.sh ${HOME_PATH}/build/${FOLDER_NAME}/
+cp -Rf ${HOME_PATH}/build/common/xiugai.sh ${HOME_PATH}/build/${FOLDER_NAME}/common.sh
+chmod -R +x ${HOME_PATH}/build
+
+[[ ! -d "${HOME_PATH}/LICENSES/doc" ]] && mkdir -p ${HOME_PATH}/LICENSES/doc
+[[ ! -d "${HOME_PATH}/build_logo" ]] && mkdir -p ${HOME_PATH}/build_logo
 }
 
 function Bendi_UpdateSource() {
