@@ -373,7 +373,9 @@ fi
 sudo rm -rf ${HOME_PATH}/build
 cp -Rf ${GITHUB_WORKSPACE}/operates ${HOME_PATH}/build
 sudo rm -rf ${HOME_PATH}/build/common
+ECHOGG "更新扩展文件"
 git clone -b main --depth 1 https://github.com/281677160/common ${HOME_PATH}/build/common
+judge "更新扩展文件"
 cp -Rf ${HOME_PATH}/build/common/*.sh ${HOME_PATH}/build/${FOLDER_NAME}/
 cp -Rf ${HOME_PATH}/build/common/xiugai.sh ${HOME_PATH}/build/${FOLDER_NAME}/common.sh
 chmod -R +x ${HOME_PATH}/build
