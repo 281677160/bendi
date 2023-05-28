@@ -462,10 +462,10 @@ fi
 }
 
 function Make_Menuconfig() {
+cd ${HOME_PATH} && source ${GITHUB_ENV}
 if [[ "${zhizuoconfig}" = "1" ]]; then
   make defconfig
   source ${BUILD_PATH}/common.sh && Make_defconfig
-  source ${GITHUB_ENV}
   ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
   echo "
   SUCCESS_FAILED="makeconfig"
@@ -483,8 +483,7 @@ fi
 }
 
 function Bendi_Configuration() {
-cd ${HOME_PATH}
-source ${GITHUB_ENV}
+cd ${HOME_PATH} && source ${GITHUB_ENV}
 ECHOGG "检查配置,生成配置"
 source ${BUILD_PATH}/common.sh && Diy_menu6
 judge "检测配置,生成配置"
@@ -502,8 +501,7 @@ sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
 }
 
 function Bendi_ErrorMessage() {
-cd ${HOME_PATH}
-source ${GITHUB_ENV}
+cd ${HOME_PATH} && source ${GITHUB_ENV}
 if [[ -s "${HOME_PATH}/CHONGTU" ]]; then
   echo
   TIME b "		错误提示"
@@ -526,7 +524,7 @@ rm -rf ${HOME_PATH}/CHONGTU
 
 function Bendi_DownloadDLFile() {
 ECHOGG "下载DL文件，请耐心等候..."
-cd ${HOME_PATH}
+cd ${HOME_PATH} && source ${GITHUB_ENV}
 make defconfig
 rm -rf ${HOME_PATH}/build_logo/build.log
 make -j16 download |tee ${HOME_PATH}/build_logo/build.log
@@ -560,8 +558,7 @@ fi
 }
 
 function Bendi_Compile() {
-cd ${HOME_PATH}
-source ${GITHUB_ENV}
+cd ${HOME_PATH} && source ${GITHUB_ENV}
 START_TIME=`date -d "$(date +'%Y-%m-%d %H:%M:%S')" +%s`
 Model_Name="$(cat /proc/cpuinfo |grep 'model name' |awk 'END {print}' |cut -f2 -d: |sed 's/^[ ]*//g')"
 Cpu_Cores="$(cat /proc/cpuinfo | grep 'cpu cores' |awk 'END {print}' | cut -f2 -d: | sed 's/^[ ]*//g')"
@@ -642,10 +639,8 @@ fi
 }
 
 function Bendi_Arrangement() {
-echo
-ECHOGG "整理固件"
-cd ${HOME_PATH}
-source ${GITHUB_ENV}
+cd ${HOME_PATH} && source ${GITHUB_ENV}
+ECHOG "整理固件"
 source ${BUILD_PATH}/common.sh && Diy_firmware
 judge "整理固件"
 }
