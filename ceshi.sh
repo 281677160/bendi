@@ -288,6 +288,7 @@ source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 }
 
 function Bendi_EveryInquiry() {
+cd ${GITHUB_WORKSPACE}
 if [[ "${TONGBU_BENDI}" == "1" ]]; then
   clear
   echo
