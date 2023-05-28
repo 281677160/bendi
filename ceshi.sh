@@ -72,12 +72,12 @@ judge() {
 }
 
 # 变量
-export BENDI_VERSION="1"
 export GITHUB_WORKSPACE="$PWD"
 export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
 export OPERATES_PATH="${GITHUB_WORKSPACE}/operates"
 export GITHUB_ENV="${GITHUB_WORKSPACE}/GITHUB_ENV"
-CURRENT_PATH="${GITHUB_WORKSPACE##*/}"
+export CURRENT_PATH="${GITHUB_WORKSPACE##*/}"
+export BENDI_VERSION="1"
 echo '#!/bin/bash' >${GITHUB_ENV}
 sudo chmod +x ${GITHUB_ENV}
 if [[ ! "$USER" == "openwrt" ]] && [[ "${CURRENT_PATH}" == "openwrt" ]]; then
