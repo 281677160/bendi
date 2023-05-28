@@ -381,11 +381,17 @@ fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
     BR_NCH="$(grep -E 'REPO_BRANCH2=' ${HOME_PATH}/LICENSES/doc/key-buildzu |cut -d"=" -f2 |sed 's/\"//g')"
+    ECHOGG "同步上游源码"
     cd ${HOME_PATH}
     git reset --hard HEAD^
     git fetch --all
     git reset --hard origin/${BR_NCH}
     git pull
+    if [[ $? -ne 0 ]]; then
+      ECHOR "同步上游源码失败"
+    else
+      ECHOB "同步上游源码完成"
+    fi
     cd ${GITHUB_WORKSPACE}
   fi
   sudo chmod +x common.sh
