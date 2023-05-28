@@ -102,7 +102,6 @@ if [[ `sudo grep -c "sudo ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers` -eq '0' ]]; 
   sudo sed -i 's?%sudo.*?%sudo ALL=(ALL:ALL) NOPASSWD:ALL?g' /etc/sudoers
 fi
 
-
 function Bendi_WslPath() {
 if [[ `echo "${PATH}" |grep -ic "windows"` -ge '1' ]] && [[ ! "${WSL_ROUTEPATH}" == 'true' ]]; then
   clear
@@ -394,7 +393,7 @@ fi
 function Bendi_Download() {
 cd ${GITHUB_WORKSPACE}
 if [[ ! -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
-  ECHOGG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
+  ECHOG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
   sudo rm -rf ${HOME_PATH}
   git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
   judge "${SOURCE_CODE}-${LUCI_EDITION}源码下载"
