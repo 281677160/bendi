@@ -293,18 +293,18 @@ source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 
 function Bendi_EveryInquiry() {
 cd ${GITHUB_WORKSPACE}
-if [[ -f "${TONGBU_BENDI}/xiaobanben" ]]; then
+if [[ -f "${GITHUB_WORKSPACE}/xiaobanben_d" ]]; then
   TONGBU_BENDI="1"
   tishi1="重要提示：因为刚刚自动同步了上游仓库,请重新设置好所有配置文件再继续"
   tishi2="提示：请在 operates/${FOLDER_NAME} 文件夹内，重新设置[settings.ini]和[${DIY_PART_SH}]文件"
   tishi3="提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
-elif [[ -f "${TONGBU_BENDI}/dabanben" ]]; then
+elif [[ -f "${GITHUB_WORKSPACE}/dabanben_x" ]]; then
   TONGBU_BENDI="1"
   tishi1="重要提示：因为刚刚自动同步了上游仓库,请重新设置好所有配置文件再继续"
   tishi2="提示：请在 operates/${FOLDER_NAME} 内重新设置全部文件，包括自定义文件和（diy、files、patches、seed）等"
   tishi3="提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
 fi
-rm -rf xiaobanben dabanben
+rm -rf xiaobanben_d dabanben_x
 if [[ "${TONGBU_BENDI}" == "1" ]]; then
   clear
   echo
