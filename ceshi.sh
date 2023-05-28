@@ -380,7 +380,9 @@ if [[ $? -ne 0 ]]; then
 fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
-    cd ${HOME_PATH} && git reset --hard HEAD^ && cd ${GITHUB_WORKSPACE}
+    cd ${HOME_PATH}
+    git reset --hard HEAD^ > /dev/null 2>&1
+    cd ${GITHUB_WORKSPACE}
   fi
   sudo chmod +x common.sh
   source ${GITHUB_WORKSPACE}/common.sh && Diy_menu1
@@ -658,7 +660,7 @@ fi
 }
 
 function Bendi_PackageAmlogic() {
-if [[ ${PACKAGING_FIRMWARE} == "true" ]] && [[ `grep -Eoc 'CONFIG_TARGET_armvirt_64_Default=y' ${HOME_PATH}/.config` -eq '1' ]]; then
+if [[ ${PACKAGING_FIRMWARE} == "true" ]] && [[ `grep -Eoc 'CONFIG_TARGET_armvirt_64=y' ${HOME_PATH}/.config` -eq '1' ]]; then
   source ${BUILD_PATH}/common.sh && Package_amlogic
 fi
 }
@@ -721,11 +723,11 @@ function Bendi_Packaging() {
     git clone --depth 1 https://github.com/ophub/amlogic-s9xxx-openwrt.git ${GITHUB_WORKSPACE}/amlogic
     judge "打包程序下载1"
   fi
-  if [[ ! -d "${FIRMWARE_PATH}" ]] || [[ `ls -1 "${FIRMWARE_PATH}" |grep -Eoc "*armvirt-64-default-rootfs.tar.gz"` -eq '0' ]]; then
+  if [[ ! -d "${FIRMWARE_PATH}" ]] || [[ `ls -1 "${FIRMWARE_PATH}" |grep -Eoc "armvirt.*64.*rootfs.*tar.gz"` -eq '0' ]]; then
     mkdir -p "${FIRMWARE_PATH}"
     clear
-    ECHOR "没发现 openwrt/bin/targets/armvirt/64 文件夹里存在.tar.gz固件，已为你创建了文件夹"
-    ECHORR "请用WinSCP工具将\"openwrt-armvirt-64-default-rootfs.tar.gz\"固件存入文件夹中"
+    ECHOR "没发现 openwrt/bin/targets/armvirt/64 文件夹里存在[64-rootfs.tar.gz]固件，已为你创建了文件夹"
+    ECHORR "请用WinSCP工具将\"openwrt-armvirt-64-rootfs.tar.gz\"固件存入文件夹中"
     if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
       ECHOY "提醒：Windows的WSL系统的话，千万别直接打开文件夹来存放固件，很容易出错的，要用WinSCP工具或SSH工具自带的文件管理器"
     fi
@@ -800,15 +802,13 @@ function Bendi_Packaging() {
   export rootfs_size=${rootfs_size:-"960"}
   ECHOYY "您设置的ROOTFS分区大小为：${rootfs_size}"
   ECHOG "设置完毕，开始进行打包操作"
-  if [[ `ls -1 "${FIRMWARE_PATH}" |grep -c ".*default-rootfs.tar.gz"` == '1' ]]; then
+  rm -rf ${FIRMWARE_PATH}/*Zone.Identifier*
+  if [[ `ls -1 "${FIRMWARE_PATH}" |grep -Eoc "armvirt.*64.*rootfs.*tar.gz"` == '1' ]]; then
     cp -Rf ${FIRMWARE_PATH}/*armvirt-64-default-rootfs.tar.gz ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz
-  else
-    armvirtargz="$(ls -1 "${FIRMWARE_PATH}" |grep ".*tar.gz" |awk 'END {print}')"
-    cp -Rf ${FIRMWARE_PATH}/${armvirtargz} ${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt/openwrt-armvirt-64-default-rootfs.tar.gz
   fi
   if [[ `ls -1 "${GITHUB_WORKSPACE}/amlogic/openwrt-armvirt" | grep -c ".tar.gz"` -eq '0' ]]; then
     print_error "amlogic/openwrt-armvirt文件夹没发现openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
-    print_error "请检查openwrt/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-default-rootfs.tar.gz固件存在"
+    print_error "请检查openwrt/bin/targets/armvirt/64文件夹内有没有openwrt-armvirt-64-rootfs.tar.gz固件存在"
     exit 1
   fi
   cd ${GITHUB_WORKSPACE}/amlogic
