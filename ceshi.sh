@@ -828,16 +828,13 @@ fi
 }
 
 function Bendi_gitpull() {
-if [[ "${SOURCE_CODE}" == "OFFICIAL" ]] && [[ "${REPO_BRANCH}" =~ (openwrt-19.07|openwrt-21.02|openwrt-22.03) ]]; then
-  echo
+ECHOG "同步上游源码"
+git reset --hard HEAD^
+git pull
+if [[ $? -ne 0 ]]; then
+  ECHOR "同步上游源码失败"
 else
-  ECHOG "同步上游源码"
-  git pull
-  if [[ $? -ne 0 ]]; then
-    ECHOR "同步上游源码失败"
-  else
-    ECHOB "同步上游源码完成"
-  fi
+  ECHOB "同步上游源码完成"
 fi
 }
 
