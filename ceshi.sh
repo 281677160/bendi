@@ -351,7 +351,6 @@ elif [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   esac
   done
 fi
-
 clear
 echo
 echo
@@ -397,6 +396,32 @@ if [[ ! -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
   sudo rm -rf ${HOME_PATH}
   git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
   judge "${SOURCE_CODE}-${LUCI_EDITION}源码下载"
+else
+  Y="$(grep -E 'REPO_BRANCH2=' ${HOME_PATH}/LICENSES/doc/key-buildzu |cut -d"=" -f2 |sed 's/\"//g')"
+  if [[ ! "${Y}" == "${REPO_BRANCH}" ]]; then
+    ECHOR "编译分支发生改变,需要重新下载源码,按[Y/y]继续,或者按[N/n]退出"
+    ECHOBB "原分支【${Y}】，现分支【${REPO_BRANCH}】"
+    XUANMA="请输入您的选择"
+    while :; do
+    read -p " ${XUANMA}：" Gai_BRANCH
+    case ${Gai_BRANCH} in
+    [Yy])
+      ECHOG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
+      sudo rm -rf ${HOME_PATH}
+      git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
+      judge "${SOURCE_CODE}-${LUCI_EDITION}源码下载"
+      break
+    ;;
+    [Nn])
+      exit 1
+    break
+    ;;
+    *)
+      XUANMA="输入错误,请输入[Y/n]"
+    ;;
+    esac
+    done
+  fi
 fi
 
 sudo rm -rf ${HOME_PATH}/build
@@ -795,41 +820,6 @@ function Bendi_Packaging() {
   else
     print_error "打包失败，请查看当前错误说明!"
   fi
-}
-
-function Bendi_Change() {
-cd ${HOME_PATH}
-sed -i '/^#/d' feeds.conf.default
-if [[ ! "${REPO_BRANCH2}" == "${REPO_BRANCH}" ]]; then
-  ECHOR "编译分支发生改变,需要重新下载源码,下载源码中..."
-  sleep 3
-  Bendi_Download
-elif [[ ! "${COLLECTED_PACKAGES}" == "true" ]]; then
-  if [[ `grep -c "danshui" feeds.conf.default` -ge '1' ]]; then
-    ECHOR "您的自定义设置更改为不需要作者收集的插件包,正在清理插件中..."
-    sleep 3
-    find . -name 'luci-app-openclash' | xargs -i rm -rf {}
-    sed -i '/danshui/d' feeds.conf.default
-    sed -i '/helloworld/d' feeds.conf.default
-    sed -i '/passwall/d' feeds.conf.default
-    ./scripts/feeds clean
-    ./scripts/feeds update -a
-  fi
-elif [[ "${COLLECTED_PACKAGES}" == "true" ]]; then
-  if [[ `grep -c "danshui" feeds.conf.default` -eq '0' ]]; then
-    ECHOG "您的自定义设置更改为需要作者收集的插件包,正在增加插件中..."
-    sleep 3
-    sed -i '/danshui/d' feeds.conf.default
-    sed -i '/helloworld/d' feeds.conf.default
-    sed -i '/fw876/d' feeds.conf.default
-    sed -i '/passwall/d' feeds.conf.default
-    sed -i '/xiaorouji/d' feeds.conf.default
-    ./scripts/feeds clean
-    ./scripts/feeds update -a
-    source ${GITHUB_WORKSPACE}/common.sh && Diy_${SOURCE_CODE}
-    source ${GITHUB_WORKSPACE}/common.sh && Diy_chajianyuan
-  fi
-fi
 }
 
 function Bendi_gitpull() {
