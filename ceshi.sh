@@ -385,6 +385,7 @@ fi
 
 function Bendi_Download() {
 cd ${GITHUB_WORKSPACE}
+[[ "${ZX_XZYM}" == "1" ]] && sudo rm -rf ${HOME_PATH}/LICENSES/doc/key-buildzu
 if [[ ! -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
   ECHOG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
   sudo rm -rf ${HOME_PATH}
@@ -1000,10 +1001,12 @@ function menu2() {
   read -p " ${XUANZop}：" menu_num
   case $menu_num in
   1)
+    ZX_XZYM="0"
     Bendi_menu
   break
   ;;
   2)
+    ZX_XZYM="1"
     Bendi_xuanzhe
   break
   ;;
