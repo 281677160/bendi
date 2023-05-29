@@ -334,7 +334,9 @@ if [[ $? -ne 0 ]]; then
   curl -fsSL https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -o common.sh
 fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
-  if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
+  if [[ "${ZX_XZYM}" == "1" ]]; then
+    sudo rm -rf ${HOME_PATH}/LICENSES/doc/key-buildzu
+  elif [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
     BR_NCH="$(grep -E 'REPO_BRANCH2=' ${HOME_PATH}/LICENSES/doc/key-buildzu |cut -d"=" -f2 |sed 's/\"//g')"
     ECHOGG "同步上游源码"
     cd ${HOME_PATH}
@@ -385,7 +387,6 @@ fi
 
 function Bendi_Download() {
 cd ${GITHUB_WORKSPACE}
-[[ "${ZX_XZYM}" == "1" ]] && sudo rm -rf ${HOME_PATH}/LICENSES/doc/key-buildzu
 if [[ ! -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
   ECHOG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
   sudo rm -rf ${HOME_PATH}
@@ -1134,11 +1135,13 @@ else
 fi
 if [[ "${KAIDUAN_JIANCE}" == "1" ]]; then
   FOLDER_NAME="${FOLDER_NAME2}"
+  ZX_XZYM="0"
   echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
   BENDI_MEMU="menu2"
   menu2
 else
   FOLDER_NAME=""
+  ZX_XZYM="0"
   echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
   BENDI_MEMU="menu"
   menu
