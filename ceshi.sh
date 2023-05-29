@@ -275,42 +275,21 @@ elif [[ -f "${GITHUB_WORKSPACE}/dabanben_x" ]]; then
   TONGBU_BENDI="1"
   tishi1="重要提示：因为刚刚自动同步了上游仓库,请重新设置好所有配置文件再继续"
   tishi2="提示：请在 operates/${FOLDER_NAME} 内重新设置全部文件，包括自定义文件和（diy、files、patches、seed）等"
+else
+  tishi2="提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件和源码分支"
 fi
 sudo rm -rf xiaobanben_d dabanben_x
-if [[ "${TONGBU_BENDI}" == "1" ]]; then
+if [[ "${TONGBU_BENDI}" == "1" ]] || [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   clear
   echo
   echo
-  ECHOG "${tishi1}"
+  [[ "${TONGBU_BENDI}" == "1" ]] && ECHOG "${tishi1}"
   if [[ "${zhizuoconfig}" = "1" ]]; then
     ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
   else
     ECHOY "${tishi2}"
   fi
-  ECHOB "在operates文件夹内有一个backups文件夹，里面是您以前的所有文件的备份，不需要可以删除了"
-  ECHOY "设置完毕后，按[W/w]回车继续编译"
-  ZDYSZ="请输入您的选择"
-  while :; do
-  read -p " ${ZDYSZ}： " ZDYSZU
-  case $ZDYSZU in
-  [Ww])
-    echo
-  break
-  ;;
-  *)
-    ZDYSZ="提醒：确认设置完毕后，请按[W/w]回车继续编译"
-  ;;
-  esac
-  done
-elif [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
-  clear
-  echo
-  echo
-  if [[ "${zhizuoconfig}" = "1" ]]; then
-    ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
-  else
-    ECHOY "提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件和源码分支"
-  fi
+  [[ "${TONGBU_BENDI}" == "1" ]] && ECHOB "在operates文件夹内有一个backups文件夹，里面是您以前的所有文件的备份，不需要可以删除了"
   ECHOY "设置完毕后，按[W/w]回车继续编译"
   ZDYSZ="请输入您的选择"
   while :; do
