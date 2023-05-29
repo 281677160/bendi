@@ -428,6 +428,10 @@ judge "更新扩展文件"
 cp -Rf ${HOME_PATH}/build/common/*.sh ${HOME_PATH}/build/${FOLDER_NAME}/
 cp -Rf ${HOME_PATH}/build/common/xiugai.sh ${HOME_PATH}/build/${FOLDER_NAME}/common.sh
 chmod -R +x ${HOME_PATH}/build
+if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
+  for X in $(grep -E 'sed.*grep.*-rl' "$BUILD_PATH/$DIY_PART_SH" |cut -d"'" -f2  |sed 's/\//\\&/g'); \
+  do sed -i "/${X}/d" "$BUILD_PATH/$DIY_PART_SH"; done
+fi
 }
 
 function Bendi_UpdateSource() {
