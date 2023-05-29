@@ -859,12 +859,13 @@ function Bendi_xuanzhe() {
     export FOLDER_NAME="${FOLDER_NAME3}"
     sed -i '/FOLDER_NAME=/d' "${GITHUB_ENV}"
     echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
+    rm -rf ${GITHUB_WORKSPACE}/GITHUB_EVN
     if [[ "$zhizuoconfig" == "1" ]]; then
-      ECHOY " 您选择了使用 ${FOLDER_NAME} 制作.config配置文件,3秒后将进行启动编译"
+      ECHOY " 您选择了使用 ${FOLDER_NAME} 制作配置文件"
     else
       ECHOY " 您选择了使用 ${FOLDER_NAME} 编译固件"
     fi
-    rm -rf ${GITHUB_WORKSPACE}/GITHUB_EVN
+    sleep 2
     Bendi_menu
   break
   ;;
