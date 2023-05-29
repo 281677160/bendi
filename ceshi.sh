@@ -1134,16 +1134,14 @@ else
   TARGET_PROFILE3="未知"
 fi
 if [[ "${KAIDUAN_JIANCE}" == "1" ]]; then
-  FOLDER_NAME="${FOLDER_NAME2}"
-  ZX_XZYM="0"
+  export FOLDER_NAME="${FOLDER_NAME2}"
+  export ZX_XZYM="0"
   echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
-  BENDI_MEMU="menu2"
   menu2
 else
-  FOLDER_NAME=""
-  ZX_XZYM="0"
+  export FOLDER_NAME=""
+  export ZX_XZYM="0"
   echo "FOLDER_NAME=${FOLDER_NAME}" >> ${GITHUB_ENV}
-  BENDI_MEMU="menu"
   menu
 fi
 }
