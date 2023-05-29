@@ -276,7 +276,7 @@ elif [[ -f "${GITHUB_WORKSPACE}/dabanben_x" ]]; then
   tishi1="重要提示：因为刚刚自动同步了上游仓库,请重新设置好所有配置文件再继续"
   tishi2="提示：请在 operates/${FOLDER_NAME} 内重新设置全部文件，包括自定义文件和（diy、files、patches、seed）等"
 fi
-rm -rf xiaobanben_d dabanben_x
+sudo rm -rf xiaobanben_d dabanben_x
 if [[ "${TONGBU_BENDI}" == "1" ]]; then
   clear
   echo
