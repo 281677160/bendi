@@ -1114,10 +1114,10 @@ if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu.ini" ]]; then
     KAIDUAN_JIANCE="1"
     chmod -R +x ${HOME_PATH}/LICENSES/doc
     source ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
-  else
-    KAIDUAN_JIANCE="0"
-    REPEAT_EDLY="0"
   fi
+else
+  KAIDUAN_JIANCE="0"
+  REPEAT_EDLY="0"
 fi
 if [[ -f "operates/${FOLDER_NAME2}/settings.ini" ]]; then
   KAIDUAN_JIANCE="1"
