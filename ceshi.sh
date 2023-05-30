@@ -835,24 +835,22 @@ function Bendi_xuanzhe() {
   echo
   echo
   if [[ "$zhizuoconfig" == "1" ]]; then
-    echo -e "${Blue}  请输入您要制作.config配置文件的源码前面对应的数值(1~X),输入[N]则为退出程序${Font}"
+    echo -e "${Blue}  请输入您要制作配置文件的源码前面对应的数值(1~X)，输入[N/n]则为退出程序${Font}"
   else
-    echo -e "${Blue}  请输入您要编译源码前面对应的数值(1~X),输入[N]则为退出程序${Font}"
+    echo -e "${Blue}  请输入您要编译源码前面对应的数值(1~X)，输入[N/n]则为退出程序${Font}"
   fi
   echo
-  echo -e "${Yellow}  输入[0]或[Y/y]回车,进行创建机型文件夹或删除机型文件夹${Font}"
+  echo -e "${Yellow}  输入[W/w]回车,进行创建机型文件夹或删除机型文件夹${Font}"
   echo
   export YUMINGIP="  请输入您的选择"
   while :; do
   YMXZ=""
   read -p "${YUMINGIP}：" YMXZ
-  if [[ "${YMXZ}" == "0" ]] || [[ "${YMXZ}" == "Y" ]] || [[ "${YMXZ}" == "y" ]]; then
-    CUrrenty="Y"
-  elif [[ "${YMXZ}" == "N" ]] || [[ "${YMXZ}" == "n" ]]; then
+  if [[ "${YMXZ}" =~ (W|w) ]]; then
+    CUrrenty="W"
+  elif [[ "${YMXZ}" =~ (N|n) ]]; then
     CUrrenty="N"
-  elif [[ -z "${YMXZ}" ]]; then
-    CUrrenty="x"
-  elif [[ "${YMXZ}" -le "${XYZDSZ}" ]]; then
+  elif [[ "${YMXZ}" == "1" ]] || [[ "${YMXZ}" -le "${XYZDSZ}" ]]; then
     CUrrenty="B"
   else
     CUrrenty="x"
@@ -879,12 +877,12 @@ function Bendi_xuanzhe() {
     exit 0
   break
   ;;
-  Y)
+  W)
     BENDI_WENJIAN
     echo
   break
   ;;
-  *)
+  x)
     export YUMINGIP="  敬告,请输入正确选项"
   ;;
   esac
