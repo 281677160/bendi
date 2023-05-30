@@ -338,7 +338,20 @@ if [[ $? -ne 0 ]]; then
 fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   if [[ "${ZX_XZYM}" == "1" ]]; then
-    REPEAT_EDLY="0"
+    export REPEAT_EDLY="0"
+  elif [[ "${REPEAT_EDLY}" == "1" ]]; then
+    cd ${HOME_PATH}
+    LUCI_CHECKUT="$(git tag -l |grep '^V\|^v' |awk 'END {print}')"
+    if [[ -z "${LUCI_CHECKUT}" ]]; then
+      ECHOGG "同步上游源码"
+      git reset --hard HEAD^
+      git fetch --all
+      git reset --hard origin/${REPO_BRANCH2}
+      git pull
+      judge "同步上游源码"
+    elif [[ -n "${LUCI_CHECKUT}" ]]; then
+      export GTI_TAG_LV="1"
+    fi
   fi
   sudo chmod +x ${GITHUB_WORKSPACE}/common.sh
   source ${GITHUB_WORKSPACE}/common.sh && Diy_menu1
