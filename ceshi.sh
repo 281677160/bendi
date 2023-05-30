@@ -494,9 +494,8 @@ if [[ "${zhizuoconfig}" = "1" ]]; then
   LUCI_EDITION2="${LUCI_EDITION}"
   TARGET_PROFILE2="${TARGET_PROFILE}"
   SOURCE2="${SOURCE}"
-  " > ${HOME_PATH}/LICENSES/doc/key-buildzu
-  sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
-  sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
+  " > ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
+  sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
   ECHOG "配置已经存入operates/${FOLDER_NAME}/${CONFIG_FILE}中"
   exit 0
 fi
@@ -507,7 +506,6 @@ cd ${HOME_PATH} && source ${GITHUB_ENV}
 ECHOGG "检查配置,生成配置,请耐心等候..."
 source ${BUILD_PATH}/common.sh && Diy_menu6
 judge "检测配置,生成配置"
-cp -Rf ${HOME_PATH}/build_logo/config.txt ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
 echo "
 SUCCESS_FAILED="xzdl"
 FOLDER_NAME2="${FOLDER_NAME}"
@@ -516,8 +514,8 @@ LUCI_EDITION2="${LUCI_EDITION}"
 TARGET_PROFILE2="${TARGET_PROFILE}"
 SOURCE2="${SOURCE}"
 " > ${HOME_PATH}/LICENSES/doc/key-buildzu
-sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
-sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
+sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
+cp -Rf ${HOME_PATH}/build_logo/config.txt ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
 }
 
 function Bendi_ErrorMessage() {
@@ -631,12 +629,10 @@ if [[ "${compile_error}" == "1" ]] || [[ `ls -1 "${FIRMWARE_PATH}" |grep -c "${T
   LUCI_EDITION2="${LUCI_EDITION}"
   TARGET_PROFILE2="${TARGET_PROFILE}"
   SOURCE2="${SOURCE}"
-  " > ${HOME_PATH}/LICENSES/doc/key-buildzu
-  sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
-  sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
+  " > ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
+  sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
   exit 1
 else
-  cp -Rf ${FIRMWARE_PATH}/config.buildinfo ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
   echo "
   SUCCESS_FAILED="success"
   FOLDER_NAME2="${FOLDER_NAME}"
@@ -644,10 +640,8 @@ else
   LUCI_EDITION2="${LUCI_EDITION}"
   TARGET_PROFILE2="${TARGET_PROFILE}"
   SOURCE2="${SOURCE}"
-  " > ${HOME_PATH}/LICENSES/doc/key-buildzu
-  sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu
-  sudo chmod +x ${HOME_PATH}/LICENSES/doc/key-buildzu
-  source ${GITHUB_ENV}
+  " > ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
+  sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
 fi
 }
 
@@ -889,20 +883,7 @@ function Bendi_xuanzhe() {
   done
 }
 
-function BENDI_Repeat() {
-if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
-Y="$(grep -E 'REPO_BRANCH2=' ${HOME_PATH}/LICENSES/doc/key-buildzu |cut -d"=" -f2 |sed 's/\"//g')"
-  if [[ -n "${Y}" ]]; then
-    REPO_BRANCH2="${Y}"
-    REPEAT_EDLY="1"
-  else
-    REPEAT_EDLY="0"
-  fi
-fi
-}
-
 function Bendi_menu() {
-BENDI_Repeat
 BENDI_Diskcapacity
 Bendi_Dependent
 Bendi_DiySetup
@@ -1113,11 +1094,17 @@ if [[ -z "${FOLDERS}" ]]; then
 else
   KAIDUAN_JIANCE="0"
 fi
-if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
-  KAIDUAN_JIANCE="1"
-  source ${HOME_PATH}/LICENSES/doc/key-buildzu
-else
-  KAIDUAN_JIANCE="0"
+if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu.ini" ]]; then
+  Y="$(grep -E 'REPO_BRANCH2=' ${HOME_PATH}/LICENSES/doc/key-buildzu.ini |cut -d"=" -f2 |sed 's/\"//g')"
+  if [[ -n "${Y}" ]]; then
+    REPEAT_EDLY="1"
+    KAIDUAN_JIANCE="1"
+    chmod -R +x ${HOME_PATH}/LICENSES/doc
+    source ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
+  else
+    KAIDUAN_JIANCE="0"
+    REPEAT_EDLY="0"
+  fi
 fi
 if [[ -f "operates/${FOLDER_NAME2}/settings.ini" ]]; then
   KAIDUAN_JIANCE="1"
