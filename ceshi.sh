@@ -336,13 +336,12 @@ fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   if [[ "${ZX_XZYM}" == "1" ]]; then
     sudo rm -rf ${HOME_PATH}/LICENSES/doc/key-buildzu
-  elif [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
-    BR_NCH="$(grep -E 'REPO_BRANCH2=' ${HOME_PATH}/LICENSES/doc/key-buildzu |cut -d"=" -f2 |sed 's/\"//g')"
+  elif [[ "${REPEAT_EDLY}" == "1" ]]; then
     ECHOGG "同步上游源码"
     cd ${HOME_PATH}
     git reset --hard HEAD^
     git fetch --all
-    git reset --hard origin/${BR_NCH}
+    git reset --hard origin/${REPO_BRANCH2}
     git pull
     if [[ $? -ne 0 ]]; then
       ECHOR "同步上游源码失败"
@@ -387,14 +386,13 @@ fi
 
 function Bendi_Download() {
 cd ${GITHUB_WORKSPACE}
-if [[ ! -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
+if [[ "${REPEAT_EDLY}" == "0" ]]; then
   ECHOG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
   sudo rm -rf ${HOME_PATH}
   git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
   judge "${SOURCE_CODE}-${LUCI_EDITION}源码下载"
 else
-  Y="$(grep -E 'REPO_BRANCH2=' ${HOME_PATH}/LICENSES/doc/key-buildzu |cut -d"=" -f2 |sed 's/\"//g')"
-  if [[ ! "${Y}" == "${REPO_BRANCH}" ]]; then
+  if [[ ! "${REPO_BRANCH2}" == "${REPO_BRANCH}" ]]; then
     ECHOR "编译分支发生改变,需要重新下载源码,按[Y/y]继续,或者按[N/n]退出"
     ECHOBB "原分支【${Y}】，现分支【${REPO_BRANCH}】"
     XUANMA="请输入您的选择"
@@ -428,7 +426,7 @@ judge "更新扩展文件"
 cp -Rf ${HOME_PATH}/build/common/*.sh ${HOME_PATH}/build/${FOLDER_NAME}/
 cp -Rf ${HOME_PATH}/build/common/xiugai.sh ${HOME_PATH}/build/${FOLDER_NAME}/common.sh
 chmod -R +x ${HOME_PATH}/build
-if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
+if [[ "${REPEAT_EDLY}" == "1" ]]; then
   for X in $(grep -E 'sed.*grep.*-rl' "$BUILD_PATH/$DIY_PART_SH" |cut -d"'" -f2 |sed 's/\//\\&/g'); \
   do sed -i "/${X}/d" "$BUILD_PATH/$DIY_PART_SH"; done
 fi
@@ -891,7 +889,20 @@ function Bendi_xuanzhe() {
   done
 }
 
+function BENDI_Repeat() {
+if [[ -f "${HOME_PATH}/LICENSES/doc/key-buildzu" ]]; then
+Y="$(grep -E 'REPO_BRANCH2=' ${HOME_PATH}/LICENSES/doc/key-buildzu |cut -d"=" -f2 |sed 's/\"//g')"
+  if [[ -n "${Y}" ]]; then
+    REPO_BRANCH2="${Y}"
+    REPEAT_EDLY="1"
+  else
+    REPEAT_EDLY="0"
+  fi
+fi
+}
+
 function Bendi_menu() {
+BENDI_Repeat
 BENDI_Diskcapacity
 Bendi_Dependent
 Bendi_DiySetup
