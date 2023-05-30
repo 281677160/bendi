@@ -113,12 +113,15 @@ if [[ "${Cipan_Avail}" -lt "20" ]];then
   case ${KJYN} in
   [Yy]) 
     ECHOG  "可用空间太小严重影响编译,请满天神佛保佑您成功吧！"
+    sleep 2
   ;;
   *)
     ECHOY  "您已取消编译,请清理Ubuntu空间或增加硬盘容量..."
     exit 0
   ;;
   esac
+else
+  sleep 3
 fi
 }
 
@@ -877,7 +880,6 @@ function Bendi_xuanzhe() {
     else
       ECHOY " 您选择了使用 ${FOLDER_NAME} 编译固件"
     fi
-    sleep 2
     Bendi_menu
   break
   ;;
