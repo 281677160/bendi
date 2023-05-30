@@ -332,18 +332,18 @@ fi
 chmod -R +x ${GITHUB_WORKSPACE}/operates
 source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 echo "UPDATE_FIRMWARE_ONLINE=${PACKAGING_FIRMWARE}" >> ${GITHUB_ENV}
-wget -q https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -O common.sh
+wget -q https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -O ${GITHUB_WORKSPACE}/common.sh
 if [[ $? -ne 0 ]]; then
-  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -o common.sh
+  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -o ${GITHUB_WORKSPACE}/common.sh
 fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   if [[ "${ZX_XZYM}" == "1" ]]; then
     REPEAT_EDLY="0"
   elif [[ "${REPEAT_EDLY}" == "1" ]]; then
-    ECHOGG "同步上游源码"
     cd ${HOME_PATH}
     LUCI_CHECKUT="$(git tag -l |grep '^V\|^v' |awk 'END {print}')"
     if [[ -z "${LUCI_CHECKUT}" ]]; then
+      ECHOGG "同步上游源码"
       git reset --hard HEAD^
       git fetch --all
       git reset --hard origin/${REPO_BRANCH2}
@@ -353,12 +353,12 @@ if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
       else
         ECHOB "同步上游源码完成"
       fi
-      cd ${GITHUB_WORKSPACE}
     fi
   fi
-  sudo chmod +x common.sh
+  cd ${GITHUB_WORKSPACE}
+  sudo chmod +x ${GITHUB_WORKSPACE}/common.sh
   source ${GITHUB_WORKSPACE}/common.sh && Diy_menu1
-  sudo rm -rf common.sh
+  sudo rm -rf ${GITHUB_WORKSPACE}/common.sh
 else
   print_error "common.sh下载失败，请检测网络后再用一键命令试试!"
   exit 1
