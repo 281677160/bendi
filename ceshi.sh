@@ -335,7 +335,7 @@ if [[ $? -ne 0 ]]; then
 fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   if [[ "${ZX_XZYM}" == "1" ]]; then
-    sudo rm -rf ${HOME_PATH}/LICENSES/doc/key-buildzu
+    sudo rm -rf ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
   elif [[ "${REPEAT_EDLY}" == "1" ]]; then
     ECHOGG "同步上游源码"
     cd ${HOME_PATH}
@@ -513,7 +513,7 @@ REPO_BRANCH2="${REPO_BRANCH}"
 LUCI_EDITION2="${LUCI_EDITION}"
 TARGET_PROFILE2="${TARGET_PROFILE}"
 SOURCE2="${SOURCE}"
-" > ${HOME_PATH}/LICENSES/doc/key-buildzu
+" > ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
 sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
 cp -Rf ${HOME_PATH}/build_logo/config.txt ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
 }
