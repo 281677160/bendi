@@ -448,17 +448,17 @@ cd ${HOME_PATH} && source ${GITHUB_ENV}
 source ${BUILD_PATH}/common.sh && Diy_menu5
 judge "安装插件源"
 if [[ ! -d "${HOME_PATH}/feeds/packages/lang/golang/.svn" ]]; then
-   svn co https://github.com/openwrt/packages/trunk/lang/golang golang
-   if [[ $? -eq 0 ]]; then
-     rm -rf ${HOME_PATH}/feeds/packages/lang/golang && mv -f golang ${HOME_PATH}/feeds/packages/lang/golang
-   else
-     git clone --depth 1 https://github.com/openwrt/packages -b master golang-version
-     if [[ -d "golang-version/lang/golang" ]]; then
-       rm -rf ${HOME_PATH}/feeds/packages/lang/golang
-       cp -Rf golang-version/lang/golang ${HOME_PATH}/feeds/packages/lang/golang
-       rm -rf golang-version
-     fi
-   fi
+  svn co https://github.com/openwrt/packages/trunk/lang/golang golang
+  if [[ $? -eq 0 ]]; then
+    rm -rf ${HOME_PATH}/feeds/packages/lang/golang && mv -f golang ${HOME_PATH}/feeds/packages/lang/golang
+  else
+    git clone --depth 1 https://github.com/openwrt/packages -b master golang-version
+    if [[ -d "golang-version/lang/golang" ]]; then
+      rm -rf ${HOME_PATH}/feeds/packages/lang/golang
+      cp -Rf golang-version/lang/golang ${HOME_PATH}/feeds/packages/lang/golang
+      rm -rf golang-version
+    fi
+  fi
 fi
 }
 
