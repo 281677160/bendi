@@ -850,7 +850,9 @@ function Bendi_xuanzhe() {
     CUrrenty="W"
   elif [[ "${YMXZ}" =~ (N|n) ]]; then
     CUrrenty="N"
-  elif [[ "${YMXZ}" == "1" ]] || [[ "${YMXZ}" -le "${XYZDSZ}" ]]; then
+  elif [[ "${YMXZ}" == "0" ]] || [[ -z "${YMXZ}" ]]; then
+    CUrrenty="x"
+  elif [[ "${YMXZ}" -le "${XYZDSZ}" ]]; then
     CUrrenty="B"
   else
     CUrrenty="x"
