@@ -348,11 +348,7 @@ if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
       git fetch --all
       git reset --hard origin/${REPO_BRANCH2}
       git pull
-      if [[ $? -ne 0 ]]; then
-        ECHOR "同步上游源码失败"
-      else
-        ECHOB "同步上游源码完成"
-      fi
+      judge "同步上游源码"
     fi
   fi
   cd ${GITHUB_WORKSPACE}
