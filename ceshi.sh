@@ -335,7 +335,7 @@ if [[ $? -ne 0 ]]; then
 fi
 if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
   if [[ "${ZX_XZYM}" == "1" ]]; then
-    sudo rm -rf ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
+    REPEAT_EDLY="0"
   elif [[ "${REPEAT_EDLY}" == "1" ]]; then
     ECHOGG "同步上游源码"
     cd ${HOME_PATH}
