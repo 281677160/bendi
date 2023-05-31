@@ -433,7 +433,11 @@ fi
 function Bendi_UpdateSource() {
 ECHOGG "更新插件源,请耐心等候..."
 cd ${HOME_PATH} && source ${GITHUB_ENV}
-source ${BUILD_PATH}/common.sh && Diy_menu3
+if [[ "${REPEAT_EDLY}" == "1" ]]; then
+  source ${BUILD_PATH}/common.sh && Diy_bendi3
+else
+  source ${BUILD_PATH}/common.sh && Diy_menu3
+fi
 judge "更新插件源"
 
 ECHOGG "加载自定义设置,请耐心等候..."
