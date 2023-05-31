@@ -342,7 +342,12 @@ if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
     ECHOGG "同步上游源码"
     git reset --hard HEAD^
     git pull
-    judge "同步上游源码"
+    if [[ $? -ne 0 ]]; then
+      ECHOR "同步上游源码失败"
+    else
+      ECHOB "同步上游源码完成"
+    fi
+    cd ${GITHUB_WORKSPACE}
   fi
   sudo chmod +x ${GITHUB_WORKSPACE}/common.sh
   source ${GITHUB_WORKSPACE}/common.sh && Diy_menu1
