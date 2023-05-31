@@ -486,7 +486,6 @@ cd ${HOME_PATH} && source ${GITHUB_ENV}
 if [[ "${zhizuoconfig}" = "1" ]]; then
   make defconfig
   source ${BUILD_PATH}/common.sh && Make_defconfig
-  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
   echo "
   SUCCESS_FAILED="makeconfig"
   FOLDER_NAME2="${FOLDER_NAME}"
@@ -496,6 +495,7 @@ if [[ "${zhizuoconfig}" = "1" ]]; then
   SOURCE2="${SOURCE}"
   " > ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
   sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
+  ./scripts/diffconfig.sh > ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/${CONFIG_FILE}
   ECHOG "配置已经存入operates/${FOLDER_NAME}/${CONFIG_FILE}中"
   exit 0
 fi
