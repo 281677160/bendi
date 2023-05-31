@@ -343,8 +343,6 @@ if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
     cd ${HOME_PATH}
     ECHOGG "同步上游源码"
     git reset --hard HEAD^
-    git fetch --all
-    git reset --hard origin/${REPO_BRANCH2}
     git pull
     judge "同步上游源码"
   fi
