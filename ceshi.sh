@@ -666,7 +666,6 @@ if [[ `grep -c 'CONFIG_TARGET_armvirt_64=y' ${HOME_PATH}/.config` -eq '1' ]]; th
 else
   print_ok "[ ${FOLDER_NAME}-${LUCI_EDITION}-${TARGET_PROFILE} ]顺利编译完成~~~"
 fi
-ECHOGG "已为您把配置文件替换到operates/${FOLDER_NAME}/${CONFIG_FILE}里"
 ECHOY "编译日期：$(date +'%Y年%m月%d号')"
 END_TIME=`date -d "$(date +'%Y-%m-%d %H:%M:%S')" +%s`
 SECONDS=$((END_TIME-START_TIME))
