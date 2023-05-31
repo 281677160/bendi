@@ -260,6 +260,14 @@ if [[ -n "${LUCI_CHECKUT}" ]]; then
   git pull
 fi
 
+cat feeds.conf.default|awk '!/^#/'|awk '!/^$/'|awk '!a[$1" "$2]++{print}' >uniq.conf
+mv -f uniq.conf feeds.conf.default
+if [[ -f "${HOME_PATH}/LICENSES/doc/uniq.conf" ]]; then
+  cp -Rf ${HOME_PATH}/LICENSES/doc/uniq.conf ${HOME_PATH}/feeds.conf.default
+else
+  cp -Rf ${HOME_PATH}/feeds.conf.default ${HOME_PATH}/LICENSES/doc/uniq.conf
+fi
+
 echo "增加插件源"
 # 这里增加了源,要对应的删除/etc/opkg/distfeeds.conf插件源
 sed -i '/281677160/d; /helloworld/d; /passwall/d; /OpenClash/d' "feeds.conf.default"
@@ -270,14 +278,6 @@ src-git passwall1 https://github.com/xiaorouji/openwrt-passwall.git;luci
 src-git passwall2 https://github.com/xiaorouji/openwrt-passwall2.git;main
 src-git passwall3 https://github.com/xiaorouji/openwrt-passwall.git;packages
 EOF
-
-cat feeds.conf.default|awk '!/^#/'|awk '!/^$/'|awk '!a[$1" "$2]++{print}' >uniq.conf
-mv -f uniq.conf feeds.conf.default
-if [[ -f "${HOME_PATH}/LICENSES/doc/uniq.conf" ]]; then
-  cp -Rf ${HOME_PATH}/LICENSES/doc/uniq.conf ${HOME_PATH}/feeds.conf.default
-else
-  cp -Rf ${HOME_PATH}/feeds.conf.default ${HOME_PATH}/LICENSES/doc/uniq.conf
-fi
 
 echo "拉取插件"
 ./scripts/feeds update -a
@@ -454,7 +454,7 @@ luci-app-gost,gost,luci-app-smartdns,smartdns,luci-app-wizard,luci-app-msd_lite,
 luci-app-ssr-plus,*luci-app-passwall*,luci-app-vssr,lua-maxminddb"
 t=(${z//,/ })
 for x in ${t[@]}; do \
-  find . -type d -name "${x}" |grep -v 'danshui\|passwall\|helloworld' |xargs -i rm -rf {}; \
+  find . -type d -name "${x}" |grep -v 'danshui\|passwall\|helloworld\|dir\|tmp' |xargs -i rm -rf {}; \
 done
 
 case "${SOURCE_CODE}" in
@@ -462,7 +462,7 @@ COOLSNOWWOLF)
   s="luci-app-netdata,netdata,luci-app-diskman,mentohust"
   c=(${s//,/ })
   for i in ${c[@]}; do \
-    find . -type d -name "${i}" |grep -v 'danshui\|passwall\|helloworld' |xargs -i rm -rf {}; \
+    find . -type d -name "${i}" |grep -v 'danshui\|passwall\|helloworld\|dir\|tmp' |xargs -i rm -rf {}; \
   done
   if [[ "${GL_BRANCH}" == "lede" ]]; then
     find . -type d -name "upx" -o -name "ucl" -o -name "ddns-scripts_aliyun" -o -name "ddns-scripts_dnspod" |grep 'danshui' |xargs -i rm -rf {}
@@ -484,7 +484,7 @@ LIENOL)
   s="luci-app-dockerman"
   c=(${s//,/ })
   for i in ${c[@]}; do \
-    find . -type d -name "${i}" |grep -v 'danshui\|passwall\|helloworld' |xargs -i rm -rf {}; \
+    find . -type d -name "${i}" |grep -v 'danshui\|passwall\|helloworld\|dir\|tmp' |xargs -i rm -rf {}; \
   done
   find . -type d -name "mt" -o -name "pdnsd-alt" -o -name "autosamba" |grep 'other' |xargs -i rm -rf {}
   if [[ "${REPO_BRANCH}" == "master" ]]; then
@@ -500,14 +500,14 @@ IMMORTALWRT)
   s="luci-app-cifs"
   c=(${s//,/ })
   for i in ${c[@]}; do \
-    find . -type d -name "${i}" |grep -v 'danshui\|passwall\|helloworld' |xargs -i rm -rf {}; \
+    find . -type d -name "${i}" |grep -v 'danshui\|passwall\|helloworld\|dir\|tmp' |xargs -i rm -rf {}; \
   done
 ;;
 OFFICIAL)
   s="luci-app-wrtbwmon,wrtbwmon,luci-app-dockerman,docker,dockerd,bcm27xx-userland"
   c=(${s//,/ })
   for i in ${c[@]}; do \
-    find . -type d -name "${i}" |grep -v 'danshui\|passwall\|helloworld' |xargs -i rm -rf {}; \
+    find . -type d -name "${i}" |grep -v 'danshui\|passwall\|helloworld\|dir\|tmp' |xargs -i rm -rf {}; \
   done
   if [[ "${REPO_BRANCH}" == "openwrt-19.07" ]]; then
     find . -type d -name "luci-app-natter" -o -name "natter" -o -name 'luci-app-unblockneteasemusic' |grep 'danshui' |xargs -i rm -rf {}
@@ -518,7 +518,7 @@ XWRT)
   s="luci-app-wrtbwmon,wrtbwmon,luci-app-dockerman,docker,dockerd,bcm27xx-userland"
   c=(${s//,/ })
   for i in ${c[@]}; do \
-    find . -type d -name "${i}" |grep -v 'danshui\|passwall\|helloworld' |xargs -i rm -rf {}; \
+    find . -type d -name "${i}" |grep -v 'danshui\|passwall\|helloworld\|dir\|tmp' |xargs -i rm -rf {}; \
   done
 ;;
 esac
