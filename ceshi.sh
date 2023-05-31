@@ -120,8 +120,6 @@ if [[ "${Cipan_Avail}" -lt "20" ]];then
     exit 0
   ;;
   esac
-else
-  sleep 3
 fi
 }
 
