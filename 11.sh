@@ -273,7 +273,11 @@ EOF
 
 cat feeds.conf.default|awk '!/^#/'|awk '!/^$/'|awk '!a[$1" "$2]++{print}' >uniq.conf
 mv -f uniq.conf feeds.conf.default
-cp -Rf ${HOME_PATH}/feeds.conf.default ${HOME_PATH}/LICENSES/doc/uniq.conf
+if [[ -f "${HOME_PATH}/LICENSES/doc/uniq.conf" ]]; then
+  cp -Rf ${HOME_PATH}/LICENSES/doc/uniq.conf ${HOME_PATH}/feeds.conf.default
+else
+  cp -Rf ${HOME_PATH}/feeds.conf.default ${HOME_PATH}/LICENSES/doc/uniq.conf
+fi
 
 echo "拉取插件"
 ./scripts/feeds update -a
@@ -415,10 +419,13 @@ ttydjso="$(find . -type f -name "luci-app-ttyd.json" |grep 'menu.d' |sed "s?.?${
 [[ -n "${ttydjso}" ]] && cp -Rf ${HOME_PATH}/build/common/Share/luci-app-ttyd.json "${ttydjso}"
 
 # 更换golang版本
-if [[ -d "${HOME_PATH}/build/common/Share/golang" ]] && [[ -z "${BENDI_VERSION}" ]]; then
+if [[ -d "${HOME_PATH}/build/common/Share/golang" ]] && [[ ! -d "${HOME_PATH}/feeds/packages/lang/golang/.svn" ]]; then
   rm -rf ${HOME_PATH}/feeds/packages/lang/golang
   cp -Rf ${HOME_PATH}/build/common/Share/golang ${HOME_PATH}/feeds/packages/lang/golang
 fi
+
+rm -rf feeds/danshui1/relevance/packr
+[[ ! -d "feeds/packages/devel/packr" ]] && cp -Rf ${HOME_PATH}/build/common/Share/packr feeds/packages/devel/packr
 
 # 替换一些插件
 source ${HOME_PATH}/build/common/Share/19.07/netsupport.sh
