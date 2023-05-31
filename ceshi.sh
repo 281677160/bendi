@@ -647,7 +647,8 @@ fi
 }
 
 function Bendi_PackageAmlogic() {
-if [[ ${PACKAGING_FIRMWARE} == "true" ]] && [[ `grep -Eoc 'CONFIG_TARGET_armvirt_64=y' ${HOME_PATH}/.config` -eq '1' ]]; then
+if [[ ${PACKAGING_FIRMWARE} == "true" ]] && [[ `ls -1 "${FIRMWARE_PATH}" |grep -Eoc "armvirt.*64.*rootfs.*tar.gz"` -eq '1' ]]; then
+  ECHOG "执行自动打包Amlogic_Rockchip系列固件操作"
   source ${BUILD_PATH}/common.sh && Package_amlogic
 fi
 }
