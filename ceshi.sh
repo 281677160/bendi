@@ -288,17 +288,21 @@ if [[ -n "${TONGBU_BENDI}" ]] || [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
     ECHOY "${tishi2}"
   fi
   [[ -n "${TONGBU_BENDI}" ]] && ECHOB "在operates文件夹内有一个backups文件夹，里面是您以前的所有文件的备份，不需要可以删除了"
-  ECHOY "设置完毕后，按[W/w]回车继续编译"
+  ECHOY "设置完毕后，按[W/w]回车继续编译，或现在按[N/n]退出编译"
   ZDYSZ="请输入您的选择"
   while :; do
   read -p " ${ZDYSZ}： " ZDYSZU
   case $ZDYSZU in
   [Ww])
     echo
-  break
+    break
+  ;;
+  [Nn])
+    exit 1
+    break
   ;;
   *)
-    ZDYSZ="提醒：确认设置完毕后，请按[W/w]回车继续编译"
+    ZDYSZ="提醒：请按[W/w]回车继续编译，或现在按[N/n]退出编译"
   ;;
   esac
   done
