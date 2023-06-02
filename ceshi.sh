@@ -620,7 +620,20 @@ else
 fi
 
 sleep 3
-if [[ "${compile_error}" == "1" ]] || [[ `ls -1 "${FIRMWARE_PATH}" |grep -c "${TARGET_BOARD}"` -eq '0' ]]; then
+if [[ "${compile_error}" == "1" ]]; then
+  print_error "编译失败~~!"
+  ECHOY "在 openwrt/build_logo/build.log 可查看编译日志,日志文件比较大,拖动到电脑查看比较方便"
+  echo "
+  SUCCESS_FAILED="fail"
+  FOLDER_NAME2="${FOLDER_NAME}"
+  REPO_BRANCH2="${REPO_BRANCH}"
+  LUCI_EDITION2="${LUCI_EDITION}"
+  TARGET_PROFILE2="${TARGET_PROFILE}"
+  SOURCE2="${SOURCE}"
+  " > ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
+  sed -i 's/^[ ]*//g' ${HOME_PATH}/LICENSES/doc/key-buildzu.ini
+  exit 1
+elif [[ "${compile_error}" == "0" ]] && [[ -z "$(ls -1 "${FIRMWARE_PATH}" |grep -c "${TARGET_BOARD}")" ]]; then
   print_error "编译失败~~!"
   ECHOY "在 openwrt/build_logo/build.log 可查看编译日志,日志文件比较大,拖动到电脑查看比较方便"
   echo "
