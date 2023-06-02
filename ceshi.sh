@@ -331,9 +331,9 @@ fi
 chmod -R +x ${GITHUB_WORKSPACE}/operates
 source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 echo "UPDATE_FIRMWARE_BENDI=${PACKAGING_FIRMWARE}" >> ${GITHUB_ENV}
-wget -q https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -O ${GITHUB_WORKSPACE}/common.sh
+wget -q https://raw.githubusercontent.com/281677160/common/main/common.sh -O ${GITHUB_WORKSPACE}/common.sh
 if [[ $? -ne 0 ]]; then
-  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -o ${GITHUB_WORKSPACE}/common.sh
+  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh -o ${GITHUB_WORKSPACE}/common.sh
 fi
 if [[ `grep -c "TIME" "${GITHUB_WORKSPACE}/common.sh"` -ge '1' ]]; then
   if [[ "${ZX_XZYM}" == "1" ]]; then
@@ -424,7 +424,8 @@ ECHOGG "更新扩展文件"
 git clone -b main --depth 1 https://github.com/281677160/common ${HOME_PATH}/build/common
 judge "更新扩展文件"
 cp -Rf ${HOME_PATH}/build/common/*.sh ${HOME_PATH}/build/${FOLDER_NAME}/
-cp -Rf ${HOME_PATH}/build/common/xiugai.sh ${HOME_PATH}/build/${FOLDER_NAME}/common.sh
+cp -Rf ${HOME_PATH}/build/common/common.sh ${HOME_PATH}/build/${FOLDER_NAME}/common.sh
+cp -Rf ${HOME_PATH}/build/common/upgrade.sh ${HOME_PATH}/build/${FOLDER_NAME}/upgrade.sh
 chmod -R +x ${HOME_PATH}/build
 if [[ "${REPEAT_EDLY}" == "1" ]]; then
   for X in $(grep -E 'sed.*grep.*-rl' "$BUILD_PATH/$DIY_PART_SH" |cut -d"'" -f2 |sed 's/\//\\&/g'); \
