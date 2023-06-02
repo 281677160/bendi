@@ -281,7 +281,7 @@ if [[ -n "${TONGBU_BENDI}" ]] || [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   clear
   echo
   echo
-  [[ "${TONGBU_BENDI}" == "1" ]] && ECHOG "${tishi1}"
+  [[ -n "${TONGBU_BENDI}" ]] && ECHOG "${tishi1}"
   if [[ "${zhizuoconfig}" = "1" ]]; then
     ECHOY "提示：请在 operates/${FOLDER_NAME}/settings.ini 里面设置好应用什么分支"
   else
