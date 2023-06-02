@@ -262,25 +262,22 @@ fi
 
 function Bendi_DiySetup() {
 cd ${GITHUB_WORKSPACE}
-bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/jiance.sh)"
+bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/first.sh)"
 source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
 }
 
 function Bendi_EveryInquiry() {
-cd ${GITHUB_WORKSPACE}
-if [[ -f "${GITHUB_WORKSPACE}/xiaobanben_d" ]]; then
-  TONGBU_BENDI="1"
+cd ${GITHUB_WORKSPACE} && source ${GITHUB_ENV}
+if [[ "${TONGBU_BENDI}" == "1" ]]; then
   tishi1="重要提示：因为刚刚自动同步了上游小更新,请重新设置[settings.ini]和[${DIY_PART_SH}]文件再继续"
   tishi2="提示：请在 operates/${FOLDER_NAME} 文件夹内，重新设置[settings.ini]和[${DIY_PART_SH}]文件"
-elif [[ -f "${GITHUB_WORKSPACE}/dabanben_x" ]]; then
-  TONGBU_BENDI="1"
+elif [[ "${TONGBU_BENDI}" == "2" ]]; then
   tishi1="重要提示：因为刚刚自动同步了上游仓库,请重新设置好所有配置文件再继续"
   tishi2="提示：请在 operates/${FOLDER_NAME} 内重新设置全部文件，包括自定义文件和（diy、files、patches、seed）等"
 else
   tishi2="提示：编译前，请在 operates/${FOLDER_NAME} 里面设置好各项自定义文件和源码分支"
 fi
-sudo rm -rf xiaobanben_d dabanben_x
-if [[ "${TONGBU_BENDI}" == "1" ]] || [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
+if [[ -n "${TONGBU_BENDI}" ]] || [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   clear
   echo
   echo
