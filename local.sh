@@ -392,7 +392,7 @@ if [[ "${REPEAT_EDLY}" == "0" ]]; then
     sudo rm -rf ${HOME_PATH}
     judge "删除openwrt文件夹"
   fi
-  ECHOG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
+  ECHOGG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
   git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
   judge "${SOURCE_CODE}-${LUCI_EDITION}源码下载"
 else
@@ -409,7 +409,7 @@ else
         sudo rm -rf ${HOME_PATH}
         judge "删除openwrt文件夹"
       fi
-      ECHOG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
+      ECHOGG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
       sudo rm -rf ${HOME_PATH}
       git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
       judge "${SOURCE_CODE}-${LUCI_EDITION}源码下载"
