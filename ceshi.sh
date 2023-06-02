@@ -331,7 +331,7 @@ wget -q https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -O ${G
 if [[ $? -ne 0 ]]; then
   curl -fsSL https://raw.githubusercontent.com/281677160/common/main/xiugai.sh -o ${GITHUB_WORKSPACE}/common.sh
 fi
-if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
+if [[ `grep -c "TIME" "${GITHUB_WORKSPACE}/common.sh"` -ge '1' ]]; then
   if [[ "${ZX_XZYM}" == "1" ]]; then
     export REPEAT_EDLY="0"
   elif [[ "${REPEAT_EDLY}" == "1" ]]; then
