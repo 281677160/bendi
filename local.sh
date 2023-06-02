@@ -387,8 +387,12 @@ fi
 function Bendi_Download() {
 cd ${GITHUB_WORKSPACE}
 if [[ "${REPEAT_EDLY}" == "0" ]]; then
+  if [[ -d "${HOME_PATH}" ]]; then
+    ECHOG "正在删除原来的openwrt文件夹，请耐心等候..."
+    sudo rm -rf ${HOME_PATH}
+    judge "删除openwrt文件夹"
+  fi
   ECHOG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
-  sudo rm -rf ${HOME_PATH}
   git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
   judge "${SOURCE_CODE}-${LUCI_EDITION}源码下载"
 else
@@ -400,6 +404,11 @@ else
     read -p " ${XUANMA}：" Gai_BRANCH
     case ${Gai_BRANCH} in
     [Yy])
+      if [[ -d "${HOME_PATH}" ]]; then
+        ECHOG "正在删除原来的openwrt文件夹，请耐心等候..."
+        sudo rm -rf ${HOME_PATH}
+        judge "删除openwrt文件夹"
+      fi
       ECHOG "下载${SOURCE_CODE}-${LUCI_EDITION}源码中，请耐心等候..."
       sudo rm -rf ${HOME_PATH}
       git clone -b "${REPO_BRANCH}" --single-branch "${REPO_URL}" ${HOME_PATH}
