@@ -287,7 +287,7 @@ if [[ -n "${TONGBU_BENDI}" ]] || [[ "${MODIFY_CONFIGURATION}" == "true" ]]; then
   else
     ECHOY "${tishi2}"
   fi
-  [[ "${TONGBU_BENDI}" == "1" ]] && ECHOB "在operates文件夹内有一个backups文件夹，里面是您以前的所有文件的备份，不需要可以删除了"
+  [[ -n "${TONGBU_BENDI}" ]] && ECHOB "在operates文件夹内有一个backups文件夹，里面是您以前的所有文件的备份，不需要可以删除了"
   ECHOY "设置完毕后，按[W/w]回车继续编译"
   ZDYSZ="请输入您的选择"
   while :; do
