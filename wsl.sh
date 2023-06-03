@@ -165,38 +165,12 @@ else
 fi
 }
 
-function wsl_huanyuan() {
-if [[ -n "$(grep -B 1 'appendWindowsPath' '/etc/wsl.conf' |grep 'interop')" ]]; then
-  sudo sed -i '$!N;/\n.*appendWindowsPath/!P;D' /etc/wsl.conf
-  sudo sed -i '/appendWindowsPath/d' /etc/wsl.conf
-else
-  sudo sed -i '/appendWindowsPath/d' bendienv
-fi
-
-if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
-  ECHOG "配置已更新，重启电脑即可"
-  exit 0
-else
-  ECHOG "无法完成操作请查看/etc/wsl.conf自行删除试试，删除以下2行代码"
-  ECHOG "删除：[interop]"
-  ECHOG "删除：appendWindowsPath = false"
-  exit 1
-fi
-}
-
-
 function menu() {
   clear
   echo
-  echo
   echo -e " 1${Red}.${Font}${Green}解决WSL编译固件路径、安装SSH功能和增加当前IP显示${Font}"
   echo
-  echo -e " 2${Red}.${Font}${Green}还原回WSL路径${Font}"
-  echo
-  echo -e " 3${Red}.${Font}${Green}进入Ubuntu不需要显示当前IP${Font}"
-  echo
-  echo -e " 4${Red}.${Font}${Green}退出${Font}"
-  echo
+  echo -e " 2${Red}.${Font}${Green}退出${Font}"
   echo
   XUANZop="请输入数字"
   while :; do
@@ -208,15 +182,6 @@ function menu() {
   break
   ;;
   2)
-    wsl_huanyuan
-  break
-  ;;
-  3)
-    sudo sed -i '/grep -v inet6/d' ${GITHUB_WORKSPACE}/.bashrc
-    ECHOG "操作完成"
-  break
-  ;;
-  4)
     echo
     exit 0
   break
