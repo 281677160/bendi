@@ -84,6 +84,7 @@ if [[ `sudo grep -c "sudo ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers` == '0' ]]; t
 fi
 
 function ubuntu_bashrc() {
+sudo service ssh start
 if [ -z "$(sudo ps -e |grep ssh |grep sshd)" ]; then
   sudo apt-get -y update
   sudo apt-get -y remove openssh-server
