@@ -330,7 +330,6 @@ else
 fi
 chmod -R +x ${GITHUB_WORKSPACE}/operates
 source ${GITHUB_WORKSPACE}/operates/${FOLDER_NAME}/settings.ini
-echo "UPDATE_FIRMWARE_BENDI=${PACKAGING_FIRMWARE}" >> ${GITHUB_ENV}
 wget -q https://raw.githubusercontent.com/281677160/common/main/common.sh -O ${GITHUB_WORKSPACE}/common.sh
 if [[ $? -ne 0 ]]; then
   curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh -o ${GITHUB_WORKSPACE}/common.sh
@@ -518,7 +517,7 @@ fi
 function Bendi_Configuration() {
 cd ${HOME_PATH} && source ${GITHUB_ENV}
 ECHOGG "检查配置,生成配置,请耐心等候..."
-export UPDATE_FIRMWARE_ONLINE="${UPDATE_FIRMWARE_BENDI}"
+export UPDATE_FIRMWARE_ONLINE="${PACKAGING_FIRMWARE_BENDI}"
 source ${BUILD_PATH}/common.sh && Diy_menu6
 judge "检测配置,生成配置"
 echo "
