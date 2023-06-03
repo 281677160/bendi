@@ -832,6 +832,7 @@ function Bendi_Packaging() {
 function Bendi_xuanzhe() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d "operates" ]]; then
+    sudo rm -rf build
     bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/first.sh)"
   fi
   clear
