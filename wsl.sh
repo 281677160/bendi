@@ -112,17 +112,17 @@ else
 fi
 
 if [[ -n "$(sudo ps -e |grep ssh |grep sshd)" ]] && [[ -z "$(grep 'sudo service ssh start' ".bashrc")" ]]; then
-echo '
-if [ `sudo ps -e |grep ssh |grep -Eoc sshd` -eq "0" ]; then
+sudo tee -a ".bashrc" << EOF > /dev/null
+if [ \`sudo ps -e |grep ssh |grep -Eoc sshd\` -eq "0" ]; then
   sudo service ssh start
 fi
-' >> ".bashrc"
+EOF
 fi
 
 if [[ -n "$(sudo ps -e |grep ssh |grep sshd)" ]] && [[ -z "$(grep 'ifconfig |grep inet' ".bashrc")" ]]; then
-echo '
-echo "当前IP：$(ifconfig |grep inet |grep -v inet6 |grep -v 127.0.0.1|awk '{print \$(2)}')"
-' >> ".bashrc"
+sudo tee -a ".bashrc" << EOF > /dev/null
+echo "当前IP：\$(ifconfig |grep inet |grep -v inet6 |grep -v 127.0.0.1|awk '{print \$(2)}')"
+EOF
 fi
 }
 
