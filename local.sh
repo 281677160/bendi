@@ -230,33 +230,31 @@ BENDI_WENJIAN
 
 function Bendi_Dependent() {
 cd ${GITHUB_WORKSPACE}
-if [[ ! -f "/etc/oprelyon" ]]; then
-  wget -q https://raw.githubusercontent.com/281677160/common/main/common.sh -O common.sh
-  if [[ $? -ne 0 ]]; then
-    curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh -o common.sh
-  fi
-  if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
-    sudo chmod +x common.sh
-  else
-    print_error "common.sh下载失败，请检测网络后再用一键命令试试!"
-    exit 1
-  fi
-  clear
-  echo
-  ECHOY "首次使用本脚本，需要先安装依赖，10秒后开始安装依赖"
-  ECHOYY "升级ubuntu插件和安装依赖，时间或者会比较长(取决于您的网络质量)，请耐心等待"
-  ECHOY "如果出现 YES OR NO 选择界面，直接按回车即可"
-  sleep 10
-  echo
-  source common.sh && Diy_update
-  rm -rf common.sh
-  if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` -eq '0' ]]; then
-    sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
-    sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
-    sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
-    sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
-    sudo service ssh restart
-  fi
+wget -q https://raw.githubusercontent.com/281677160/common/main/common.sh -O common.sh
+if [[ $? -ne 0 ]]; then
+  curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh -o common.sh
+fi
+if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
+  sudo chmod +x common.sh
+else
+  print_error "common.sh下载失败，请检测网络后再用一键命令试试!"
+  exit 1
+fi
+clear
+echo
+ECHOY "首次使用本脚本，需要先安装依赖，10秒后开始安装依赖"
+ECHOYY "升级ubuntu插件和安装依赖，时间或者会比较长(取决于您的网络质量)，请耐心等待"
+ECHOY "如果出现 YES OR NO 选择界面，直接按回车即可"
+sleep 10
+echo
+source common.sh && Diy_update
+rm -rf common.sh
+if [[ -f /etc/ssh/sshd_config ]] && [[ `grep -c "ClientAliveInterval 30" /etc/ssh/sshd_config` -eq '0' ]]; then
+  sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
+  sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
+  sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
+  sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
+  sudo service ssh restart
 fi
 }
 
@@ -906,7 +904,6 @@ function Bendi_xuanzhe() {
 
 function Bendi_menu() {
 BENDI_Diskcapacity
-Bendi_Dependent
 Bendi_DiySetup
 Bendi_EveryInquiry
 Bendi_WslPath
@@ -1094,6 +1091,9 @@ done
 
 function menuoo() {
 cd ${GITHUB_WORKSPACE}
+if [[ ! -f "/etc/oprelyon" ]]; then
+  Bendi_Dependent
+fi
 if [[ -d "${HOME_PATH}" ]]; then
 cat > Update.txt <<EOF
 config
