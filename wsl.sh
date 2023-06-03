@@ -84,13 +84,15 @@ if [[ `sudo grep -c "sudo ALL=(ALL:ALL) NOPASSWD:ALL" /etc/sudoers` == '0' ]]; t
 fi
 
 function ubuntu_bashrc() {
-sudo apt-get -y update
-sudo apt-get -y remove openssh-server
-sudo apt-get -y remove openssh-server
-sudo apt-get -y install openssh-server
-sudo apt-get -y install openssh-server
-sudo apt-get -y install net-tools
-sudo service ssh start
+if [ -z "$(sudo ps -e |grep ssh |grep sshd)" ]; then
+  sudo apt-get -y update
+  sudo apt-get -y remove openssh-server
+  sudo apt-get -y remove openssh-server
+  sudo apt-get -y install openssh-server
+  sudo apt-get -y install openssh-server
+  sudo apt-get -y install net-tools
+  sudo service ssh start
+fi
 
 if [ -n "$(sudo ps -e |grep ssh |grep sshd)" ]; then
   sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
