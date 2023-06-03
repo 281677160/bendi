@@ -234,7 +234,7 @@ wget -q https://raw.githubusercontent.com/281677160/common/main/common.sh -O com
 if [[ $? -ne 0 ]]; then
   curl -fsSL https://raw.githubusercontent.com/281677160/common/main/common.sh -o common.sh
 fi
-if [[ `grep -c "TIME" common.sh` -ge '1' ]]; then
+if [[ -n "$(grep "TIME" "common.sh")" ]]; then
   sudo chmod +x common.sh
 else
   print_error "common.sh下载失败，请检测网络后再用一键命令试试!"
