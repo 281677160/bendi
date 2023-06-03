@@ -832,9 +832,7 @@ function Bendi_Packaging() {
 function Bendi_xuanzhe() {
   cd ${GITHUB_WORKSPACE}
   if [[ ! -d "operates" ]]; then
-    git clone -b main --depth 1 https://github.com/281677160/build-actions shangyou
-    mv -f shangyou/build operates
-    sudo rm -rf shangyou
+    bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/first.sh)"
   fi
   clear
   echo 
