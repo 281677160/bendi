@@ -50,6 +50,7 @@ function ECHOB() {
 }
 function ECHOYY() {
   echo -e "${Yellow} $1 ${Font}"
+  echo
 }
 function ECHOGG() {
   echo -e "${Green} $1 ${Font}"
