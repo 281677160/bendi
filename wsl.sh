@@ -184,7 +184,6 @@ function menu() {
   2)
     echo
     exit 0
-  break
   ;;
   *)
     XUANZop="请输入正确的数字编号!"
