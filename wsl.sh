@@ -106,6 +106,9 @@ if [ -n "$(sudo ps -e |grep ssh |grep sshd)" ]; then
   sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
   
   sudo service ssh restart
+  ECHOG "SSH安装完成"
+else
+  ECHOR "SSH安装失败"
 fi
 
 if [[ -n "$(sudo ps -e |grep ssh |grep sshd)" ]] && [[ -z "$(grep 'sudo service ssh start' ".bashrc")" ]]; then
@@ -145,11 +148,10 @@ elif [[ -n "$(grep 'appendWindowsPath' "/etc/wsl.conf")" ]]; then
 fi
 
 if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
-  ECHOR "写入文件发生错误，无法完成"
+  ECHOR "解决WSL编译固件路径失败"
   exit 1
 else
-  ubuntu_bashrc
-  ECHOG "配置已更新，请按以下说明完成步骤"
+  ECHOG "解决WSL编译固件路径配置已更新，请按以下说明完成步骤"
   echo
   ECHOYY "按电脑键盘的 win键+x，点击终端(管理员)(A)"
   ECHOYY "或者鼠标右击开始菜单图标，点击终端(管理员)"
@@ -201,6 +203,7 @@ function menu() {
   read -p " ${XUANZop}：" menu_num
   case $menu_num in
   1)
+    ubuntu_bashrc
     ubuntu_WslPath
   break
   ;;
