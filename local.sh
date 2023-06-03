@@ -425,7 +425,7 @@ else
 fi
 sudo rm -rf ${HOME_PATH}/build
 cp -Rf ${GITHUB_WORKSPACE}/operates ${HOME_PATH}/build
-sudo rm -rf ${HOME_PATH}/build/common
+[[ -d "${HOME_PATH}/build/common" ]] && sudo rm -rf ${HOME_PATH}/build/common
 ECHOGG "更新扩展文件"
 git clone -b main --depth 1 https://github.com/281677160/common ${HOME_PATH}/build/common
 judge "更新扩展文件"
