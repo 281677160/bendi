@@ -75,10 +75,10 @@ judge() {
 export GITHUB_WORKSPACE="$PWD"
 export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
 export OPERATES_PATH="${GITHUB_WORKSPACE}/operates"
-export GITHUB_ENV="${GITHUB_WORKSPACE}/GITHUB_ENV"
+export GITHUB_ENV="${GITHUB_WORKSPACE}/bendi_env.ini"
 export CURRENT_PATH="${GITHUB_WORKSPACE##*/}"
 export BENDI_VERSION="1"
-echo '#!/bin/bash' >${GITHUB_ENV}
+echo '' >${GITHUB_ENV}
 sudo chmod +x ${GITHUB_ENV}
 if [[ ! "$USER" == "openwrt" ]] && [[ "${CURRENT_PATH}" == "openwrt" ]]; then
   print_error "已在openwrt文件夹内,请在勿在此路径使用一键命令"
