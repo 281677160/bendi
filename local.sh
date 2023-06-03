@@ -609,7 +609,7 @@ rm -rf ${HOME_PATH}/build_logo/build.log
 
 if [[ "$(nproc)" -le "12" ]];then
   ECHOY "即将使用$(nproc)线程进行编译固件,请耐心等候..."
-  sleep 8
+  sleep 5
   if [[ `echo "${PATH}" |grep -c "Windows"` -ge '1' ]]; then
     ECHOG "WSL临时路径编译中"
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin make V=s -j$(nproc) |& ${HOME_PATH}/build_logo/build.log 2>&1
