@@ -366,13 +366,6 @@ if [[ `echo "${PATH}" |grep -ic "windows"` -ge '1' ]] && [[ ! "${WSL_ROUTEPATH}"
   case ${Bendi_Wsl} in
   [Yy])
     bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/bendi/main/wsl.sh)"
-    if [[ `grep -c "appendWindowsPath = false" /etc/wsl.conf` == '1' ]]; then
-      ECHOG "配置已更新，请重启您的电脑"
-      exit 0
-    else
-      ECHOR "无法完成操作，请再次尝试"
-      exit 1
-    fi
   ;;
   *)
     ECHOYY "正在使用临时路径解决编译问题！"
