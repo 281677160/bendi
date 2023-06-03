@@ -121,7 +121,7 @@ fi
 
 if [[ -n "$(sudo ps -e |grep ssh |grep sshd)" ]] && [[ -z "$(grep 'ifconfig |grep inet' ".bashrc")" ]]; then
 echo '
-echo "当前IP：\$(ifconfig |grep inet |grep -v inet6 |grep -v 127.0.0.1|awk '{print \$(2)}')"
+echo "当前IP：$(ifconfig |grep inet |grep -v inet6 |grep -v 127.0.0.1|awk '{print \$(2)}')"
 ' >> ".bashrc"
 fi
 }
