@@ -366,6 +366,7 @@ if [[ `echo "${PATH}" |grep -ic "windows"` -ge '1' ]] && [[ ! "${WSL_ROUTEPATH}"
   case ${Bendi_Wsl} in
   [Yy])
     bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/bendi/main/wsl.sh)"
+    exit 0
   ;;
   *)
     ECHOYY "正在使用临时路径解决编译问题！"
