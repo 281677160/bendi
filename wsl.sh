@@ -124,7 +124,6 @@ fi
 }
 
 function ubuntu_WslPath() {
-
 if [[ ! -f "/etc/wsl.conf" ]]; then
   sudo sh -c 'echo [interop] > /etc/wsl.conf'
   sudo sh -c 'echo appendWindowsPath = false >> /etc/wsl.conf'
@@ -135,7 +134,12 @@ elif [[ -z "$(grep 'appendWindowsPath' "/etc/wsl.conf")" ]]; then
   sudo sh -c 'echo [interop] >> /etc/wsl.conf'
   sudo sh -c 'echo appendWindowsPath = false >> /etc/wsl.conf'
 elif [[ -n "$(grep 'appendWindowsPath' "/etc/wsl.conf")" ]]; then
-  sudo sed -i '/appendWindowsPath/d' /etc/wsl.conf
+  if [[ -n "$(grep -B 1 'appendWindowsPath' '/etc/wsl.conf' |grep 'interop')" ]]; then
+    sudo sed -i '$!N;/\n.*appendWindowsPath/!P;D' /etc/wsl.conf
+    sudo sed -i '/appendWindowsPath/d' /etc/wsl.conf
+  else
+    sudo sed -i '/appendWindowsPath/d' bendienv
+  fi
   sudo sh -c 'echo [interop] >> /etc/wsl.conf'
   sudo sh -c 'echo appendWindowsPath = false >> /etc/wsl.conf'
 fi
@@ -160,11 +164,11 @@ fi
 }
 
 function wsl_huanyuan() {
-sudo sed -i '/[interop]/d' /etc/wsl.conf
-sudo sed -i '/appendWindowsPath/d' /etc/wsl.conf
-if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` -ge '1' ]]; then
-  sudo sed -i '/[interop]/d' /etc/wsl.conf
+if [[ -n "$(grep -B 1 'appendWindowsPath' '/etc/wsl.conf' |grep 'interop')" ]]; then
+  sudo sed -i '$!N;/\n.*appendWindowsPath/!P;D' /etc/wsl.conf
   sudo sed -i '/appendWindowsPath/d' /etc/wsl.conf
+else
+  sudo sed -i '/appendWindowsPath/d' bendienv
 fi
 
 if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
