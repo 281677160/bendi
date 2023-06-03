@@ -92,7 +92,7 @@ sudo apt-get -y install openssh-server
 sudo apt-get -y install net-tools
 sudo service ssh start
 
-if [[ -f "/etc/ssh/sshd_config" ]]; then
+if [ -n "$(sudo ps -e |grep ssh |grep sshd)" ]; then
   sudo sed -i '/ClientAliveInterval/d' /etc/ssh/sshd_config
   sudo sed -i '/ClientAliveCountMax/d' /etc/ssh/sshd_config
   sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
@@ -104,40 +104,40 @@ if [[ -f "/etc/ssh/sshd_config" ]]; then
   sudo sh -c 'echo PasswordAuthentication yes >> /etc/ssh/sshd_config'
   sudo sh -c 'echo ClientAliveInterval 30 >> /etc/ssh/sshd_config'
   sudo sh -c 'echo ClientAliveCountMax 6 >> /etc/ssh/sshd_config'
-else
-  echo "SSH安装失败"
+  
+  sudo service ssh restart
 fi
-sudo service ssh restart
-if [[ `sudo grep -c "grep -Eoc sshd" ".bashrc"` -eq '0' ]]; then
-sudo echo '
+
+if [[ -n "$(sudo ps -e |grep ssh |grep sshd)" ]] && [[ -z "$(grep 'sudo service ssh start' ".bashrc")" ]]; then
+echo '
 if [ `sudo ps -e |grep ssh |grep -Eoc sshd` -eq "0" ]; then
   sudo service ssh start
 fi
 ' >> ".bashrc"
 fi
 
-sudo sed -i '/grep -v inet6/d' ".bashrc"
-sudo tee -a ".bashrc" << EOF > /dev/null
+if [[ -n "$(sudo ps -e |grep ssh |grep sshd)" ]] && [[ -z "$(grep 'ifconfig |grep inet' ".bashrc")" ]]; then
+echo '
 echo "当前IP：\$(ifconfig |grep inet |grep -v inet6 |grep -v 127.0.0.1|awk '{print \$(2)}')"
-EOF
+' >> ".bashrc"
+fi
 }
 
 function ubuntu_WslPath() {
-if [[ -f "/etc/wsl.conf" ]]; then
-  sudo sed -i '/[interop]/d' /etc/wsl.conf
+
+if [[ ! -f "/etc/wsl.conf" ]]; then
+  sudo sh -c 'echo [interop] > /etc/wsl.conf'
+  sudo sh -c 'echo appendWindowsPath = false >> /etc/wsl.conf'
+elif [[ "$(du -s "/etc/wsl.conf" |awk '{print $1}')" == "0" ]] ; then
+  sudo sh -c 'echo [interop] >> /etc/wsl.conf'
+  sudo sh -c 'echo appendWindowsPath = false >> /etc/wsl.conf'
+elif [[ -z "$(grep 'appendWindowsPath' "/etc/wsl.conf")" ]]; then
+  sudo sh -c 'echo [interop] >> /etc/wsl.conf'
+  sudo sh -c 'echo appendWindowsPath = false >> /etc/wsl.conf'
+elif [[ -n "$(grep 'appendWindowsPath' "/etc/wsl.conf")" ]]; then
   sudo sed -i '/appendWindowsPath/d' /etc/wsl.conf
-fi
-
-sudo tee -a /etc/wsl.conf << EOF > /dev/null
-[interop]
-appendWindowsPath = false
-EOF
-
-if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
-sudo tee -a /etc/wsl.conf << EOF > /dev/null
-[interop]
-appendWindowsPath = false
-EOF
+  sudo sh -c 'echo [interop] >> /etc/wsl.conf'
+  sudo sh -c 'echo appendWindowsPath = false >> /etc/wsl.conf'
 fi
 
 if [[ `sudo grep -c "appendWindowsPath = false" /etc/wsl.conf` == '0' ]]; then
