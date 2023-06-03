@@ -831,10 +831,6 @@ function Bendi_Packaging() {
 
 function Bendi_xuanzhe() {
   cd ${GITHUB_WORKSPACE}
-  if [[ ! -d "operates" ]]; then
-    sudo rm -rf build
-    bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/first.sh)"
-  fi
   clear
   echo 
   echo
@@ -1092,6 +1088,10 @@ function menuoo() {
 cd ${GITHUB_WORKSPACE}
 if [[ ! -f "/etc/oprelyon" ]]; then
   Bendi_Dependent
+fi
+if [[ ! -d "operates" ]]; then
+  sudo rm -rf build
+  bash -c  "$(curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/first.sh)"
 fi
 if [[ -d "${HOME_PATH}" ]]; then
 cat > Update.txt <<EOF
