@@ -75,7 +75,7 @@ judge() {
 export GITHUB_WORKSPACE="$PWD"
 export HOME_PATH="${GITHUB_WORKSPACE}/openwrt"
 export OPERATES_PATH="${GITHUB_WORKSPACE}/operates"
-export GITHUB_ENV="${GITHUB_WORKSPACE}/bendienv.ini"
+export GITHUB_ENV="${GITHUB_WORKSPACE}/bendienv"
 export CURRENT_PATH="${GITHUB_WORKSPACE##*/}"
 export BENDI_VERSION="1"
 tee ${GITHUB_ENV}
