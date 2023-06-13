@@ -1142,6 +1142,8 @@ if [[ "${KAIDUAN_JIANCE}" == "1" ]] && [[ "${JIXINGWENJIAN}" == "存在" ]]; the
     TARGET_PROFILE3="x86-64"
   elif [[ `grep -c "CONFIG_TARGET_x86=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` == '1' ]]; then
     TARGET_PROFILE3="x86-32"
+  elif [[ `grep -Eoc 'CONFIG_TARGET_armsr_armv8=y' "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` -eq '1' ]]; then
+    TARGET_PROFILE3="Armvirt_64"
   elif [[ `grep -c "CONFIG_TARGET_armvirt_64=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` -eq '1' ]]; then
     TARGET_PROFILE3="Armvirt_64"
   elif [[ `grep -Eoc "CONFIG_TARGET.*DEVICE.*=y" "${OPERATES_PATH}/${FOLDER_NAME2}/${SEED_CONFIG1}"` -eq '1' ]]; then
