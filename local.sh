@@ -119,8 +119,7 @@ if [[ ! -f "/etc/oprelyonu" ]]; then
     ;;
     esac
   done
-  sudo bash -c 'bash <(curl -fsSL https://github.com/281677160/common/raw/main/custom/ubuntu.sh)'
-  if [[ $? -eq 0 ]];then
+  if sudo bash -c 'bash <(curl -fsSL https://github.com/281677160/common/raw/main/custom/ubuntu.sh)'; then
     sudo sh -c 'echo openwrt > /etc/oprelyonu'
   else
     sudo rm -rf /etc/oprelyo*
