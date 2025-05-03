@@ -1076,7 +1076,7 @@ function menu3() {
         TIME r "敬告,输入不能为空"
     elif [[ "$YMXZ" =~ ^[0-9]+$ ]]; then
       if (( YMXZ >= 1 && YMXZ <= XYZDSZ )); then
-        export FOLDER_NAME=$(cat /tmp/GITHUB_EVN | awk ''NR==${YMXZ}'')
+        export FOLDER_NAME=$(awk -v line="$YMXZ" 'NR == line {print; exit}' /tmp/GITHUB_EVN)
         export NUM_BER="1"
         TIME g "您选择了使用 ${FOLDER_NAME} 编译固件"
         sleep 3
