@@ -266,8 +266,8 @@ if [[ "${Menuconfig_Config}" == "true" ]]; then
           esac
         done
       fi
-    fi
   done
+fi
 }
 
 function Ben_download() {
