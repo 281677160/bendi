@@ -14,7 +14,7 @@ echo -e "\n$Color$2\033[0m"
 }
 
 source /etc/os-release
-if [[ ! "${UBUNTU_CODENAME}" =~ (bionic|focal|jammy) ]]; then
+if [[ ! "${UBUNTU_CODENAME}" == "jammy" ]]; then
   TIME r "请使用Ubuntu 22.04 LTS位系统"
   exit 1
 fi
