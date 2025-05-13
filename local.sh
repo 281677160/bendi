@@ -242,63 +242,61 @@ source $COMMON_SH && Diy_partsh
 }
 
 function Ben_configuration() {
-  while true; do
-    cd ${HOME_PATH}
-    if [[ "${Menuconfig_Config}" == "true" ]]; then
-      TIME y "正在执行：选取插件等..."
-      make menuconfig
-      if [[ $? -ne 0 ]]; then
-        TIME y "SSH工具窗口分辨率太小，无法弹出设置机型或插件的窗口"
-        TIME g "请调整SSH工具窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
-        XUANMA="请输入您的选择"
-        while :; do
-          read -p "${XUANMA}：" menu_config
-          case ${menu_config} in
-            [Yy])
-              break 2  # 跳出两层循环，回到最外层的 while true 循环
-              ;;
-            [Nn])
-              exit 1
-              ;;
-            *)
-              XUANMA="输入错误,请输入[Y/n]"
-              ;;
-          esac
-        done
-      fi
-    fi
-  done
+cd ${HOME_PATH}
+if [[ "${Menuconfig_Config}" == "true" ]]; then
+  TIME y "正在执行：选取插件等..."
+  make menuconfig
+  if [[ $? -ne 0 ]]; then
+    TIME y "SSH工具窗口分辨率太小，无法弹出设置机型或插件的窗口"
+    TIME g "请调整SSH工具窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
+    XUANMA="请输入您的选择"
+    while :; do
+    read -p "${XUANMA}：" menu_config
+    case ${menu_config} in
+    [Yy])
+      Ben_configuration
+    break
+    ;;
+    [Nn])
+      exit 1
+    break
+    ;;
+    *)
+      XUANMA="输入错误,请输入[Y/n]"
+    ;;
+    esac
+    done
+  fi
+fi
 }
 
 function Ben_download() {
 TIME y "正在执行：下载DL文件,请耐心等候..."
-  while true; do
-    cd ${HOME_PATH}
-    make -j8 download 2>&1 | tee /tmp/build.log
-    if [[ -n "$(grep -E 'ERROR' /tmp/build.log)" ]]; then
-      clear
-      TIME r "下载DL失败，更换节点后再尝试下载？"
-      QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或输入[N/n]回车,退出编译"
-      while :; do
-        read -p "[${QLMEUN}]： " BenDownload
-        case ${BenDownload} in
-          [Yy])
-            break  # 跳出内层循环，回到外层的 while true 循环重新开始
-            ;;
-          [Nn])
-            TIME r "退出编译程序!"
-            sleep 1
-            exit 1
-            ;;
-          *)
-            QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或现在输入[N/n]回车,退出编译"
-            ;;
-        esac
-      done
-    else
-      break  # 如果没有错误，跳出外层循环
-    fi
+cd ${HOME_PATH}
+make -j8 download 2>&1 | tee /tmp/build.log
+if [[ -n "$(grep -E 'ERROR' /tmp/build.log)" ]]; then
+  clear
+  TIME r "下载DL失败，更换节点后再尝试下载？"
+  QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或输入[N/n]回车,退出编译"
+  while :; do
+    read -p "[${QLMEUN}]： " BenDownload
+    case ${BenDownload} in
+  [Yy])
+    Ben_download
+  break
+  ;;
+  [Nn])
+    TIME r "退出编译程序!"
+    sleep 1
+    exit 1
+  break
+  ;;
+  *)
+    QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或现在输入[N/n]回车,退出编译"
+  ;;
+  esac
   done
+fi
 }
 
 function Ben_compile() {
