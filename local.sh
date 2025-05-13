@@ -242,10 +242,10 @@ source $COMMON_SH && Diy_partsh
 }
 
 function Ben_configuration() {
-cd ${HOME_PATH}
-TIME y "正在执行：选取插件等..."
-if [[ "${Menuconfig_Config}" == "true" ]]; then
   while true; do
+    cd ${HOME_PATH}
+    if [[ "${Menuconfig_Config}" == "true" ]]; then
+      TIME y "正在执行：选取插件等..."
       make menuconfig
       if [[ $? -ne 0 ]]; then
         TIME y "SSH工具窗口分辨率太小，无法弹出设置机型或插件的窗口"
@@ -266,8 +266,8 @@ if [[ "${Menuconfig_Config}" == "true" ]]; then
           esac
         done
       fi
+    fi
   done
-fi
 }
 
 function Ben_download() {
