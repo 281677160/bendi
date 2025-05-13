@@ -242,9 +242,9 @@ source $COMMON_SH && Diy_partsh
 }
 
 function Ben_configuration() {
+cd ${HOME_PATH}
+if [[ "${Menuconfig_Config}" == "true" ]]; then
   while true; do
-    cd ${HOME_PATH}
-    if [[ "${Menuconfig_Config}" == "true" ]]; then
       TIME y "正在执行：选取插件等..."
       make menuconfig
       if [[ $? -ne 0 ]]; then
