@@ -242,61 +242,64 @@ source $COMMON_SH && Diy_partsh
 }
 
 function Ben_configuration() {
-cd ${HOME_PATH}
-if [[ "${Menuconfig_Config}" == "true" ]]; then
-  TIME y "正在执行：选取插件等..."
-  make menuconfig
-  if [[ $? -ne 0 ]]; then
-    TIME y "SSH工具窗口分辨率太小，无法弹出设置机型或插件的窗口"
-    TIME g "请调整SSH工具窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
-    XUANMA="请输入您的选择"
-    while :; do
-    read -p "${XUANMA}：" menu_config
-    case ${menu_config} in
-    [Yy])
-      Ben_configuration
-    break
-    ;;
-    [Nn])
-      exit 1
-    break
-    ;;
-    *)
-      XUANMA="输入错误,请输入[Y/n]"
-    ;;
-    esac
+    cd "${HOME_PATH}" || exit 1
+    if [[ "${Menuconfig_Config}" != "true" ]]; then
+        return
+    fi
+
+    TIME y "正在执行：选取插件等..."
+    while true; do
+        if make menuconfig; then
+            break  # 配置成功则退出循环
+        else
+            TIME y "SSH工具窗口分辨率太小，无法弹出设置机型或插件的窗口"
+            TIME g "请调整SSH工具窗口分辨率后按[Y/y]继续,或者按[N/n]退出编译"
+            while :; do
+                read -p "请输入您的选择[Y/N]：" menu_config
+                case "${menu_config}" in
+                    [Yy]) 
+                        clear
+                        break  # 仅退出内层循环，重新尝试 make menuconfig
+                        ;;
+                    [Nn])
+                        exit 1
+                        ;;
+                    *) 
+                        TIME r "输入错误，请重新输入"
+                        ;;
+                esac
+            done
+        fi
     done
-  fi
-fi
 }
 
 function Ben_download() {
-TIME y "正在执行：下载DL文件,请耐心等候..."
-cd ${HOME_PATH}
-make -j8 download 2>&1 | tee /tmp/build.log
-if [[ -n "$(grep -E 'ERROR' /tmp/build.log)" ]]; then
-  clear
-  TIME r "下载DL失败，更换节点后再尝试下载？"
-  QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或输入[N/n]回车,退出编译"
-  while :; do
-    read -p "[${QLMEUN}]： " BenDownload
-    case ${BenDownload} in
-  [Yy])
-    Ben_download
-  break
-  ;;
-  [Nn])
-    TIME r "退出编译程序!"
-    sleep 1
+    local max_retries=3 retry=0
+    cd "${HOME_PATH}" || { TIME r "目录切换失败"; exit 1; }
+
+    while (( retry++ < max_retries )); do
+        TIME y "第${retry}次尝试下载DL文件..."
+        rm -f /tmp/build.log
+        make -j8 download 2>&1 | tee /tmp/build.log
+        local make_status=${PIPESTATUS[0]}
+
+        # 双重验证机制
+        if [[ ${make_status} -eq 0 ]] && ! grep -qE 'ERROR|Failed' /tmp/build.log; then
+            TIME g "下载验证通过"
+            return 0
+        fi
+
+        TIME r "下载失败（状态码:${make_status}），日志报错："
+        grep -E 'ERROR|Failed|warning' /tmp/build.log | head -n 5  # 展示关键错误
+
+        # 交互式重试逻辑
+        TIME g "剩余重试次数: $((max_retries - retry))"
+        read -p "[Y]重试/[N]退出：" choice
+        [[ "${choice^^}" != "Y" ]] && exit 1
+    done
+
+    TIME r "已达最大重试次数"
     exit 1
-  break
-  ;;
-  *)
-    QLMEUN="请更换节点后按[Y/y]回车继续尝试下载DL，或现在输入[N/n]回车,退出编译"
-  ;;
-  esac
-  done
-fi
 }
 
 function Ben_compile() {
