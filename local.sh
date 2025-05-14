@@ -246,7 +246,6 @@ function Ben_configuration() {
     if [[ "${Menuconfig_Config}" != "true" ]]; then
         return
     fi
-
     TIME y "正在执行：选取插件等..."
     while true; do
         if make menuconfig; then
@@ -289,8 +288,8 @@ function Ben_download() {
             return 0
         fi
 
-        TIME r "下载失败（状态码:${make_status}），日志报错："
-        grep -E 'ERROR|Failed|warning' /tmp/build.log | head -n 5  # 展示关键错误
+        TIME r "下载DL失败，更换节点后再尝试重新下载？，日志报错："
+        grep -E 'ERROR|Failed|warning' /tmp/build.log | head -n 5
 
         # 交互式重试逻辑
         TIME g "剩余重试次数: $((max_retries - retry))"
