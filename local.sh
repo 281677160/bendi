@@ -277,7 +277,7 @@ function Ben_download() {
     cd "${HOME_PATH}" || { TIME r "目录切换失败"; exit 1; }
 
     while (( retry++ < max_retries )); do
-        TIME y "第${retry}次尝试下载DL文件..."
+        [[ "${retry}" == "1" ]] && TIME y "正在执行：下载DL文件..." || TIME y "第${retry}次尝试下载DL文件..."
         rm -f /tmp/build.log
         make -j8 download 2>&1 | tee /tmp/build.log
         local make_status=${PIPESTATUS[0]}
