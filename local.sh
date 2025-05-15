@@ -1069,7 +1069,7 @@ function menu3() {
       hx=",输入[Q/q]返回上一步"
       YMXZQ="Q|q"
   fi
-  TIME y "请输入您要编译源码前面对应的数值(1~X)${hx}，输入[N/n]则为退出程序"
+  TIME y "请输入您要编译源码前面对应的数值(1~${XYZDSZ})${hx}，输入[N/n]则为退出程序"
   while :; do
     read -p "请输入您的选择：" YMXZ
     if [[ "${YMXZ}" =~ ^[Nn]$ ]]; then
