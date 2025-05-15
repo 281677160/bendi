@@ -371,7 +371,7 @@ cd ${FIRMWARE_PATH}
 # 整理固件
 cp -Rf config.buildinfo ${MYCONFIG_FILE}
 if [[ -n "$(ls -1 |grep -E 'immortalwrt')" ]]; then
-  rename -v "s/^immortalwrt/openwrt/" * > /dev/null 2>&1
+  rename "s/^immortalwrt/openwrt/" *
   sed -i 's/immortalwrt/openwrt/g' `egrep "immortalwrt" -rl ./`
 fi
 
@@ -379,7 +379,7 @@ for X in $(cat ${CLEAR_PATH} |sed "s/.*${TARGET_BOARD}//g"); do
   rm -rf *"$X"*
 done
 
-if [[ -n "$(ls -1 |grep -E 'armvirt')" ]] || [[ -n "$(ls -1 |grep -E 'armsr')" ]]; then
+if echo "$TARGET_BOARD" | grep -Eq 'armvirt|armsr'; then
   [[ ! -d "$GITHUB_WORKSPACE/amlogic" ]] && mkdir -p $GITHUB_WORKSPACE/amlogic
   rm -rf $GITHUB_WORKSPACE/amlogic/${SOURCE}-armvirt-64-default-rootfs.tar.gz
   cp -Rf *rootfs.tar.gz $GITHUB_WORKSPACE/amlogic/${SOURCE}-armvirt-64-default-rootfs.tar.gz
