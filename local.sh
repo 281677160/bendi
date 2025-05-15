@@ -273,7 +273,7 @@ function Ben_configuration() {
 }
 
 function Ben_download() {
-    local max_retries=3 retry=0
+    local max_retries=4 retry=0
     cd "${HOME_PATH}" || { TIME r "目录切换失败"; exit 1; }
 
     while (( retry++ < max_retries )); do
