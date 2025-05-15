@@ -284,7 +284,7 @@ function Ben_download() {
 
         # 双重验证机制
         if [[ ${make_status} -eq 0 ]] && ! grep -qE 'ERROR|Failed' /tmp/build.log; then
-            TIME g "下载验证通过"
+            TIME g "DL文件下载完成"
             return 0
         fi
 
