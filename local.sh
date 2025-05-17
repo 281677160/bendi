@@ -158,17 +158,21 @@ export BUILD_SETTINGS="${COMPILE_PATH}/settings.ini"
 export CONFIG_FILE="${CONFIG_FILE}"
 export MYCONFIG_FILE="${COMPILE_PATH}/seed/${CONFIG_FILE}"
 TIME y "正在执行：判断文件是否缺失"
-curl -fsSL https://github.com/281677160/common/raw/main/custom/first.sh -o /tmp/first.sh
-if grep -q "TIME" "/tmp/first.sh"; then
-  chmod +x /tmp/first.sh && source /tmp/first.sh
-else
-  TIME r "文件下载失败,请检查网络"
+if ! wget -q https://raw.githubusercontent.com/281677160/common/main/custom/first.sh -O /tmp/first.sh; then
+  if ! curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/first.sh -o /tmp/first.sh; then
+    TIME r "检测文件下载失败，请注意网络"
+    exit 1
+  fi
+fi
+if ! grep -E "bash|then" "/tmp/first.sh" &> /dev/null; then
+  TIME r "检测文件下载失败，请注意网络"
   exit 1
 fi
+chmod +x /tmp/first.sh && source /tmp/first.sh
 if [[ "${TONGBU_YUANMA}" == "1" ]] && [[ -z "${SUCCESS_FAILED}" ]]; then
   exit 0
 else
-  source $COMMON_SH && Diy_variable
+  bash $COMMON_SH Diy_menu6
 fi
 }
 
@@ -238,7 +242,7 @@ fi
 function Ben_diyptsh() {
 #加载自定义文件"
 cd ${HOME_PATH}
-source $COMMON_SH && Diy_partsh
+bash $COMMON_SH Diy_menu2
 }
 
 function Ben_configuration() {
@@ -834,7 +838,7 @@ done
 
 function Ben_menu() {
 cd $HOME_PATH
-source $COMMON_SH && Diy_menu
+bash $COMMON_SH Diy_menu
 }
 
 function Ben_menu2() {
@@ -844,7 +848,7 @@ Ben_diyptsh
 
 function Ben_menu3() {
 cd $HOME_PATH
-source $COMMON_SH && Diy_menu3
+bash $COMMON_SH Diy_menu3
 }
 
 function Ben_menuconfig() {
@@ -854,12 +858,12 @@ Ben_configuration
 
 function Ben_menu4() {
 cd $HOME_PATH
-source $COMMON_SH && Diy_menu4
+bash $COMMON_SH Diy_menu4
 }
 
 function Ben_menu5() {
 cd $HOME_PATH
-source $COMMON_SH && Diy_menu5
+bash $COMMON_SH Diy_menu5
 source $GITHUB_ENV
 }
 
