@@ -172,7 +172,7 @@ chmod +x /tmp/first.sh && source /tmp/first.sh
 if [[ "${TONGBU_YUANMA}" == "1" ]] && [[ -z "${SUCCESS_FAILED}" ]]; then
   exit 0
 else
-  source $COMMON_SH && Diy_variable
+  source $COMMON_SH && Diy_menu6
 fi
 }
 
@@ -237,12 +237,6 @@ elif [[ "${NUM_BER}" == "3" ]]; then
   ./scripts/feeds update -a > /dev/null 2>&1
   ./scripts/feeds install -a
 fi
-}
-
-function Ben_diyptsh() {
-#加载自定义文件"
-cd ${HOME_PATH}
-source $COMMON_SH && Diy_partsh
 }
 
 function Ben_configuration() {
@@ -843,7 +837,7 @@ source $COMMON_SH && Diy_menu
 
 function Ben_menu2() {
 cd $HOME_PATH
-Ben_diyptsh
+source $COMMON_SH && Diy_menu2
 }
 
 function Ben_menu3() {
