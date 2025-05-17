@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function TIME() {
-  case $1 in
+  case "$1" in
     r) local Color="\033[0;31m";;
     g) local Color="\033[0;32m";;
     y) local Color="\033[0;33m";;
@@ -10,7 +10,7 @@ function TIME() {
     l) local Color="\033[0;36m";;
     *) local Color="\033[0;0m";;
   esac
-echo -e "\n$Color$2\033[0m"
+echo -e "\n${Color}${2}\033[0m"
 }
 
 source /etc/os-release
@@ -172,7 +172,7 @@ chmod +x /tmp/first.sh && source /tmp/first.sh
 if [[ "${TONGBU_YUANMA}" == "1" ]] && [[ -z "${SUCCESS_FAILED}" ]]; then
   exit 0
 else
-  bash $COMMON_SH Diy_menu6
+  source $COMMON_SH && Diy_variable
 fi
 }
 
@@ -242,7 +242,7 @@ fi
 function Ben_diyptsh() {
 #加载自定义文件"
 cd ${HOME_PATH}
-bash $COMMON_SH Diy_menu2
+source $COMMON_SH && Diy_partsh
 }
 
 function Ben_configuration() {
@@ -838,7 +838,7 @@ done
 
 function Ben_menu() {
 cd $HOME_PATH
-bash $COMMON_SH Diy_menu
+source $COMMON_SH && Diy_menu
 }
 
 function Ben_menu2() {
@@ -848,7 +848,7 @@ Ben_diyptsh
 
 function Ben_menu3() {
 cd $HOME_PATH
-bash $COMMON_SH Diy_menu3
+source $COMMON_SH && Diy_menu3
 }
 
 function Ben_menuconfig() {
@@ -858,12 +858,12 @@ Ben_configuration
 
 function Ben_menu4() {
 cd $HOME_PATH
-bash $COMMON_SH Diy_menu4
+source $COMMON_SH && Diy_menu4
 }
 
 function Ben_menu5() {
 cd $HOME_PATH
-bash $COMMON_SH Diy_menu5
+source $COMMON_SH && Diy_menu5
 source $GITHUB_ENV
 }
 
