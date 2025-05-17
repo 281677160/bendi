@@ -158,17 +158,13 @@ export BUILD_SETTINGS="${COMPILE_PATH}/settings.ini"
 export CONFIG_FILE="${CONFIG_FILE}"
 export MYCONFIG_FILE="${COMPILE_PATH}/seed/${CONFIG_FILE}"
 TIME y "正在执行：判断文件是否缺失"
-if ! wget -q https://raw.githubusercontent.com/281677160/common/main/custom/first.sh -O /tmp/first.sh; then
-  if ! curl -fsSL https://raw.githubusercontent.com/281677160/common/main/custom/first.sh -o /tmp/first.sh; then
-    TIME r "检测文件下载失败，请注意网络"
-    exit 1
-  fi
-fi
-if ! grep -E "bash|then" "/tmp/first.sh" &> /dev/null; then
-  TIME r "检测文件下载失败，请注意网络"
+[[ -d "/tmp/common" ]] && rm -rf "/tmp/common"
+if ! git clone -q --single-branch --depth=1 --branch=main https://github.com/281677160/common "/tmp/common"; then
+  TIME r "对比版本号文件下载失败，请检查网络"
   exit 1
 fi
-chmod +x /tmp/first.sh && source /tmp/first.sh
+chmod -R +x /tmp/common
+source /tmp/common/custom/first.sh
 if [[ "${TONGBU_YUANMA}" == "1" ]] && [[ -z "${SUCCESS_FAILED}" ]]; then
   exit 0
 else
