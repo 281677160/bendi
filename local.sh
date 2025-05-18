@@ -1098,9 +1098,7 @@ if [[ -f "${LICENSES_DOC}/buildzu.ini" ]]; then
   source ${LICENSES_DOC}/buildzu.ini
 fi
 if [[ ! -d "${OPERATES_PATH}" ]]; then
-  TIME y "缺少编译主文件"
-  curl -fsSL https://github.com/281677160/common/raw/main/custom/first.sh -o /tmp/first.sh
-  chmod +x /tmp/first.sh && source /tmp/first.sh
+  Ben_variable
   if [[ -z "${SUCCESS_FAILED}" ]]; then
     exit 0
   fi
