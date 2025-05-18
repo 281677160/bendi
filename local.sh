@@ -157,7 +157,7 @@ export BUILD_PARTSH="${COMPILE_PATH}/diy-part.sh"
 export BUILD_SETTINGS="${COMPILE_PATH}/settings.ini"
 export CONFIG_FILE="${CONFIG_FILE}"
 export MYCONFIG_FILE="${COMPILE_PATH}/seed/${CONFIG_FILE}"
-TIME y "正在执行：判断文件是否缺失"
+[[ ! -d "${OPERATES_PATH}" ]] && TIME r "缺少编译主文件,正在下载中..." || TIME y "正在执行：判断文件是否缺失"
 [[ -d "/tmp/common" ]] && rm -rf "/tmp/common"
 if ! git clone -q --single-branch --depth=1 --branch=main https://github.com/281677160/common "/tmp/common"; then
   TIME r "对比版本号文件下载失败，请检查网络"
