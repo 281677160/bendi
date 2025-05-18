@@ -157,6 +157,7 @@ export BUILD_PARTSH="${COMPILE_PATH}/diy-part.sh"
 export BUILD_SETTINGS="${COMPILE_PATH}/settings.ini"
 export CONFIG_FILE="${CONFIG_FILE}"
 export MYCONFIG_FILE="${COMPILE_PATH}/seed/${CONFIG_FILE}"
+
 LINSHI_COMMON="/tmp/common"
 [[ ! -d "${OPERATES_PATH}" ]] && TIME r "缺少编译主文件,正在下载中..." || TIME y "正在执行：判断文件是否缺失"
 [[ -d "${LINSHI_COMMON}" ]] && rm -rf "${LINSHI_COMMON}"
