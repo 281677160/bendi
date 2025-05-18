@@ -1050,9 +1050,9 @@ function menu3() {
   echo 
   echo
   cd ${OPERATES_PATH}
-  XYZDSZ="$(ls -d */ | grep -v 'common\|backups' |cut -d"/" -f1 |awk '$0=NR" "$0'| awk 'END {print}' |awk '{print $(1)}')"
   ls -d */ | grep -v 'common\|backups' |cut -d"/" -f1 > /tmp/GITHUB_EVN
-  ls -d */ | grep -v 'common\|backups' |cut -d"/" -f1 |awk '$0=NR"、"$0'|awk '{print "  " $0}'
+  XYZDSZ="$(cat '/tmp/GITHUB_EVN' |awk '$0=NR" "$0'| awk 'END {print}' |awk '{print $(1)}')"
+  cat '/tmp/GITHUB_EVN' |awk '$0=NR"、"$0'|awk '{print "  " $0}'
   cd ${GITHUB_WORKSPACE}
   YMXZQ="QpyZm"
   if [[ "${SUCCESS_FAILED}" =~ (success|breakdown) ]]; then
