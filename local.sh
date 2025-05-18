@@ -197,6 +197,7 @@ if [[ "${NUM_BER}" == "1" ]]; then
     rm -rf openwrt
     cp -Rf $tmpdir $HOME_PATH
     rm -rf $tmpdir
+    source $COMMON_SH && Diy_feedsconf
     TIME g "源码下载完成"
   else
     TIME r "源码下载失败,请检测网络"
