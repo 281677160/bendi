@@ -144,8 +144,8 @@ export SETT_TINGS="$OPERATES_PATH/$FOLDER_NAME/settings.ini"
 if [[ -f "${SETT_TINGS}" ]] && [[ "${NUM_BER}" == "1" ]]; then
   source ${SETT_TINGS}
 else
-  PACKAGING_FIRMWARE="$(grep '^PACKAGING_FIRMWARE=' "${SETT_TINGS}" | awk -F'"' '{print $2}')"
-  MODIFY_CONFIGURATION="$(grep '^MODIFY_CONFIGURATION=' "${SETT_TINGS}" | awk -F'"' '{print $2}')"
+  [[ -d "${OPERATES_PATH}" ]] && PACKAGING_FIRMWARE="$(grep '^PACKAGING_FIRMWARE=' "${SETT_TINGS}" | awk -F'"' '{print $2}')"
+  [[ -d "${OPERATES_PATH}" ]] && MODIFY_CONFIGURATION="$(grep '^MODIFY_CONFIGURATION=' "${SETT_TINGS}" | awk -F'"' '{print $2}')"
 fi
 export COMPILE_PATH="$OPERATES_PATH/$FOLDER_NAME"
 export SOURCE_CODE="${SOURCE_CODE}"
