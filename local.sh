@@ -1054,7 +1054,7 @@ function menu3() {
   XYZDSZ="$(cat '/tmp/GITHUB_EVN' |awk '$0=NR" "$0'| awk 'END {print}' |awk '{print $(1)}')"
   cat '/tmp/GITHUB_EVN' |awk '$0=NR"、"$0'|awk '{print "  " $0}'
   cd ${GITHUB_WORKSPACE}
-  YMXZQ="QpyZm"
+  YMXZQ="RpyZm"
   if [[ "${SUCCESS_FAILED}" =~ (success|breakdown) ]]; then
       hx=",输入[Q/q]返回上一步"
       YMXZQ="Q|q"
