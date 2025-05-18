@@ -165,11 +165,7 @@ if ! git clone -q --single-branch --depth=1 --branch=main https://github.com/281
 fi
 chmod -R +x /tmp/common
 source /tmp/common/custom/first.sh
-if [[ "${TONGBU_YUANMA}" == "1" ]] && [[ -z "${SUCCESS_FAILED}" ]]; then
-  exit 0
-else
-  source $COMMON_SH && Diy_menu6
-fi
+source $COMMON_SH && Diy_menu6
 }
 
 function Ben_config() {
@@ -1099,9 +1095,6 @@ if [[ -f "${LICENSES_DOC}/buildzu.ini" ]]; then
 fi
 if [[ ! -d "${OPERATES_PATH}" ]]; then
   Ben_variable
-  if [[ -z "${SUCCESS_FAILED}" ]]; then
-    exit 0
-  fi
 fi
 if [[ -n "${SUCCESS_FAILED}" ]]; then
   required_dirs=("config" "include" "package" "scripts" "target" "toolchain" "tools" "build_dir")
