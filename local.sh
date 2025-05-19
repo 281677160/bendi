@@ -229,7 +229,7 @@ elif [[ "${NUM_BER}" == "2" ]]; then
 elif [[ "${NUM_BER}" == "3" ]]; then
   cd $HOME_PATH
   TIME y "正在执行：更新和安装feeds"
-  ./scripts/feeds update -a > /dev/null 2>&1
+  ./scripts/feeds update -a -q &>/dev/null
   ./scripts/feeds install -a
 fi
 }
