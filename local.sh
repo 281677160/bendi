@@ -972,10 +972,10 @@ function menu2() {
   clear
   echo
   if [[ "${SUCCESS_FAILED}" == "success" ]]; then
-    TIME g " 上回使用${SOURCE}-${LUCI_EDITION}源码${Font}${Blue}成功编译${TARGET_PROFILE}固件"
+    TIME l " 提示：上回使用${SOURCE}-${LUCI_EDITION}源码${Font}${Blue}成功编译${TARGET_PROFILE}固件"
   else
-    TIME r " 上回使用${SOURCE}-${LUCI_EDITION}源码${Font}${Blue}编译${TARGET_PROFILE}固件失败"
-    TIME g " 需要注意的是,有些情况下编译失败,还保留缓存继续编译的话,会一直编译失败的"
+    TIME r " 提示：上回使用${SOURCE}-${LUCI_EDITION}源码${Font}${Blue}编译${TARGET_PROFILE}固件失败"
+    TIME l " 提示：需要注意的是,有些情况下编译失败,还保留缓存继续编译的话,会一直编译失败的"
   fi
   if [[ "${ARMVIRT_TARGZ}" == "armvirt" ]]; then
     mydabao="除了读取打包设置,"
