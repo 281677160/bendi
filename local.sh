@@ -294,6 +294,22 @@ function Ben_download() {
     exit 1
 }
 
+function Ben_buildzuini() {
+cat >"${LICENSES_DOC}/buildzu.ini" <<-EOF
+SUCCESS_FAILED="${SUCCESS_FAILED}"
+SOURCE_CODE="${SOURCE_CODE}"
+SOURCE="${SOURCE}"
+FOLDER_NAME="${FOLDER_NAME}"
+REPO_BRANCH="${REPO_BRANCH}"
+REPO_URL="${REPO_URL}"
+LUCI_EDITION="${LUCI_EDITION}"
+TARGET_BOARD="${TARGET_BOARD}"
+MYCONFIG_FILE="${MYCONFIG_FILE}"
+TARGET_PROFILE="${TARGET_PROFILE}"
+CONFIG_FILE="${CONFIG_FILE}"
+EOF
+}
+
 function Ben_compile() {
 cd ${HOME_PATH}
 [[ -f "${op_log}" ]] && rm -rf "${op_log}"
@@ -322,40 +338,16 @@ sleep 5
 # 开始编译固件
 make -j${cpunproc} || make -j1 V=s 2>&1 | tee $op_log
 
-# 检测编译结果
-if [[ -f "${op_log}" ]] && [[ -n "$(cat "${op_log}" |grep -i 'Error 2')" ]]; then
-  echo "
+# 检查编译结果grep -io 'Error 2' "${op_log}"
+if [[ -f "${op_log}" ]] && [[ -n "$(grep -io 'Error 2' "${op_log}")" ]]; then
   SUCCESS_FAILED="breakdown"
-  SOURCE_CODE="${SOURCE_CODE}"
-  SOURCE="${SOURCE}"
-  FOLDER_NAME="${FOLDER_NAME}"
-  REPO_BRANCH="${REPO_BRANCH}"
-  REPO_URL="${REPO_URL}"
-  LUCI_EDITION="${LUCI_EDITION}"
-  TARGET_BOARD="${TARGET_BOARD}"
-  MYCONFIG_FILE="${MYCONFIG_FILE}"
-  TARGET_PROFILE="${TARGET_PROFILE}"
-  CONFIG_FILE="${CONFIG_FILE}"
-  " > ${LICENSES_DOC}/buildzu.ini
-  sed -i 's/^[ ]*//g' ${LICENSES_DOC}/buildzu.ini
+  Ben_buildzuini
   TIME r "编译失败~~!"
   TIME y "在[operates/build.log]可查看编译日志"
   exit 1
 else
-  echo "
   SUCCESS_FAILED="success"
-  SOURCE_CODE="${SOURCE_CODE}"
-  SOURCE="${SOURCE}"
-  FOLDER_NAME="${FOLDER_NAME}"
-  REPO_BRANCH="${REPO_BRANCH}"
-  REPO_URL="${REPO_URL}"
-  LUCI_EDITION="${LUCI_EDITION}"
-  TARGET_BOARD="${TARGET_BOARD}"
-  MYCONFIG_FILE="${MYCONFIG_FILE}"
-  TARGET_PROFILE="${TARGET_PROFILE}"
-  CONFIG_FILE="${CONFIG_FILE}"
-  " > ${LICENSES_DOC}/buildzu.ini
-  sed -i 's/^[ ]*//g' ${LICENSES_DOC}/buildzu.ini
+  Ben_buildzuini
 fi
 }
 
