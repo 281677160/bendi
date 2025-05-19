@@ -399,15 +399,10 @@ TIME r "提示：再次输入编译命令可进行二次编译"
 
 function Ben_zidongdabao() {
 cd ${HOME_PATH}
-ZIDONG_DABAO="/tmp/zidong.sh"
 DIY_PT1_DABAO="${OPERATES_PATH}/${FOLDER_NAME}/diy-part.sh"
-echo '#!/bin/bash' > ${ZIDONG_DABAO}
-grep -E '.*export amlogic.*=".*"' $DIY_PT1_DABAO >> ${ZIDONG_DABAO}
-grep -E '.*export auto.*=".*"' $DIY_PT1_DABAO >> ${ZIDONG_DABAO}
-grep -E '.*export rootfs.*=".*"' $DIY_PT1_DABAO >> ${ZIDONG_DABAO}
-grep -E '.*export kernel.*=".*"' $DIY_PT1_DABAO >> ${ZIDONG_DABAO}
-chmod +x ${ZIDONG_DABAO}
-source ${ZIDONG_DABAO}
+echo '#!/bin/bash' > "/tmp/zidong.sh"
+grep -E '.*export.*=".*"' "$DIY_PT1_DABAO" >> "/tmp/zidong.sh"
+chmod +x "/tmp/zidong.sh" && source "/tmp/zidong.sh"
 TIME g "执行自动打包任务"
 sleep 2
 Ben_packaging2
