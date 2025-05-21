@@ -162,11 +162,15 @@ LINSHI_COMMON="/tmp/common"
 [[ ! -d "${OPERATES_PATH}" ]] && TIME r "缺少编译主文件,正在下载中..." || TIME y "正在执行：判断文件是否缺失"
 [[ -d "${LINSHI_COMMON}" ]] && rm -rf "${LINSHI_COMMON}"
 if ! git clone -q --single-branch --depth=1 --branch=main https://github.com/281677160/common "${LINSHI_COMMON}"; then
+  git clone --depth=1 https://github.com/281677160/common "${LINSHI_COMMON}"
+fi
+if [ -f "${LINSHI_COMMON}/custom/first.sh" ] && grep -qE "bash" "${LINSHI_COMMON}/custom/first.sh"; then
+  chmod -R +x "${LINSHI_COMMON}"
+  source "${LINSHI_COMMON}/custom/first.sh"
+else
   [[ ! -d "${OPERATES_PATH}" ]] && TIME r "文件下载失败,请检查网络再试" || TIME r "对比版本号文件下载失败，请检查网络再试"
   exit 1
 fi
-chmod -R +x "${LINSHI_COMMON}"
-source "${LINSHI_COMMON}/custom/first.sh"
 source $COMMON_SH && Diy_menu6
 }
 
